@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="596.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Panels.DistributorPanel">
+    <children>
+        <AnchorPane layoutY="-1.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
+            <children>
+                <Button layoutX="14.0" layoutY="139.0" mnemonicParsing="false" onAction="#goToAdd" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add cashier" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font></Button>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="DISTRIBUTOR" textAlignment="CENTER" textFill="WHITE" />
+                <Button layoutX="14.0" layoutY="189.0" mnemonicParsing="false" onAction="#goToScheduleDistributor" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+                <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+                <Button layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#goToRequest" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Make request" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+            </children>
+        </AnchorPane>
+        <TableView layoutX="262.0" layoutY="164.0" prefHeight="217.0" prefWidth="210.0">
+            <columns>
+                <TableColumn prefWidth="104.0" text="Cashier name" />
+                <TableColumn prefWidth="107.199951171875" text="Company" />
+            </columns>
+        </TableView>
+        <TextField layoutX="266.0" layoutY="54.0" promptText="Name" />
+        <Button layoutX="426.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Add" textFill="WHITE" />
+        <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="7.0" prefWidth="362.0" style="-fx-background-color: #34495E;" />
+      <TextField layoutX="266.0" layoutY="88.0" promptText="Company name" />
+      <Button layoutX="472.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Update" textFill="WHITE" />
+    </children>
+</AnchorPane>
