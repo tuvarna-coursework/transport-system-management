@@ -12,11 +12,13 @@ public interface CrudService<T> {
 
 	public void save(T entity);
 	
-	@Deprecated
-	/* Currently each class will have individual update functions for each of their fields */
-	void update(T entity, String[] newValues); 
+	public void updateName(T entity, String newValue);
 	
 	public void deleteById(int id);
 	
 	public void deleteByName(String name);
+	
+	@Deprecated
+	/* Currently each class will have individual update functions for each of their fields */
+	void update(T entity, String[] newValues); 
 }

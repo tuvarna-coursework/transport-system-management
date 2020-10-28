@@ -15,5 +15,11 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 	    <mapping class="com.tuvarna.transportsystem.entities.Role"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.Location"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.PurchaseRestriction"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.TransportType"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.TripType"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.UserProfile"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.UserType"/>
 	</session-factory>
 </hibernate-configuration>

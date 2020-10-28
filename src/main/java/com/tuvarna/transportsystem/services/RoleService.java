@@ -7,7 +7,7 @@ import com.tuvarna.transportsystem.entities.Role;
 
 public class RoleService implements CrudService<Role> {
 	private RoleDAO roleDAO;
-	
+
 	public RoleService() {
 		this.roleDAO = new RoleDAO();
 	}
@@ -32,18 +32,23 @@ public class RoleService implements CrudService<Role> {
 		roleDAO.save(role);
 	}
 
-	@Deprecated
 	@Override
-	public void update(Role entity, String[] newValues) {
+	public void updateName(Role role, String newValue) {
+		roleDAO.updateName(role, newValue);
 	}
 
 	@Override
 	public void deleteById(int id) {
 		roleDAO.deleteById(id);
 	}
-	
+
 	@Override
 	public void deleteByName(String name) {
 		roleDAO.deleteByName(name);
+	}
+
+	@Deprecated
+	@Override
+	public void update(Role entity, String[] newValues) {
 	}
 }

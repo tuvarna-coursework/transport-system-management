@@ -2,15 +2,18 @@ package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
 import java.util.function.Consumer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import com.tuvarna.transportsystem.entities.Role;
+
+import com.tuvarna.transportsystem.entities.TransportType;
+import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
-public class RoleDAO implements GenericDAOInterface<Role> {
+public class TripTypeDAO implements GenericDAOInterface<TripType> {
 	private EntityManager entityManager;
 
-	public RoleDAO() {
+	public TripTypeDAO() {
 		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
 	}
 
@@ -37,56 +40,57 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Role getById(int id) {
-		return (Role) entityManager.createQuery("FROM Role WHERE role_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public TripType getById(int id) {
+		return (TripType) entityManager.createQuery("FROM TripType WHERE triptype_id = :id").setParameter("id", id)
+				.getSingleResult(); // check if the return type has to be Optional<Class> or it
+									// is ok like this
 	}
 
 	@Override
-	public List<Role> getByName(String name) {
-		return entityManager.createQuery("FROM Role WHERE role_name = :name").setParameter("name", name)
+	public List<TripType> getByName(String name) {
+		return entityManager.createQuery("FROM TripType WHERE triptype_name = :name").setParameter("name", name)
 				.getResultList();
 	}
 
 	@Override
-	public List<Role> getAll() {
-		return entityManager.createQuery("FROM Role").getResultList();
+	public List<TripType> getAll() {
+		return entityManager.createQuery("FROM TripType").getResultList();
 	}
 
 	@Override
-	public void save(Role role) {
+	public void save(TripType type) {
 		/* Lambda functions unapplicable if JRE is below 1.8 (please update if so) */
-		executeInsideTransaction(entityManager -> entityManager.persist(role));
+		executeInsideTransaction(entityManager -> entityManager.persist(type));
 	}
 
 	@Override
-	public void updateName(Role role, String newValue) {
-		role.setRoleName(newValue);
-		executeInsideTransaction(entityManager -> entityManager.merge(role));
+	public void updateName(TripType type, String newValue) {
+		type.setTripTypeName(newValue);
+		executeInsideTransaction(entityManager -> entityManager.merge(type));
 	}
 
 	@Override
 	public void deleteById(int id) {
-		Role role = this.getById(id);
-		executeInsideTransaction(entityManager -> entityManager.remove(role));
+		TripType type = this.getById(id);
+		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		List<Role> roles = this.getByName(name);
+		List<TripType> types = this.getByName(name);
 
 		/*
 		 * Have to iterate through the list, otherwise a single invocation of this
 		 * method for a list doesn't work. Works both if it the query returned multiple
 		 * records or a single one
 		 */
-		for (Role role : roles) {
-			executeInsideTransaction(entityManager -> entityManager.remove(role));
+		for (TripType type : types) {
+			executeInsideTransaction(entityManager -> entityManager.remove(type));
 		}
 	}
 
 	@Deprecated
 	@Override
-	public void update(Role role, String[] newValues) {
+	public void update(TripType type, String[] newValues) {
 	}
 }

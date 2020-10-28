@@ -1,10 +1,6 @@
 package com.tuvarna.transportsystem.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.tuvarna.transportsystem.dao.RoleDAO;
-import com.tuvarna.transportsystem.services.RoleService;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,25 +23,8 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		RoleService roleService = new RoleService();
-		
-		/*
-		 * roleService.save(new Role("User")); Role role = roleService.getById(69);
-		 * System.out.println(role.getRoleName());
-		 */
-
-		/*
-		List<Role> roles = roleService.getAll();
-		System.out.println(roles.size());
-		*/
-		
-		/*roleService.deleteById(69);
-		roleService.deleteByName("Admin");
-		*/
-		
-
+		DatabaseUtils.populateAuxiliaryTables();
 		launch(args);
-
 	}
 
 }
