@@ -1,10 +1,14 @@
 package com.tuvarna.transportsystem.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.transaction.Transactional;
 
@@ -20,11 +24,14 @@ public class Role {
 	@Column(name = "role_name")
 	private String roleName;
 
+	@ManyToMany(mappedBy = "roles")
+	private List<User> users; // non-owner side of UserRole joined table;
+
 	/* All java POJOS which will be persisted must have default constructors */
 	public Role() {
 
 	}
-	
+
 	public Role(String roleName) {
 		this.roleName = roleName;
 	}

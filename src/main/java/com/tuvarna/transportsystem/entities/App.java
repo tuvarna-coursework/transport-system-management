@@ -23,7 +23,8 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		DatabaseUtils.populateAuxiliaryTables();
+		//DatabaseUtils.testMappings();
+
 		launch(args);
 	}
 

@@ -1,39 +1,55 @@
 package com.tuvarna.transportsystem.entities;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name = "Location")
 public class Location {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "location_id")
-    private int locationId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "location_id")
+	private int locationId;
 
+	@Column(name = "location_name")
+	private String locationName;
 
-    @Column(name = "location_name")
-    private String locationName;
+	@OneToOne(mappedBy = "userLocation")
+	private User user;
 
+	@OneToOne(mappedBy = "tripDepartureLocation")
+	private Trip tripDeparture;
 
-    public Location(){
+	@OneToOne(mappedBy = "tripArrivalLocation")
+	private Trip tripArrival;
 
-    }
-    public Location(String locationName) {
-        this.locationName = locationName;
-    }
+	public Location() {
 
+	}
 
-    public int getLocationId() { return locationId; }
+	public Location(String locationName) {
+		this.locationName = locationName;
+	}
 
-    public void setLocationId(int locationId) { this.locationId = locationId; }
+	public int getLocationId() {
+		return locationId;
+	}
 
-    public String getLocationName() { return locationName; }
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
+	}
 
-    public void setLocationName(String locationName) { this.locationName = locationName; }
+	public String getLocationName() {
+		return locationName;
+	}
+
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
+	}
 }
