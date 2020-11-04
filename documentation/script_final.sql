@@ -62,6 +62,16 @@ CREATE TABLE "TransportSystem"."UserRole" (
 -- ALTER TABLE "TransportSystem"."UserRole" OWNER TO postgres;
 -- ddl-end --
 
+-- object: "TransportSystem"."UserTicket" | type: TABLE --
+-- DROP TABLE IF EXISTS "TransportSystem"."UserTicket" CASCADE;
+CREATE TABLE "TransportSystem"."UserTicket" (
+	user_id integer,
+	ticket_id integer
+);
+-- ddl-end --
+-- ALTER TABLE "TransportSystem"."UserTicket" OWNER TO postgres;
+-- ddl-end --
+
 -- object: "TransportSystem"."TripType" | type: TABLE --
 -- DROP TABLE IF EXISTS "TransportSystem"."TripType" CASCADE;
 CREATE TABLE "TransportSystem"."TripType" (
@@ -206,6 +216,20 @@ ON DELETE NO ACTION ON UPDATE CASCADE;
 -- ALTER TABLE "TransportSystem"."UserRole" DROP CONSTRAINT IF EXISTS role_id CASCADE;
 ALTER TABLE "TransportSystem"."UserRole" ADD CONSTRAINT role_id FOREIGN KEY (role_id)
 REFERENCES "TransportSystem"."Role" (role_id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: user_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."UserTicket" DROP CONSTRAINT IF EXISTS user_id CASCADE;
+ALTER TABLE "TransportSystem"."UserTicket" ADD CONSTRAINT user_id FOREIGN KEY (user_id)
+REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: role_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."UserTicket" DROP CONSTRAINT IF EXISTS ticket-id CASCADE;
+ALTER TABLE "TransportSystem"."UserTicket" ADD CONSTRAINT ticket_id FOREIGN KEY (ticket_id)
+REFERENCES "TransportSystem"."Ticket" (ticket_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 

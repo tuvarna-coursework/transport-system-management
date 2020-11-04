@@ -116,9 +116,9 @@ public class DatabaseUtils {
 		userTypeService.save(new UserType("Admin"));
 		userTypeService.save(new UserType("Transport Company"));
 	}
-	
+
 	public static void testMappings() {
-		
+		/*
 		UserProfile profile = new UserProfile(5.1, 5.2);
 		new UserProfileService().save(profile);
 		
@@ -126,26 +126,32 @@ public class DatabaseUtils {
 		Location location = (Location) new LocationService().getByName("Varna").get(0);
 		
 		UserService userService = new UserService();
-		//String fullname = "bat gergi";
-		//String username = "username";
-		//String password = "parola";
-		//User user = new User(fullname, username, password, profile, type, location);
-		//System.out.println(user.getuserLocation().getLocationName());
-		//userService.save(user);
-		User user = userService.getById(1);
+		String fullname = "bat gergi";
+		String username = "username";
+		String password = "parola";
+		User user = new User(fullname, username, password, profile, type, location);
 		
+		userService.save(user);
 
-		/* Test trip creation */
-		TripType tripType = new TripTypeService().getById(1);
+		System.out.println(userService.getById(1));
+		*/
+		
+		/*
+		 * TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
+			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType,
+			PurchaseRestriction tripPurchaseRestriction, int tripTicketAvailability
+		 */
+		
+		TripType type = new TripTypeService().getById(1);
+		Location location = new LocationService().getById(1);
+		Location location2 = new LocationService().getById(2);
 		TransportType transportType = new TransportTypeService().getById(1);
 		PurchaseRestriction restriction = new PurchaseRestrictionService().getById(1);
 		
-		/* works */
-		//Trip trip = new Trip(tripType, location, location, new Date(), new Date(), 5, transportType, restriction, 5);
-		//new TripService().save(trip);
-		Trip trip = new TripService().getById(1);
+		Trip trip = new Trip (type, location, location2, new Date(), new Date(), 50, transportType, restriction, 5);
 		
-		Ticket ticket = new Ticket(new Date(), user, trip);
-		new TicketService().save(ticket);
+		TripService service = new TripService();
+		service.save(trip);
+		
 	}
 }

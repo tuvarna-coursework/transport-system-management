@@ -3,6 +3,7 @@ package com.tuvarna.transportsystem.entities;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -25,32 +27,48 @@ public class Trip {
 	@Column(name = "trip_id")
 	private int tripId;
 
-	@OneToOne
-	@JoinColumn(name = "trip_type_id", referencedColumnName = "triptype_id")
+	@ManyToOne
+	@JoinColumn(name = "trip_type_id")
 	private TripType tripType;
 
-	@OneToOne
-	@JoinColumn(name = "trip_departure_location_id", referencedColumnName = "location_id")
+	@ManyToOne
+	@JoinColumn(name = "trip_departure_location_id") /*
+														 * even though there is a mappedBy attribute, this is the owner
+														 * side // mapped with One to Many since the location id can
+														 * belong to multiple trips // regardless of the fact that one
+														 * Trip can have only one departure location Hibernate throws
+														 * exception that the PK is not unique otherwise.
+														 */
 	private Location tripDepartureLocation;
 
-	@OneToOne
-	@JoinColumn(name = "trip_arrival_location_id", referencedColumnName = "location_id")
+	@ManyToOne
+	@JoinColumn(name = "trip_arrival_location_id")
 	private Location tripArrivalLocation;
 
-	@OneToOne
-	@JoinColumn(name = "trip_transporttype_id", referencedColumnName = "transport_type_id")
+	/*
+	 * Copied from User class:
+	 * 
+	 * Even though one user has one type it makes sense that this is a OneToOne
+	 * relation but that is not the case. The logic is that one usertype belongs to
+	 * multiple users and so hibernate will throw a non-unique key exception since
+	 * it does left outer joins and the way it queries doesn't allow it. Still one
+	 * User has one UserType but it is mapped in hibernate like this.
+	 */
+
+	@ManyToOne
+	@JoinColumn(name = "trip_transporttype_id")
 	private TransportType tripTransportType;
 
-	@OneToOne
-	@JoinColumn(name = "trip_purchase_restriction_id", referencedColumnName = "purchase_restriction_id")
+	@ManyToOne
+	@JoinColumn(name = "trip_purchase_restriction_id")
 	private PurchaseRestriction tripPurchaseRestriction;
 
-	@OneToOne(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "trip")
 	private Ticket ticket; // does nothing but is mandatory. Non-owner side of relationship
 
 	@ManyToMany(mappedBy = "trips")
-	private List<User> users;
-	
+	private Set<User> users;
+
 	@OneToMany(mappedBy = "trip")
 	private List<Ticket> tickets = new ArrayList<>();
 
@@ -70,11 +88,11 @@ public class Trip {
 			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType,
 			PurchaseRestriction tripPurchaseRestriction, int tripTicketAvailability) {
 		this.tripType = tripType;
-		this.tripDepartureLocation = tripDepartureLocation;
-		this.tripArrivalLocation = tripArrivalLocation;
 		this.tripDepartureDate = tripDepartureDate;
 		this.tripArrivalDate = tripArrivalDate;
 		this.tripCapacity = tripCapacity;
+		this.tripArrivalLocation = tripArrivalLocation;
+		this.tripDepartureLocation = tripDepartureLocation;
 		this.tripTransportType = tripTransportType;
 		this.tripPurchaseRestriction = tripPurchaseRestriction;
 		this.tripTicketAvailability = tripTicketAvailability;

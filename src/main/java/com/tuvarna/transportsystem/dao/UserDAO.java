@@ -45,7 +45,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 	}
 
 	public User getByLoginName(String name) {
-		return (User) entityManager.createQuery("FROM Users WHERE user_loginname = :name").setParameter("name", name)
+		return (User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
 				.getResultList();
 	}
 
@@ -54,37 +54,37 @@ public class UserDAO implements GenericDAOInterface<User> {
 	 * negatively. Change to inner join one day
 	 */
 	public List<User> getByUserType(String type) {
-		return entityManager.createQuery("SELECT u FROM Users u, UserType ut WHERE ut.usertype_name = :type")
+		return entityManager.createQuery("SELECT u FROM User u, UserType ut WHERE ut.usertype_name = :type")
 				.setParameter("type", type).getResultList();
 	}
 
 	public List<User> getByUserProfileId(int profileId) {
-		return entityManager.createQuery("FROM Users WHERE userprofile_id = :id").setParameter("id", profileId)
+		return entityManager.createQuery("FROM User WHERE userprofile_id = :id").setParameter("id", profileId)
 				.getResultList();
 	}
 
 	/* Test */
 	public List<User> getByUserLocation(String location) {
-		return entityManager.createQuery("SELECT u FROM Users u, Location l WHERE l.location_name = :location")
+		return entityManager.createQuery("SELECT u FROM User u, Location l WHERE l.location_name = :location")
 				.setParameter("location", location).getResultList();
 	}
 
 	@Override
 	public User getById(int id) {
-		return (User) entityManager.createQuery("FROM Users WHERE user_id = :id").setParameter("id", id)
+		return (User) entityManager.createQuery("FROM User WHERE user_id = :id").setParameter("id", id)
 				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
 	}
 
 	@Override
 	public List<User> getByName(String name) {
 		/* Name refers to full name, separate function for login name */
-		return entityManager.createQuery("FROM Users WHERE user_fullname = :name").setParameter("name", name)
+		return entityManager.createQuery("FROM User WHERE user_fullname = :name").setParameter("name", name)
 				.getResultList();
 	}
 
 	@Override
 	public List<User> getAll() {
-		return entityManager.createQuery("FROM Users").getResultList();
+		return entityManager.createQuery("FROM User").getResultList();
 	}
 
 	@Override

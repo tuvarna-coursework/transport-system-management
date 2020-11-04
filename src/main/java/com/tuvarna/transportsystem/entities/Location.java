@@ -1,10 +1,16 @@
 package com.tuvarna.transportsystem.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -20,14 +26,14 @@ public class Location {
 	@Column(name = "location_name")
 	private String locationName;
 
-	@OneToOne(mappedBy = "userLocation")
-	private User user;
+	@OneToMany
+	private List<User> users; // one location can belong to multiple users
 
-	@OneToOne(mappedBy = "tripDepartureLocation")
-	private Trip tripDeparture;
+	@OneToMany
+	private List<Trip> tripDepartures;
 
-	@OneToOne(mappedBy = "tripArrivalLocation")
-	private Trip tripArrival;
+	@OneToMany
+	private List<Trip> tripArrivals;
 
 	public Location() {
 

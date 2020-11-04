@@ -2,16 +2,19 @@ package com.tuvarna.transportsystem.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,12 +41,20 @@ public class User {
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
 
-	@OneToOne
-	@JoinColumn(name = "usertype_id", referencedColumnName = "usertype_id")
+	/*
+	 * Even though one user has one type it makes sense that this is a OneToOne
+	 * relation but that is not the case. The logic is that one usertype belongs to
+	 * multiple users and so hibernate will throw a non-unique key exception since
+	 * it does left outer joins and the way it queries doesn't allow it. Still one
+	 * User has one UserType but it is mapped in hibernate like this.
+	 */
+
+	@ManyToOne
+	@JoinColumn(name = "usertype_id")
 	private UserType userType;
 
-	@OneToOne
-	@JoinColumn(name = "user_location_id", referencedColumnName = "location_id")
+	@ManyToOne
+	@JoinColumn(name = "user_location_id")
 	private Location userLocation;
 
 	@ManyToMany
@@ -51,19 +62,24 @@ public class User {
 			@JoinColumn(name = "role_id") })
 	private List<Role> roles; // owner side of UserRole join table: user_id (PK) role_id (FK)
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "UserTrip", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "trip_id") })
-	private List<Trip> trips = new ArrayList<>();
+	private Set<Trip> trips;
 
-	@OneToMany(mappedBy = "user")
+	/*
+	 * This has been converted to a ManyToMany relation since the user will have
+	 * multiple tickets and a ticket will belong to multiple people.
+	 */
+	@ManyToMany
+	@JoinTable(name = "UserTicket", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "ticket_id") })
 	private List<Ticket> tickets = new ArrayList<>();
 
 	public User() {
 
 	}
 
-	/* Test constructor */
 	public User(String userFullName, String userLoginName, String userPassword, UserProfile userProfile,
 			UserType userType, Location userLocation) {
 		this.setUserFullName(userFullName);
@@ -71,7 +87,7 @@ public class User {
 		this.setUserPassword(userPassword);
 		this.setUserProfile(userProfile);
 		this.setUserType(userType);
-		this.userLocation = userLocation;
+		this.setUserLocation(userLocation);
 	}
 
 	public UserProfile getUserProfile() {
@@ -90,12 +106,10 @@ public class User {
 		this.userType = userType;
 	}
 
-	@Column(name = "user_location_id")
 	public Location getUserLocation() {
 		return userLocation;
 	}
 
-	@Column(name = "user_location_id")
 	public void setUserLocation(Location userLocation) {
 		this.userLocation = userLocation;
 	}
