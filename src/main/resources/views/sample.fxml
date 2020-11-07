@@ -23,7 +23,7 @@
       </Button>
       <TextField fx:id="usernameTextField" layoutX="152.0" layoutY="137.0" prefHeight="26.0" prefWidth="170.0" />
       <Label alignment="CENTER" layoutX="51.0" layoutY="137.0" prefHeight="26.0" prefWidth="91.0" text="USERNAME" textFill="WHITE" />
-      <Button layoutX="109.0" layoutY="331.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="169.0" style="-fx-background-color: #3498DB; -fx-background-radius: 80;" text="Register" textFill="WHITE">
+      <Button layoutX="109.0" layoutY="331.0" mnemonicParsing="false" onAction="#Change" prefHeight="46.0" prefWidth="169.0" style="-fx-background-color: #3498DB; -fx-background-radius: 80;" text="Register" textFill="WHITE">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
