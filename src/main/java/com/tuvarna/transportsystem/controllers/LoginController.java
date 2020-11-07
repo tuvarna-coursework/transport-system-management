@@ -42,36 +42,82 @@ public class LoginController implements Initializable {
 	}
 
 	public void Change(javafx.event.ActionEvent event) throws IOException {
-		Parent adminPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
-		Scene adminScene = new Scene(adminPanel);
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/Register.fxml"));
+		Scene adminScene = new Scene(userPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
 
+
 	}
+	public void ChangeToSuccessLogin(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
+		Scene adminScene = new Scene(userPanel);
+
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
+
+
+	}
+
 
 	public void loginButtonOnAction(javafx.event.ActionEvent event) throws IOException {
 		if (usernameTextField.getText().isBlank() == false && passwordTextField.getText().isBlank() == false) {
-			validateLogin();
+			String username = usernameTextField.getText();
+			String password = passwordTextField.getText();
+			UserService userService = new UserService();
+			User checkUserName= userService.getByLoginName(username);
+			User checkPassword= userService.getByLoginName(username);
+
+
+
+			String name=checkUserName.getUserLoginName();
+			String pass=checkPassword.getUserPassword();
+
+			if (username.equals(name)&&password.equals(pass)) {
+				informationLabel.setText("CORRECT");
+				Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
+				Scene adminScene = new Scene(userPanel);
+
+				Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				window.setScene(adminScene);
+				window.show();
+
+
+			}
+			else {
+				informationLabel.setText("INVALID");
+			}
+
+
 		} else {
 			informationLabel.setText("Please enter username and password!");
 		}
 	}
 
-	public void validateLogin() {
+	/*public void validateLogin() throws IOException {
 		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
 		UserService userService = new UserService();
-		User user1 = new User();
-		String fullname = user1.getUserLoginName();
+		User checkUserName= userService.getByLoginName(username);
+		User checkPassword= userService.getByLoginName(username);
 
-		if (username == fullname) {
+
+
+		String name=checkUserName.getUserLoginName();
+		String pass=checkPassword.getUserPassword();
+
+		if (username.equals(name)&&password.equals(pass)) {
 			informationLabel.setText("CORRECT");
-		} else {
-			informationLabel.setText("Invalid!");
+			ChangeToSuccessLogin();
+
+		}
+		else {
+			informationLabel.setText("INVALID");
 		}
 
-	}
+	}*/
 
 }

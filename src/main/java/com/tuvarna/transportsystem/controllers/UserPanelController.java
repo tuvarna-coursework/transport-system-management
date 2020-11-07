@@ -19,7 +19,7 @@ public class UserPanelController implements Initializable {
 	}
 
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getClassLoader().getResource("/views/SchedulePanel.fxml"));
+		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/SchedulePanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -28,11 +28,20 @@ public class UserPanelController implements Initializable {
 	}
 
 	public void goToTicket(javafx.event.ActionEvent event) throws IOException {
-		Parent ticketPanel = FXMLLoader.load(getClass().getResource("UserPanel.fxml"));
+		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(ticketScene);
 		window.show();
+	}
+	public void logOut(javafx.event.ActionEvent event)throws IOException{
+		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Scene ticketScene = new Scene(ticketPanel);
+
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(ticketScene);
+		window.show();
+
 	}
 }
