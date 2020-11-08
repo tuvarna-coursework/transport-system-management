@@ -21,7 +21,7 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+            <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#logOut" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>

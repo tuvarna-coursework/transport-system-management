@@ -50,7 +50,7 @@ public class TripService implements CrudService<Trip> {
 
 	@Deprecated
 	@Override
-	public List<Trip> getByName(String name) {
+	public Trip getByName(String name) {
 		return tripDAO.getByName(name);
 	}
 

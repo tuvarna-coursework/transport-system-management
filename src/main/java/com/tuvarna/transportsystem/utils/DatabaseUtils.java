@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.utils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import com.tuvarna.transportsystem.dao.RoleDAO;
 import com.tuvarna.transportsystem.dao.TicketDAO;
 import com.tuvarna.transportsystem.dao.UserDAO;
 import com.tuvarna.transportsystem.dao.UserProfileDAO;
@@ -35,7 +37,10 @@ import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.services.UserTypeService;
 
 public class DatabaseUtils {
-
+	public static Role ROLE_ADMIN = (Role)new RoleDAO().getById(1);
+	public static Role ROLE_USER = (Role)new RoleDAO().getById(2);
+	
+	
 	public static SessionFactory createSessionFactory() {
 		SessionFactory factory;
 		try {
@@ -118,30 +123,33 @@ public class DatabaseUtils {
 	}
 
 	public static void testMappings() {
-		/*
+		
 		UserProfile profile = new UserProfile(5.1, 5.2);
 		new UserProfileService().save(profile);
 		
 		UserType type = new UserTypeService().getById(2); // prepopulated already
-		Location location = (Location) new LocationService().getByName("Varna").get(0);
+		Location location = (Location) new LocationService().getByName("Varna");
 		
 		UserService userService = new UserService();
 		String fullname = "bat gergi";
 		String username = "username";
 		String password = "parola";
-		User user = new User(fullname, username, password, profile, type, location);
+		//User user = new User(fullname, username, password, profile, type, location);
+		
+		//userService.save(user);
+
+		User user = userService.getById(1);
+		//user.addTicket(new TicketService().getById(1));
 		
 		userService.save(user);
-
-		System.out.println(userService.getById(1));
-		*/
+		
 		
 		/*
 		 * TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
 			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType,
 			PurchaseRestriction tripPurchaseRestriction, int tripTicketAvailability
 		 */
-		
+		/*
 		TripType type = new TripTypeService().getById(1);
 		Location location = new LocationService().getById(1);
 		Location location2 = new LocationService().getById(2);
@@ -152,6 +160,11 @@ public class DatabaseUtils {
 		
 		TripService service = new TripService();
 		service.save(trip);
+		
+		
+		Ticket ticket = new Ticket(new Date(), trip);
+		
+		new TicketService().save(ticket);*/
 		
 	}
 }

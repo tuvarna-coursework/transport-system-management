@@ -18,7 +18,7 @@ public class LocationService implements CrudService<Location> {
 	}
 
 	@Override
-	public List<Location> getByName(String name) {
+	public Location getByName(String name) {
 		return locationDAO.getByName(name);
 	}
 

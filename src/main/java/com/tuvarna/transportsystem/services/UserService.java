@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.tuvarna.transportsystem.dao.UserDAO;
 import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Role;
+import com.tuvarna.transportsystem.entities.Ticket;
+import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
 
 public class UserService implements CrudService<User> {
@@ -13,12 +16,33 @@ public class UserService implements CrudService<User> {
 		this.userDAO = new UserDAO();
 	}
 
+	/* Functionality for joined tables */
+	public void addRole(User user, Role role) {
+		userDAO.addRole(user, role);
+	}
+
+	public void addTrip(User user, Trip trip) {
+		userDAO.addTrip(user, trip);
+	}
+
+	public void addTicket(User user, Ticket ticket) {
+		userDAO.addTicket(user, ticket);
+	}
+
+	public void removeRole(User user, Role role) {
+		userDAO.removeRole(user, role);
+	}
+
+	public void removeTrip(User user, Trip trip) {
+		userDAO.removeTrip(user, trip);
+	}
+
 	public void updateLocation(User user, Location location) {
 		userDAO.updateLocation(user, location);
 	}
 
-	public User getByLoginName(String name) {
-		return userDAO.getByLoginName(name);
+	public List<User> getByFullName(String name) {
+		return userDAO.getByFullName(name);
 	}
 
 	public List<User> getByUserType(String type) {
@@ -39,7 +63,7 @@ public class UserService implements CrudService<User> {
 	}
 
 	@Override
-	public List<User> getByName(String name) {
+	public User getByName(String name) {
 		return userDAO.getByName(name);
 	}
 

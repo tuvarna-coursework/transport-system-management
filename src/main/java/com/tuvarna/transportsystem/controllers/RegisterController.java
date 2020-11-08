@@ -68,7 +68,7 @@ public class RegisterController implements Initializable {
 
 
        // LocationService locationService= new LocationService();
-        Location location = (Location) new LocationService().getByName(userlocation).get(0);
+        Location location = (Location) new LocationService().getById(1);
 
 
 
@@ -78,7 +78,6 @@ public class RegisterController implements Initializable {
         UserService userService = new UserService();
         User user= new User(fullname,username,password,profile,type,location);
         userService.save(user);
-
 
         Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
         Scene adminScene = new Scene(userPanel);

@@ -7,6 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Role;
+import com.tuvarna.transportsystem.entities.Ticket;
+import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
@@ -39,13 +42,59 @@ public class UserDAO implements GenericDAOInterface<User> {
 		}
 	}
 
+	/* Joined table functionality */
+	public void addRole(User user, Role role) {
+		user.getRoles().add(role);
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
+	public void addTrip(User user, Trip trip) {
+		user.getTrips().add(trip);
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
+	public void addTicket(User user, Ticket ticket) {
+		user.getTickets().add(ticket);
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
+	public void removeRole(User user, Role role) {
+		if (user.getRoles().contains(role)) {
+			user.getRoles().remove(role);
+		}
+
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
+	public void removeTrip(User user, Trip trip) {
+		if (user.getRoles().contains(trip)) {
+			user.getRoles().remove(trip);
+		}
+
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
+	public void removeTicket(User user, Ticket ticket) {
+		if (user.getRoles().contains(ticket)) {
+			user.getRoles().remove(ticket);
+		}
+
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+
 	public void updateLocation(User user, Location location) {
 		user.setUserLocation(location);
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
 	}
 
-	public User getByLoginName(String name) {
-		return (User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
+	/*
+	 * HQL looks for the entity name rather than the table name it was mapped for.
+	 * So in this case the entity name User will be used as opposed to the table
+	 * name of Users which is inituative.
+	 */
+
+	public List<User> getByFullName(String name) {
+		return entityManager.createQuery("FROM User WHERE user_fullname = :name").setParameter("name", name)
 				.getResultList();
 	}
 
@@ -76,10 +125,10 @@ public class UserDAO implements GenericDAOInterface<User> {
 	}
 
 	@Override
-	public List<User> getByName(String name) {
-		/* Name refers to full name, separate function for login name */
-		return entityManager.createQuery("FROM User WHERE user_fullname = :name").setParameter("name", name)
-				.getResultList();
+	public User getByName(String name) {
+		/* Name refers to login name, separate function for full name */
+		return (User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
+				.getSingleResult();
 	}
 
 	@Override
@@ -107,16 +156,8 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	@Override
 	public void deleteByName(String name) {
-		List<User> users = this.getByName(name);
-
-		/*
-		 * Have to iterate through the list, otherwise a single invocation of this
-		 * method for a list doesn't work. Works both if it the query returned multiple
-		 * records or a single one
-		 */
-		for (User user : users) {
-			executeInsideTransaction(entityManager -> entityManager.remove(user));
-		}
+		User user = this.getByName(name);
+		executeInsideTransaction(entityManager -> entityManager.remove(user));
 	}
 
 	@Deprecated

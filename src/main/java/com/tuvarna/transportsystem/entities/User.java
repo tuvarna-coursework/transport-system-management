@@ -1,9 +1,15 @@
 package com.tuvarna.transportsystem.entities;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +24,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.mindrot.jbcrypt.BCrypt;
+
 
 @Entity
 @Table(name = "Users") /* User is a reserved word in PostgreSQL and needs to be escaped */
@@ -37,7 +46,11 @@ public class User {
 	@Column(name = "user_password")
 	private String userPassword;
 
-	@OneToOne
+	@OneToOne(orphanRemoval = true, cascade = CascadeType.REMOVE) /*
+																	 * Any profile that is no longer associated with
+																	 * user will be deleted (since a userprofile is
+																	 * unique for 1 user only
+																	 */
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
 
@@ -57,24 +70,28 @@ public class User {
 	@JoinColumn(name = "user_location_id")
 	private Location userLocation;
 
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE }) /*
+									 * Can't use ALL for a bidirectional many-to-many table since the REMOVE will
+									 * always remove more records than it should
+									 */
 	@JoinTable(name = "UserRole", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
-	private List<Role> roles; // owner side of UserRole join table: user_id (PK) role_id (FK)
+	private List<Role> roles = new ArrayList<>(); // owner side of UserRole join table: user_id (PK) role_id (FK)
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
 	@JoinTable(name = "UserTrip", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "trip_id") })
-	private Set<Trip> trips;
+	private List<Trip> trips = new ArrayList<>();
 
 	/*
 	 * This has been converted to a ManyToMany relation since the user will have
 	 * multiple tickets and a ticket will belong to multiple people.
 	 */
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "UserTicket", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "ticket_id") })
-	private List<Ticket> tickets = new ArrayList<>();
+	private List<Ticket> tickets = new ArrayList<>(); // this is like an instance of the UserTicket table
 
 	public User() {
 
@@ -83,11 +100,35 @@ public class User {
 	public User(String userFullName, String userLoginName, String userPassword, UserProfile userProfile,
 			UserType userType, Location userLocation) {
 		this.setUserFullName(userFullName);
-		this.setUserLoginName(userFullName);
+		this.setUserLoginName(userLoginName);
 		this.setUserPassword(userPassword);
 		this.setUserProfile(userProfile);
 		this.setUserType(userType);
 		this.setUserLocation(userLocation);
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+	public List<Trip> getTrips() {
+		return trips;
+	}
+
+	public void setTrips(List<Trip> trips) {
+		this.trips = trips;
+	}
+
+	public List<Ticket> getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
 	}
 
 	public UserProfile getUserProfile() {
@@ -143,6 +184,7 @@ public class User {
 	}
 
 	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
+		/* The salt used contains 4096 iterations (2^12) */
+		this.userPassword = BCrypt.hashpw(userPassword, BCrypt.gensalt(12));
 	}
 }

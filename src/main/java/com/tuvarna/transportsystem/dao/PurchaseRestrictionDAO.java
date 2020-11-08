@@ -41,14 +41,16 @@ public class PurchaseRestrictionDAO implements GenericDAOInterface<PurchaseRestr
 	@SuppressWarnings("unchecked")
 	@Override
 	public PurchaseRestriction getById(int id) {
-		return (PurchaseRestriction) entityManager.createQuery("FROM PurchaseRestriction WHERE purchase_restriction_id = :id").setParameter("id", id)
+		return (PurchaseRestriction) entityManager
+				.createQuery("FROM PurchaseRestriction WHERE purchase_restriction_id = :id").setParameter("id", id)
 				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
 	}
 
 	@Override
-	public List<PurchaseRestriction> getByName(String name) {
-		return entityManager.createQuery("FROM PurchaseRestriction WHERE purchase_restriction_name = :name")
-				.setParameter("name", name).getResultList();
+	public PurchaseRestriction getByName(String name) {
+		return (PurchaseRestriction) entityManager
+				.createQuery("FROM PurchaseRestriction WHERE purchase_restriction_name = :name")
+				.setParameter("name", name).getSingleResult();
 	}
 
 	@Override
@@ -76,16 +78,8 @@ public class PurchaseRestrictionDAO implements GenericDAOInterface<PurchaseRestr
 
 	@Override
 	public void deleteByName(String name) {
-		List<PurchaseRestriction> restrictions = this.getByName(name);
-
-		/*
-		 * Have to iterate through the list, otherwise a single invocation of this
-		 * method for a list doesn't work. Works both if it the query returned multiple
-		 * records or a single one
-		 */
-		for (PurchaseRestriction restriction : restrictions) {
-			executeInsideTransaction(entityManager -> entityManager.remove(restrictions));
-		}
+		PurchaseRestriction restriction = this.getByName(name);
+		executeInsideTransaction(entityManager -> entityManager.remove(restriction));
 	}
 
 	@Deprecated

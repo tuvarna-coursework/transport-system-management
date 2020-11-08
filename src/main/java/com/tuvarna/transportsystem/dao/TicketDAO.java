@@ -82,7 +82,7 @@ public class TicketDAO implements GenericDAOInterface<Ticket>{
 	
 	@Deprecated
 	@Override
-	public List<Ticket> getByName(String name) {
+	public Ticket getByName(String name) {
 		/* No name column */
 		return null;
 	}

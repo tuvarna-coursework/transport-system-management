@@ -45,9 +45,9 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 	}
 
 	@Override
-	public List<Location> getByName(String name) {
-		return entityManager.createQuery("FROM Location WHERE location_name = :name").setParameter("name", name)
-				.getResultList();
+	public Location getByName(String name) {
+		return (Location) entityManager.createQuery("FROM Location WHERE location_name = :name")
+				.setParameter("name", name).getSingleResult();
 	}
 
 	@Override
@@ -75,16 +75,8 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 
 	@Override
 	public void deleteByName(String name) {
-		List<Location> locations = this.getByName(name);
-
-		/*
-		 * Have to iterate through the list, otherwise a single invocation of this
-		 * method for a list doesn't work. Works both if it the query returned multiple
-		 * records or a single one
-		 */
-		for (Location location : locations) {
-			executeInsideTransaction(entityManager -> entityManager.remove(location));
-		}
+		Location location = this.getByName(name);
+		executeInsideTransaction(entityManager -> entityManager.remove(location));
 	}
 
 	@Deprecated

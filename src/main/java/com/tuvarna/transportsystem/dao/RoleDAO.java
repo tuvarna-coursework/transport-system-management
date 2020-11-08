@@ -43,9 +43,9 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 	}
 
 	@Override
-	public List<Role> getByName(String name) {
-		return entityManager.createQuery("FROM Role WHERE role_name = :name").setParameter("name", name)
-				.getResultList();
+	public Role getByName(String name) {
+		return (Role) entityManager.createQuery("FROM Role WHERE role_name = :name").setParameter("name", name)
+				.getSingleResult();
 	}
 
 	@Override
@@ -73,16 +73,8 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 
 	@Override
 	public void deleteByName(String name) {
-		List<Role> roles = this.getByName(name);
-
-		/*
-		 * Have to iterate through the list, otherwise a single invocation of this
-		 * method for a list doesn't work. Works both if it the query returned multiple
-		 * records or a single one
-		 */
-		for (Role role : roles) {
-			executeInsideTransaction(entityManager -> entityManager.remove(role));
-		}
+		Role role = this.getByName(name);
+		executeInsideTransaction(entityManager -> entityManager.remove(role));
 	}
 
 	@Deprecated

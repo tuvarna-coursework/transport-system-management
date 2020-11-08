@@ -18,7 +18,7 @@ public class RoleService implements CrudService<Role> {
 	}
 
 	@Override
-	public List<Role> getByName(String name) {
+	public Role getByName(String name) {
 		return roleDAO.getByName(name);
 	}
 

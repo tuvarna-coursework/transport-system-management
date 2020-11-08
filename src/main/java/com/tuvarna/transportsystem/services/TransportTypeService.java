@@ -18,7 +18,7 @@ public class TransportTypeService implements CrudService<TransportType>{
 	}
 
 	@Override
-	public List<TransportType> getByName(String name) {
+	public TransportType getByName(String name) {
 		return transportTypeDAO.getByName(name);
 	}
 

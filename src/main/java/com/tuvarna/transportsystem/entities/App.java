@@ -1,5 +1,7 @@
 package com.tuvarna.transportsystem.entities;
 
+import com.tuvarna.transportsystem.services.RoleService;
+import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 import javafx.application.Application;
@@ -23,8 +25,9 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		DatabaseUtils.testMappings();
-		
+		//DatabaseUtils.populateAuxiliaryTables();
+		//DatabaseUtils.testMappings();
+	
 		launch(args);
 	}
 }

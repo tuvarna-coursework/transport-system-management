@@ -46,9 +46,9 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	}
 
 	@Override
-	public List<TransportType> getByName(String name) {
-		return entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
-				.setParameter("name", name).getResultList();
+	public TransportType getByName(String name) {
+		return (TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
+				.setParameter("name", name).getSingleResult();
 	}
 
 	@Override
@@ -76,16 +76,8 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 
 	@Override
 	public void deleteByName(String name) {
-		List<TransportType> types = this.getByName(name);
-
-		/*
-		 * Have to iterate through the list, otherwise a single invocation of this
-		 * method for a list doesn't work. Works both if it the query returned multiple
-		 * records or a single one
-		 */
-		for (TransportType type : types) {
-			executeInsideTransaction(entityManager -> entityManager.remove(type));
-		}
+		TransportType type = this.getByName(name);
+		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}
 
 	@Deprecated

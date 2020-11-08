@@ -6,7 +6,7 @@ public interface GenericDAOInterface<T> {
 
 	public T getById(int id);
 	
-	public List<T> getByName(String name);
+	public T getByName(String name);
 	
 	public List<T> getAll();
 	

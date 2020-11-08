@@ -96,7 +96,7 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 
 	@Deprecated
 	@Override
-	public List<Trip> getByName(String name) {
+	public Trip getByName(String name) {
 		return null;
 	}
 

@@ -18,7 +18,7 @@ public class PurchaseRestrictionService implements CrudService<PurchaseRestricti
 	}
 
 	@Override
-	public List<PurchaseRestriction> getByName(String name) {
+	public PurchaseRestriction getByName(String name) {
 		return restrictionDAO.getByName(name);
 	}
 

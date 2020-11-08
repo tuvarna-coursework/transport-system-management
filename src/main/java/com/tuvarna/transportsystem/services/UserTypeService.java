@@ -18,7 +18,7 @@ public class UserTypeService implements CrudService<UserType> {
 	}
 
 	@Override
-	public List<UserType> getByName(String name) {
+	public UserType getByName(String name) {
 		return userTypeDAO.getByName(name);
 	}
 

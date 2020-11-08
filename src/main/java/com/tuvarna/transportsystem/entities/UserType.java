@@ -26,7 +26,7 @@ public class UserType {
     @Column(name="usertype_name")
     private String userTypeName;
     
-    @OneToMany
+    @OneToMany /* No cascade: In the db you cant delete a usertype if it is mapped to a user */
     private List<User> users;
 
     public UserType(){

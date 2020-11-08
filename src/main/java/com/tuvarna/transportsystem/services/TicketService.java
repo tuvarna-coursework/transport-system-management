@@ -47,7 +47,7 @@ public class TicketService implements CrudService<Ticket> {
 
 	@Deprecated
 	@Override
-	public List<Ticket> getByName(String name) {
+	public Ticket getByName(String name) {
 		return ticketDAO.getByName(name);
 	}
 

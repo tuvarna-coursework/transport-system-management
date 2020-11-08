@@ -27,11 +27,14 @@ public class Trip {
 	@Column(name = "trip_id")
 	private int tripId;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "trip_type_id")
 	private TripType tripType;
 
-	@ManyToOne
+	@ManyToOne /*
+				 * No cascade; according to sql script you can't remove a location if it is
+				 * associated with a trip/user
+				 */
 	@JoinColumn(name = "trip_departure_location_id") /*
 														 * even though there is a mappedBy attribute, this is the owner
 														 * side // mapped with One to Many since the location id can
@@ -55,7 +58,10 @@ public class Trip {
 	 * User has one UserType but it is mapped in hibernate like this.
 	 */
 
-	@ManyToOne
+	@ManyToOne /*
+				 * All below are non-modifiable if are related to a parent entity that's why no
+				 * need to make things more difficult with cascading
+				 */
 	@JoinColumn(name = "trip_transporttype_id")
 	private TransportType tripTransportType;
 
@@ -69,8 +75,8 @@ public class Trip {
 	@ManyToMany(mappedBy = "trips")
 	private Set<User> users;
 
-	@OneToMany(mappedBy = "trip")
-	private List<Ticket> tickets = new ArrayList<>();
+	@OneToMany
+	private List<Ticket> tickets;
 
 	private int tripTicketAvailability;
 

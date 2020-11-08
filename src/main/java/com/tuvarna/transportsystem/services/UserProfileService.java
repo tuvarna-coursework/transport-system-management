@@ -50,7 +50,7 @@ public class UserProfileService implements CrudService<UserProfile> {
 
 	@Deprecated
 	@Override
-	public List<UserProfile> getByName(String name) {
+	public UserProfile getByName(String name) {
 		/* Entity has no name column */
 		return null;
 	}

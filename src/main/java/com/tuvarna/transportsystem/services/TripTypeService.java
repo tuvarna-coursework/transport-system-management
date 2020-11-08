@@ -18,7 +18,7 @@ public class TripTypeService implements CrudService<TripType> {
 	}
 
 	@Override
-	public List<TripType> getByName(String name) {
+	public TripType getByName(String name) {
 		return tripTypeDAO.getByName(name);
 	}
 

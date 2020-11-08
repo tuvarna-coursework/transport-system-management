@@ -32,8 +32,7 @@ public class Ticket {
 	
 	@ManyToOne
 	@JoinColumn(name = "trip_id")
-	private Trip trip; // owner side: name = foreign key in Ticket; referencedColumnName = primary key
-						// in Trip
+	private Trip trip; // One trip can occur on multiple tickets
 
 	public Ticket() {
 

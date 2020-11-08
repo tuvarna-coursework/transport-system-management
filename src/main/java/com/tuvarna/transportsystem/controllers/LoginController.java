@@ -18,6 +18,7 @@ import javafx.scene.control.PasswordField;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.awt.*;
 import java.io.IOException;
@@ -64,19 +65,21 @@ public class LoginController implements Initializable {
 
 
 	public void loginButtonOnAction(javafx.event.ActionEvent event) throws IOException {
-		if (usernameTextField.getText().isBlank() == false && passwordTextField.getText().isBlank() == false) {
+		/* IsBlank() available on Java 11+; written like this for backwards compatibility */
+		if (usernameTextField.getText() != null && usernameTextField.getText().trim().length() != 0 && 
+				passwordTextField.getText() != null && passwordTextField.getText().trim().length() != 0) {
 			String username = usernameTextField.getText();
 			String password = passwordTextField.getText();
 			UserService userService = new UserService();
-			User checkUserName= userService.getByLoginName(username);
-			User checkPassword= userService.getByLoginName(username);
+			User checkUserName= userService.getByName(username);
+			User checkPassword= userService.getByName(username);
 
 
 
 			String name=checkUserName.getUserLoginName();
 			String pass=checkPassword.getUserPassword();
 
-			if (username.equals(name)&&password.equals(pass)) {
+			if (username.equals(name)&& BCrypt.checkpw(password, pass)) {
 				informationLabel.setText("CORRECT");
 				Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 				Scene adminScene = new Scene(userPanel);
