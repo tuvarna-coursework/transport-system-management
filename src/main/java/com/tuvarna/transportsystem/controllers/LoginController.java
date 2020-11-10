@@ -20,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.swing.plaf.nimbus.AbstractRegionPainter;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -68,32 +69,37 @@ public class LoginController implements Initializable {
 		/* IsBlank() available on Java 11+; written like this for backwards compatibility */
 		if (usernameTextField.getText() != null && usernameTextField.getText().trim().length() != 0 && 
 				passwordTextField.getText() != null && passwordTextField.getText().trim().length() != 0) {
-			String username = usernameTextField.getText();
-			String password = passwordTextField.getText();
-			UserService userService = new UserService();
-			User checkUserName= userService.getByName(username);
-			User checkPassword= userService.getByName(username);
 
 
+			try{
+				String username = usernameTextField.getText();
+				String password = passwordTextField.getText();
+				UserService userService = new UserService();
+				User checkUserName= userService.getByName(username);
+				User checkPassword= userService.getByName(username);
 
-			String name=checkUserName.getUserLoginName();
-			String pass=checkPassword.getUserPassword();
+				String name = checkUserName.getUserLoginName();
+				String pass = checkPassword.getUserPassword();
 
-			if (username.equals(name)&& BCrypt.checkpw(password, pass)) {
-				informationLabel.setText("CORRECT");
-				Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
-				Scene adminScene = new Scene(userPanel);
 
-				Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-				window.setScene(adminScene);
-				window.show();
+				if (username.equals(name) && BCrypt.checkpw(password, pass)) {
+					informationLabel.setText("CORRECT");
+					Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
+					Scene adminScene = new Scene(userPanel);
+
+					Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+					window.setScene(adminScene);
+					window.show();
+				}
+				else {
+					informationLabel.setText("INVALID PASSWORD");
+				}
+				
+			}catch (Exception e){
+				informationLabel.setText("INVALID USERNAME");
 
 
 			}
-			else {
-				informationLabel.setText("INVALID");
-			}
-
 
 		} else {
 			informationLabel.setText("Please enter username and password!");
