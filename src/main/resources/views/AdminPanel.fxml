@@ -17,7 +17,7 @@
       <AnchorPane layoutY="-2.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
-            <Button layoutX="11.0" layoutY="256.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+            <Button fx:id="addButton" onAction="#addButtonOnAction" layoutX="11.0" layoutY="256.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>
@@ -27,7 +27,7 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
-            <TextField layoutX="79.0" layoutY="221.0" />
+            <TextField fx:id="nameField" layoutX="79.0" layoutY="221.0" />
             <Label alignment="CENTER" layoutX="29.0" layoutY="225.0" prefHeight="18.0" prefWidth="42.0" text="Name" textFill="WHITE" />
             <Label alignment="CENTER" layoutX="29.0" layoutY="180.0" prefHeight="18.0" prefWidth="42.0" text="Type" textFill="WHITE" />
             <ImageView fitHeight="60.0" fitWidth="57.0" layoutX="90.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
@@ -35,7 +35,7 @@
                   <Image url="@../img/icons8-male-user-96.png" />
                </image>
             </ImageView>
-            <RadioButton fx:id="radioButton2" layoutX="83.0" layoutY="190.0" mnemonicParsing="false" text="Company" textFill="WHITE">
+            <RadioButton fx:id="company" layoutX="83.0" layoutY="190.0" mnemonicParsing="false" text="Company" textFill="WHITE">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>
@@ -43,7 +43,7 @@
                   <ToggleGroup fx:id="radioButtonAdmin" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="radioButton1" layoutX="83.0" layoutY="164.0" mnemonicParsing="false" text="Distributor" textFill="WHITE" toggleGroup="$radioButtonAdmin">
+            <RadioButton fx:id="distributor" layoutX="83.0" layoutY="164.0" mnemonicParsing="false" text="Distributor" textFill="WHITE" toggleGroup="$radioButtonAdmin">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>

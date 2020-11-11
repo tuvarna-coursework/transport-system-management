@@ -1,4 +1,4 @@
-package com.tuvarna.transportsystem.entities;
+
 
 import com.tuvarna.transportsystem.services.RoleService;
 import com.tuvarna.transportsystem.services.UserService;
