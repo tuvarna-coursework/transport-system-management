@@ -64,11 +64,8 @@ public class RegisterController implements Initializable {
         String password=passwordTextField.getText();
         String userlocation=locationChoiceBox.getValue();
 
-
-
-
-       // LocationService locationService= new LocationService();
-        Location location = (Location) new LocationService().getById(1);
+        LocationService locationService= new LocationService();
+        Location location = (Location) new LocationService().getByName(userlocation);
 
 
 
@@ -88,7 +85,6 @@ public class RegisterController implements Initializable {
 
     }
 
-
     public void loadLocation(){
         list.removeAll(list);
         String city_01="Varna";
@@ -102,7 +98,6 @@ public class RegisterController implements Initializable {
         String city_09="Stara Zagora";
         String city_10="Blagoevgrad";
         String city_11="Sliven";
-
         list.addAll(city_01,city_02,city_03,city_04,city_05,city_06,city_07,city_08,city_09,city_10,city_11);
         locationChoiceBox.getItems().addAll(list);
     }

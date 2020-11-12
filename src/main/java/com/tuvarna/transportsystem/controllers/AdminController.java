@@ -1,13 +1,15 @@
 package com.tuvarna.transportsystem.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,8 +24,10 @@ import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import javafx.stage.Stage;
 
 public class AdminController implements Initializable {
+	ObservableList list= FXCollections.observableArrayList();
 
 	@FXML
 	private RadioButton distributor;
@@ -37,11 +41,34 @@ public class AdminController implements Initializable {
 	@FXML
 	private Button addButton;
 
+	@FXML
+	ToggleGroup radioButtonAdmin;
+
+	@FXML
+	private ChoiceBox<String> companyLocationChoiceBox;
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		loadLocation();
 
 	}
 
+	public void loadLocation(){
+		list.removeAll(list);
+		String city_01="Varna";
+		String city_02="Sofia";
+		String city_03="Shumen";
+		String city_04="Veliko Turnovo";
+		String city_05="Razgrad";
+		String city_06="Gabrovo";
+		String city_07="Plovdiv";
+		String city_08="Burgas";
+		String city_09="Stara Zagora";
+		String city_10="Blagoevgrad";
+		String city_11="Sliven";
+		list.addAll(city_01,city_02,city_03,city_04,city_05,city_06,city_07,city_08,city_09,city_10,city_11);
+		companyLocationChoiceBox.getItems().addAll(list);
+	}
 	private String generateUserName(String input) {
 		StringBuilder sb = new StringBuilder();
 
@@ -95,7 +122,7 @@ public class AdminController implements Initializable {
 		return sb.toString();
 	}
 
-	public void addButtonOnAction(javafx.event.ActionEvent event) throws IOException {
+		public void addButtonOnAction(javafx.event.ActionEvent event) throws IOException {
 		if (nameField.getText() != null) {
 			UserService userService = new UserService();
 			UserType userType;
@@ -117,9 +144,21 @@ public class AdminController implements Initializable {
 			 * Full name and location is currently hard coded since I am awaiting front end
 			 * changes
 			 */
-			Location location = (Location) new LocationService().getById(1);
 
+			/*
+			This is my code.If you change the values it work and it saves in the base but I have some error with the Alerts.
+			LocationService locationService= new LocationService();
+			String choiceBoxValue=companyLocationChoiceBox.getValue();
+			String enteredName=nameField.getText();
+
+			 */
+
+			Location location = (Location) new LocationService().getById(1);
 			/* Create a unique User Profile associated with this user */
+
+
+
+
 			UserProfileService userProfileService = new UserProfileService();
 			UserProfile profile = new UserProfile();
 			userProfileService.save(profile);
@@ -148,8 +187,17 @@ public class AdminController implements Initializable {
 			alert.showAndWait();
 		}
 	}
+	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Scene adminScene = new Scene(userPanel);
 
-	@FXML
-	ToggleGroup radioButtonAdmin;
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
+
+
+	}
+
+
 
 }

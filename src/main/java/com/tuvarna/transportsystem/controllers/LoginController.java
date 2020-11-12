@@ -2,8 +2,10 @@ package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.User;
+import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.UserService;
+import com.tuvarna.transportsystem.services.UserTypeService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,29 +76,78 @@ public class LoginController implements Initializable {
 			try{
 				String username = usernameTextField.getText();
 				String password = passwordTextField.getText();
+
+
 				UserService userService = new UserService();
+				UserTypeService userTypeService= new UserTypeService();
+
+
 				User checkUserName= userService.getByName(username);
 				User checkPassword= userService.getByName(username);
+				User checkType= userService.getByName(username);
+
 
 				String name = checkUserName.getUserLoginName();
 				String pass = checkPassword.getUserPassword();
+				UserType type = checkType.getUserType();
+				String usertype= type.getUserTypeName();
+
+
 
 
 				if (username.equals(name) && BCrypt.checkpw(password, pass)) {
 					informationLabel.setText("CORRECT");
-					Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
-					Scene adminScene = new Scene(userPanel);
 
-					Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-					window.setScene(adminScene);
-					window.show();
+
+					if(usertype.equals("Admin")){
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/AdminPanel.fxml"));
+						Scene adminScene = new Scene(userPanel);
+
+						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+						window.setScene(adminScene);
+						window.show();
+					}
+					if(usertype.equals("User")){
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
+						Scene adminScene = new Scene(userPanel);
+
+						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+						window.setScene(adminScene);
+						window.show();
+					}
+					if(usertype.equals("Transport Company")){
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
+						Scene adminScene = new Scene(userPanel);
+
+						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+						window.setScene(adminScene);
+						window.show();
+					}
+					if(usertype.equals("Distributor")){
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
+						Scene adminScene = new Scene(userPanel);
+
+						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+						window.setScene(adminScene);
+						window.show();
+					}
+					if(usertype.equals("Cashier")){
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
+						Scene adminScene = new Scene(userPanel);
+
+						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+						window.setScene(adminScene);
+						window.show();
+					}
+
+
 				}
 				else {
-					informationLabel.setText("INVALID PASSWORD");
+					informationLabel.setText("INVALID USERNAME OR PASSWORD");
 				}
 				
 			}catch (Exception e){
-				informationLabel.setText("INVALID USERNAME");
+				informationLabel.setText("INVALID USERNAME OR PASSWORD");
 
 
 			}
