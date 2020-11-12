@@ -23,7 +23,7 @@
                 <Font name="System Bold" size="20.0" />
             </font>
         </Button>
-        <Label alignment="CENTER" layoutX="51.0" layoutY="178.0" prefHeight="26.0" prefWidth="91.0" text="NICKNAME" textFill="WHITE" />
+        <Label alignment="CENTER" layoutX="51.0" layoutY="178.0" prefHeight="26.0" prefWidth="91.0" text="USERNAME" textFill="WHITE" />
         <Label fx:id="informationLabel" alignment="CENTER" layoutX="78.0" layoutY="219.0" prefHeight="15.0" prefWidth="230.0" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="51.0" layoutY="216.0" prefHeight="26.0" prefWidth="91.0" text="PASSWORD" textFill="WHITE" />
       <PasswordField fx:id="passwordTextField" layoutX="152.0" layoutY="216.0" prefHeight="26.0" prefWidth="170.0" />
