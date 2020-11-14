@@ -53,8 +53,8 @@ public class LoginController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
-
 	}
+
 	public void ChangeToSuccessLogin(javafx.event.ActionEvent event) throws IOException {
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 		Scene adminScene = new Scene(userPanel);
@@ -63,43 +63,36 @@ public class LoginController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
-
 	}
 
-
 	public void loginButtonOnAction(javafx.event.ActionEvent event) throws IOException {
-		/* IsBlank() available on Java 11+; written like this for backwards compatibility */
-		if (usernameTextField.getText() != null && usernameTextField.getText().trim().length() != 0 && 
-				passwordTextField.getText() != null && passwordTextField.getText().trim().length() != 0) {
+		/*
+		 * IsBlank() available on Java 11+; written like this for backwards
+		 * compatibility
+		 */
+		if (usernameTextField.getText() != null && usernameTextField.getText().trim().length() != 0
+				&& passwordTextField.getText() != null && passwordTextField.getText().trim().length() != 0) {
 
-
-			try{
+			try {
 				String username = usernameTextField.getText();
 				String password = passwordTextField.getText();
 
-
 				UserService userService = new UserService();
-				UserTypeService userTypeService= new UserTypeService();
+				UserTypeService userTypeService = new UserTypeService();
 
-
-				User checkUserName= userService.getByName(username);
-				User checkPassword= userService.getByName(username);
-				User checkType= userService.getByName(username);
-
+				User checkUserName = userService.getByName(username);
+				User checkPassword = userService.getByName(username);
+				User checkType = userService.getByName(username);
 
 				String name = checkUserName.getUserLoginName();
 				String pass = checkPassword.getUserPassword();
 				UserType type = checkType.getUserType();
-				String usertype= type.getUserTypeName();
-
-
-
+				String usertype = type.getUserTypeName();
 
 				if (username.equals(name) && BCrypt.checkpw(password, pass)) {
 					informationLabel.setText("CORRECT");
 
-
-					if(usertype.equals("Admin")){
+					if (usertype.equals("Admin")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/AdminPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
@@ -107,7 +100,8 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					if(usertype.equals("User")){
+					
+					if (usertype.equals("User")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
@@ -115,7 +109,8 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					if(usertype.equals("Transport Company")){
+					
+					if (usertype.equals("Transport Company")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
@@ -123,7 +118,8 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					if(usertype.equals("Distributor")){
+					
+					if (usertype.equals("Distributor")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
@@ -131,7 +127,8 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					if(usertype.equals("Cashier")){
+					
+					if (usertype.equals("Cashier")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
@@ -140,15 +137,12 @@ public class LoginController implements Initializable {
 						window.show();
 					}
 
-
-				}
-				else {
+				} else {
 					informationLabel.setText("INVALID USERNAME OR PASSWORD");
 				}
-				
-			}catch (Exception e){
-				informationLabel.setText("INVALID USERNAME OR PASSWORD");
 
+			} catch (Exception e) {
+				informationLabel.setText("INVALID USERNAME OR PASSWORD");
 
 			}
 
@@ -157,27 +151,24 @@ public class LoginController implements Initializable {
 		}
 	}
 
-	/*public void validateLogin() throws IOException {
-		String username = usernameTextField.getText();
-		String password = passwordTextField.getText();
-		UserService userService = new UserService();
-		User checkUserName= userService.getByLoginName(username);
-		User checkPassword= userService.getByLoginName(username);
-
-
-
-		String name=checkUserName.getUserLoginName();
-		String pass=checkPassword.getUserPassword();
-
-		if (username.equals(name)&&password.equals(pass)) {
-			informationLabel.setText("CORRECT");
-			ChangeToSuccessLogin();
-
-		}
-		else {
-			informationLabel.setText("INVALID");
-		}
-
-	}*/
+	/*
+	 * public void validateLogin() throws IOException { String username =
+	 * usernameTextField.getText(); String password = passwordTextField.getText();
+	 * UserService userService = new UserService(); User checkUserName=
+	 * userService.getByLoginName(username); User checkPassword=
+	 * userService.getByLoginName(username);
+	 * 
+	 * 
+	 * 
+	 * String name=checkUserName.getUserLoginName(); String
+	 * pass=checkPassword.getUserPassword();
+	 * 
+	 * if (username.equals(name)&&password.equals(pass)) {
+	 * informationLabel.setText("CORRECT"); ChangeToSuccessLogin();
+	 * 
+	 * } else { informationLabel.setText("INVALID"); }
+	 * 
+	 * }
+	 */
 
 }

@@ -37,15 +37,18 @@ import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.services.UserTypeService;
 
 public class DatabaseUtils {
-	/* Fix these because every time they are accessed a new service is created */
-	public static Role ROLE_ADMIN = (Role)new RoleService().getByName("Admin");
-	public static Role ROLE_USER = (Role)new RoleService().getByName("User");	
+	static RoleService roleService = new RoleService();
+	static UserTypeService userTypeService = new UserTypeService();
 	
-	public static UserType USERTYPE_DISTRIBUTOR = (UserType)new UserTypeService().getByName("Distributor");
-	public static UserType USERTYPE_CASHIER = (UserType)new UserTypeService().getByName("Cashier");
-	public static UserType USERTYPE_USER = (UserType)new UserTypeService().getByName("User");
-	public static UserType USERTYPE_ADMIN = (UserType)new UserTypeService().getByName("Admin");
-	public static UserType USERTYPE_COMPANY = (UserType)new UserTypeService().getByName("Transport Company");
+	/* Fix these because every time they are accessed a new service is created */
+	public static Role ROLE_ADMIN = (Role)roleService.getByName("Admin");
+	public static Role ROLE_USER = (Role)roleService.getByName("User");	
+	
+	public static UserType USERTYPE_DISTRIBUTOR = (UserType)userTypeService.getByName("Distributor");
+	public static UserType USERTYPE_CASHIER = (UserType)userTypeService.getByName("Cashier");
+	public static UserType USERTYPE_USER = (UserType)userTypeService.getByName("User");
+	public static UserType USERTYPE_ADMIN = (UserType)userTypeService.getByName("Admin");
+	public static UserType USERTYPE_COMPANY = (UserType)userTypeService.getByName("Transport Company");
 	
 	public static SessionFactory createSessionFactory() {
 		SessionFactory factory;

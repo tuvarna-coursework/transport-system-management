@@ -27,7 +27,7 @@ public class Trip {
 	@Column(name = "trip_id")
 	private int tripId;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "trip_type_id")
 	private TripType tripType;
 

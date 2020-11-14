@@ -88,7 +88,7 @@ public class User {
 	 * This has been converted to a ManyToMany relation since the user will have
 	 * multiple tickets and a ticket will belong to multiple people.
 	 */
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany
 	@JoinTable(name = "UserTicket", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "ticket_id") })
 	private List<Ticket> tickets = new ArrayList<>(); // this is like an instance of the UserTicket table
