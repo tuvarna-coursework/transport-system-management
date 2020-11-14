@@ -34,45 +34,49 @@
                         <Font name="Tahoma" size="12.0" />
                     </font>
                 </Button>
+            <Label fx:id="informationLabel" alignment="CENTER" layoutX="52.0" layoutY="311.0" prefHeight="16.0" prefWidth="149.0" textFill="WHITE" />
             </children>
         </AnchorPane>
-        <Button layoutX="506.0" layoutY="436.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="61.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Add" textFill="WHITE">
+        <Button layoutX="506.0" layoutY="436.0" mnemonicParsing="false" onAction="#addTicket" prefHeight="26.0" prefWidth="61.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Add" textFill="WHITE">
          <font>
             <Font size="14.0" />
          </font></Button>
         <AnchorPane layoutX="244.0" layoutY="72.0" prefHeight="7.0" prefWidth="362.0" style="-fx-background-color: #34495E;" />
         <Button layoutX="329.0" layoutY="20.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="190.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="CREATE NEW TRIP" textFill="WHITE" />
-      <DatePicker layoutX="350.0" layoutY="248.0" prefHeight="26.0" prefWidth="149.0" promptText="Departure date" />
-      <RadioButton layoutX="265.0" layoutY="107.0" mnemonicParsing="false" text="Express" textFill="WHITE">
+      <DatePicker fx:id="departureDatePicker" layoutX="351.0" layoutY="256.0" prefHeight="26.0" prefWidth="149.0" promptText="Departure date" />
+      <RadioButton fx:id="radioTypeExpress" layoutX="265.0" layoutY="107.0" mnemonicParsing="false" text="Express" textFill="WHITE">
          <font>
             <Font name="Tahoma" size="12.0" />
          </font>
+         <toggleGroup>
+            <ToggleGroup fx:id="radioTypeTrip" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="radioTypeNormal" layoutX="350.0" layoutY="107.0" mnemonicParsing="false" text="Normal" textFill="WHITE">
          <toggleGroup>
             <ToggleGroup fx:id="TypeTrip" />
          </toggleGroup></RadioButton>
-      <RadioButton layoutX="350.0" layoutY="107.0" mnemonicParsing="false" text="Normal" textFill="WHITE" toggleGroup="$TypeTrip" />
       <Label alignment="CENTER" layoutX="316.0" layoutY="85.0" prefHeight="18.0" prefWidth="40.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Type" textFill="WHITE" />
-      <TextField layoutX="351.0" layoutY="281.0" promptText="Seats capacity" />
-      <RadioButton layoutX="356.0" layoutY="226.0" mnemonicParsing="false" text="Big bus" textFill="WHITE">
+      <TextField fx:id="seatsCapacityTextField" layoutX="351.0" layoutY="320.0" promptText="Seats capacity" />
+      <RadioButton fx:id="radioBigBus" layoutX="356.0" layoutY="236.0" mnemonicParsing="false" text="Big bus" textFill="WHITE">
          <font>
             <Font name="Tahoma" size="12.0" />
          </font>
          <toggleGroup>
-            <ToggleGroup fx:id="TypeTrip1" />
+            <ToggleGroup fx:id="radioBusType" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton layoutX="448.0" layoutY="226.0" mnemonicParsing="false" text="Van" textFill="WHITE">
-         <toggleGroup>
-            <ToggleGroup fx:id="TypeTrip1" />
-         </toggleGroup>
-      </RadioButton>
-      <Label alignment="CENTER" layoutX="395.0" layoutY="199.0" prefHeight="18.0" prefWidth="62.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Bus type" textFill="WHITE" />
-      <TextField layoutX="351.0" layoutY="313.0" promptText="Tickets per person" />
+      <RadioButton fx:id="radioVan" layoutX="448.0" layoutY="236.0" mnemonicParsing="false" text="Van" textFill="WHITE" toggleGroup="$radioBusType" />
+      <Label alignment="CENTER" layoutX="395.0" layoutY="209.0" prefHeight="18.0" prefWidth="62.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Bus type" textFill="WHITE" />
       <ChoiceBox fx:id="departureChoiceBox" layoutX="424.0" layoutY="108.0" prefWidth="150.0" />
       <ChoiceBox fx:id="arrivalChoiceBox" layoutX="424.0" layoutY="163.0" prefWidth="150.0" />
       <Label alignment="CENTER" layoutX="442.0" layoutY="85.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Departude station" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="442.0" layoutY="140.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Arrival station" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="285.0" layoutY="140.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Time" textFill="WHITE" />
+      <Label alignment="CENTER" layoutX="285.0" layoutY="140.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Departure Time" textFill="WHITE" />
       <ChoiceBox fx:id="timeChoiceBox" layoutX="267.0" layoutY="163.0" prefWidth="150.0" />
+      <DatePicker fx:id="arrivalDatePicker" layoutX="351.0" layoutY="288.0" prefHeight="26.0" prefWidth="149.0" promptText="Arrival date" />
+      <AnchorPane layoutX="256.0" layoutY="199.0" prefHeight="7.0" prefWidth="362.0" style="-fx-background-color: #34495E;" />
+      <TextField fx:id="durationTextField" layoutX="351.0" layoutY="411.0" promptText="Duration " />
+      <TextField fx:id="ticketsQuantityTextField" layoutX="351.0" layoutY="381.0" promptText="Tickets quantity" />
+      <ChoiceBox fx:id="restrictionChoiceBox" layoutX="350.0" layoutY="351.0" prefWidth="150.0" />
     </children>
 </AnchorPane>
