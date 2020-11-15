@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TripType")
+@Table(name = "\"TripType\"", schema = "\"TransportSystem\"")
 public class TripType {
 
 	@Id
@@ -23,7 +23,7 @@ public class TripType {
 	@Column(name = "triptype_name")
 	private String tripTypeName;
 
-	@OneToMany
+	@OneToMany(mappedBy = "tripType")
 	private List<Trip> trips;
 
 	public TripType() {

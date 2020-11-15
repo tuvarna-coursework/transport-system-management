@@ -16,7 +16,6 @@ import com.tuvarna.transportsystem.dao.TicketDAO;
 import com.tuvarna.transportsystem.dao.UserDAO;
 import com.tuvarna.transportsystem.dao.UserProfileDAO;
 import com.tuvarna.transportsystem.entities.Location;
-import com.tuvarna.transportsystem.entities.PurchaseRestriction;
 import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.TransportType;
@@ -26,7 +25,6 @@ import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.LocationService;
-import com.tuvarna.transportsystem.services.PurchaseRestrictionService;
 import com.tuvarna.transportsystem.services.RoleService;
 import com.tuvarna.transportsystem.services.TicketService;
 import com.tuvarna.transportsystem.services.TransportTypeService;
@@ -37,18 +35,22 @@ import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.services.UserTypeService;
 
 public class DatabaseUtils {
-	static RoleService roleService = new RoleService();
-	static UserTypeService userTypeService = new UserTypeService();
+	public static Session globalSession; 
 	
-	/* Fix these because every time they are accessed a new service is created */
-	public static Role ROLE_ADMIN = (Role)roleService.getByName("Admin");
-	public static Role ROLE_USER = (Role)roleService.getByName("User");	
+	//static RoleService roleService = new RoleService();
+	//static UserTypeService userTypeService = new UserTypeService();
 	
-	public static UserType USERTYPE_DISTRIBUTOR = (UserType)userTypeService.getByName("Distributor");
-	public static UserType USERTYPE_CASHIER = (UserType)userTypeService.getByName("Cashier");
-	public static UserType USERTYPE_USER = (UserType)userTypeService.getByName("User");
-	public static UserType USERTYPE_ADMIN = (UserType)userTypeService.getByName("Admin");
-	public static UserType USERTYPE_COMPANY = (UserType)userTypeService.getByName("Transport Company");
+	
+	
+	public static Role ROLE_ADMIN = null;
+	public static Role ROLE_USER = null;
+	
+	public static UserType USERTYPE_DISTRIBUTOR = null;
+	public static UserType USERTYPE_CASHIER = null;
+	public static UserType USERTYPE_USER = null;
+	public static UserType USERTYPE_ADMIN = null;
+	public static UserType USERTYPE_COMPANY = null;
+	
 	
 	public static SessionFactory createSessionFactory() {
 		SessionFactory factory;
@@ -95,14 +97,6 @@ public class DatabaseUtils {
 		locationService.save(new Location("Sliven"));
 		locationService.save(new Location("Gabrovo"));
 		locationService.save(new Location("Burgas"));
-
-		/*
-		 * This table may not be needed but it was added so it can be easily expanded
-		 * later on. For now there is only one user restriction which is buying more
-		 * than a certain set of tickets. (they can't buy all available quantity for
-		 * example)
-		 */
-		new PurchaseRestrictionService().save(new PurchaseRestriction("Overbuy"));
 
 		/*
 		 * Authentication and authorisation is first and foremost distinguished between

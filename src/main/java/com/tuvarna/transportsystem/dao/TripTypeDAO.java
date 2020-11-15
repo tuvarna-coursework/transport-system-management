@@ -14,7 +14,7 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 	private EntityManager entityManager;
 
 	public TripTypeDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

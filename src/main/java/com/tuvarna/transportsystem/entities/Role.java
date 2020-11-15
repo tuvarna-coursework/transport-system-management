@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.transaction.Transactional;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "\"Role\"" , schema = "\"TransportSystem\"")
 public class Role {
 
 	@Id

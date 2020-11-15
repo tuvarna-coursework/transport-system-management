@@ -13,7 +13,7 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	private EntityManager entityManager;
 
 	public TransportTypeDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

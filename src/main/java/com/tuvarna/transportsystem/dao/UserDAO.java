@@ -18,7 +18,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 	private EntityManager entityManager;
 
 	public UserDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

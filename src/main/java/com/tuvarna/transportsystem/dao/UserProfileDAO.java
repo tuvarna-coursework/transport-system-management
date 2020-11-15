@@ -9,11 +9,12 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class UserProfileDAO implements GenericDAOInterface<UserProfile> {
 	private EntityManager entityManager;
 
 	public UserProfileDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

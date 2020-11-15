@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TransportType")
+@Table(name = "\"TransportType\"", schema = "\"TransportSystem\"")
 public class TransportType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class TransportType {
 	@Column(name = "transport_type_name")
 	private String transportTypeName;
 
-	@OneToMany
+	@OneToMany(mappedBy = "tripTransportType")
 	private List<Trip> trips; // one transporttype can belong to multiple trips
 
 	public TransportType() {

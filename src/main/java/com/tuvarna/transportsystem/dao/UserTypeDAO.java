@@ -13,7 +13,7 @@ public class UserTypeDAO implements GenericDAOInterface<UserType> {
 	private EntityManager entityManager;
 
 	public UserTypeDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

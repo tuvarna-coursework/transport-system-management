@@ -1,5 +1,6 @@
 package com.tuvarna.transportsystem.services;
 
+import java.util.Date;
 import java.util.List;
 
 import com.tuvarna.transportsystem.dao.TransportTypeDAO;
@@ -26,7 +27,17 @@ public class TripService implements CrudService<Trip> {
 		return tripDAO.getByArrivalLocation(location);
 	}
 
-	/* ADD MORE FUNCTIONALITY */
+	public List<Trip> getByDepartureDate(Date date) {
+		return tripDAO.getByDepartureDate(date);
+	}
+
+	public List<Trip> getByArrivalDate(Date date) {
+		return tripDAO.getByDepartureDate(date);
+	}
+	
+	public List<Trip> getByDepartureHour(String hour){
+		return tripDAO.getByDepartureHour(hour);
+	}
 
 	@Override
 	public Trip getById(int id) {

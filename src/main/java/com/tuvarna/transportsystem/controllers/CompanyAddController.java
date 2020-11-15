@@ -185,26 +185,29 @@ public class CompanyAddController implements Initializable {
 
 	public void addTrip() throws IOException, ParseException {
 		Pattern pattern = Pattern.compile("^\\d+$");
-		
-		/* Validate the text fields. In this case the pattern should be only a full number between 0-int.maxvalue  */
+
+		/*
+		 * Validate the text fields. In this case the pattern should be only a full
+		 * number between 0-int.maxvalue
+		 */
 		if (!pattern.matcher(ticketsQuantityTextField.getText().trim()).matches()) {
 			System.out.println("Invalid quantity");
-				// display error messages
+			// display error messages
 			return;
 		}
-		
-		if(!pattern.matcher(seatsCapacityTextField.getText().trim()).matches()) {
+
+		if (!pattern.matcher(seatsCapacityTextField.getText().trim()).matches()) {
 			System.out.println("Invalid seats capacity");
-				// display error messages
+			// display error messages
 			return;
 		}
-		
+
 		if (!pattern.matcher(durationTextField.getText().trim()).matches()) {
 			System.out.println("Invalid duration");
 			// display error messages
 			return;
 		}
-		
+
 		// departure date
 		TextField departureDate = departureDatePicker.getEditor();
 		String departure = departureDate.getText();
@@ -217,7 +220,7 @@ public class CompanyAddController implements Initializable {
 		DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
 		Date dateArrival = formatArrivalDate.parse(arrival);
 		// SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(arrival);
-		
+
 		/* Date validation */
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
@@ -227,16 +230,13 @@ public class CompanyAddController implements Initializable {
 		}
 
 		// tickets restriction
-		String ticketPerPerson = (String) restrictionChoiceBox.getValue();
+		int ticketsPerPerson = Integer.parseInt(restrictionChoiceBox.getValue().toString());
 		// int ticketRestriction=Integer.parseInt(ticketPerPerson);
-		PurchaseRestriction purchaseRestriction = (PurchaseRestriction) new PurchaseRestrictionService()
-				.getByName(ticketPerPerson);
-		
+
 		// trip capacity
 		String seatsCapacity = seatsCapacityTextField.getText();
 		int chechedSeatsCapacity = Integer.parseInt(seatsCapacity);
-		
-		
+
 		/* Validate locations; they cannot be the same */
 		if (departureChoiceBox.getValue() == arrivalChoiceBox.getValue()) {
 			System.out.println("Invalid locations");
@@ -247,33 +247,33 @@ public class CompanyAddController implements Initializable {
 		// departure location
 		String departureLocation = departureChoiceBox.getValue();
 		Location departureLocationObj = (Location) new LocationService().getByName(departureLocation);
-		
+
 		// arrival location
 		String arrivalLocation = arrivalChoiceBox.getValue();
 		Location arrivalLocationObj = (Location) new LocationService().getByName(arrivalLocation);
-		
+
 		// tickets quantity for trip
 		String ticketsQuantity = ticketsQuantityTextField.getText().trim();
 		int checkedTicketsQuantity = Integer.parseInt(ticketsQuantity);
-		
+
 		// trip type radio buttons
 		RadioButton selectedTripType = (RadioButton) radioTypeTrip.getSelectedToggle();
 		String tripType = selectedTripType.getText().trim();
 		TripType tripTypeClass = new TripTypeService().getByName(tripType);
-		
+
 		// departure time
 		String departureTime = timeChoiceBox.getValue();
-		
+
 		// trip BUS type
 		RadioButton selectedBusType = (RadioButton) radioBusType.getSelectedToggle();
 		String busType = selectedBusType.getText();
 		TransportType transportTypeClass = new TransportTypeService().getByName(busType);
-		
+
 		// Duration
-		String duration = durationTextField.getText().trim();
+		int duration = Integer.parseInt(durationTextField.getText().trim().toString());
 
 		Trip newTrip = new Trip(tripTypeClass, departureLocationObj, arrivalLocationObj, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, purchaseRestriction, checkedTicketsQuantity);
+				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, checkedTicketsQuantity, duration, departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 

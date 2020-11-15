@@ -1,21 +1,22 @@
 package com.tuvarna.transportsystem.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
 public class TripDAO implements GenericDAOInterface<Trip> {
-
 	private EntityManager entityManager;
 
 	public TripDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*
@@ -59,7 +60,20 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 				.setParameter("location", location).getResultList();
 	}
 
-	/* TO DO: ADD MORE FUNCTIONALITY */
+	public List<Trip> getByDepartureDate(Date date) {
+		return  entityManager.createQuery("FROM Location WHERE trip_departure_date = :date")
+				.setParameter("date", date).getResultList();
+	}
+
+	public List<Trip> getByArrivalDate(Date date) {
+		return  entityManager.createQuery("FROM Location WHERE trip_arrival_date = :date")
+				.setParameter("date", date).getResultList();
+	}
+	
+	public List<Trip> getByDepartureHour(String hour){
+		return  entityManager.createQuery("FROM Location WHERE trip_hour_of_departure = :hour")
+				.setParameter("hour", hour).getResultList();
+	}
 
 	@Override
 	public Trip getById(int id) {

@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Location")
+@Table(name = "\"Location\"", schema = "\"TransportSystem\"")
 public class Location {
 
 	@Id
@@ -26,13 +26,13 @@ public class Location {
 	@Column(name = "location_name")
 	private String locationName;
 
-	@OneToMany
+	@OneToMany(mappedBy = "userLocation")
 	private List<User> users; // one location can belong to multiple users
 
-	@OneToMany
+	@OneToMany(mappedBy = "tripDepartureLocation")
 	private List<Trip> tripDepartures;
 
-	@OneToMany
+	@OneToMany(mappedBy = "tripArrivalLocation")
 	private List<Trip> tripArrivals;
 
 	public Location() {

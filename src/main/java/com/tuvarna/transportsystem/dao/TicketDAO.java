@@ -12,11 +12,12 @@ import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class TicketDAO implements GenericDAOInterface<Ticket>{
 	private EntityManager entityManager;
 
 	public TicketDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

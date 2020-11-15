@@ -13,7 +13,7 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 	private EntityManager entityManager;
 
 	public LocationDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

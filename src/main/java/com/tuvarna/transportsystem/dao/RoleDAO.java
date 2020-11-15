@@ -11,7 +11,7 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 	private EntityManager entityManager;
 
 	public RoleDAO() {
-		entityManager = DatabaseUtils.createSession().getEntityManagerFactory().createEntityManager();
+		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
 	/*

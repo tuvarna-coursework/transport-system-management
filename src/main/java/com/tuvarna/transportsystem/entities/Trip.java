@@ -19,7 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Trip")
+@Table(name = "\"Trip\"", schema = "\"TransportSystem\"")
 public class Trip {
 
 	@Id
@@ -65,34 +65,40 @@ public class Trip {
 	@JoinColumn(name = "trip_transporttype_id")
 	private TransportType tripTransportType;
 
-	@ManyToOne
-	@JoinColumn(name = "trip_purchase_restriction_id")
-	private PurchaseRestriction tripPurchaseRestriction;
-
-	@OneToOne(mappedBy = "trip")
-	private Ticket ticket; // does nothing but is mandatory. Non-owner side of relationship
-
 	@ManyToMany(mappedBy = "trips")
 	private Set<User> users;
 
-	@OneToMany
+	@OneToMany(mappedBy = "trip")
 	private List<Ticket> tickets;
 
+	@Column(name = "trip_maxtickets_per_user")
+	private int maxTicketsPerUser;
+
+	@Column(name = "trip_ticket_availability")
 	private int tripTicketAvailability;
 
+	@Column(name = "trip_departure_date")
 	private Date tripDepartureDate;
 
+	@Column(name = "trip_arrival_date")
 	private Date tripArrivalDate;
 
+	@Column(name = "trip_capacity")
 	private int tripCapacity;
+
+	@Column(name = "trip_duration")
+	private int tripDuration;
+
+	@Column(name = "trip_hour_of_departure")
+	private String tripDepartureHour;
 
 	public Trip() {
 
 	}
 
 	public Trip(TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
-			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType,
-			PurchaseRestriction tripPurchaseRestriction, int tripTicketAvailability) {
+			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType, int maxTicketsPerUser,
+			int tripTicketAvailability, int tripDuration, String tripDepartureHour) {
 		this.tripType = tripType;
 		this.tripDepartureDate = tripDepartureDate;
 		this.tripArrivalDate = tripArrivalDate;
@@ -100,8 +106,18 @@ public class Trip {
 		this.tripArrivalLocation = tripArrivalLocation;
 		this.tripDepartureLocation = tripDepartureLocation;
 		this.tripTransportType = tripTransportType;
-		this.tripPurchaseRestriction = tripPurchaseRestriction;
+		this.maxTicketsPerUser = maxTicketsPerUser;
 		this.tripTicketAvailability = tripTicketAvailability;
+		this.tripDuration = tripDuration;
+		this.tripDepartureHour = tripDepartureHour;
+	}
+
+	public int getTripDuration() {
+		return tripDuration;
+	}
+
+	public void setTripDuration(int tripDuration) {
+		this.tripDuration = tripDuration;
 	}
 
 	public TripType getTripType() {
@@ -152,14 +168,6 @@ public class Trip {
 		this.tripTransportType = tripTransportType;
 	}
 
-	public PurchaseRestriction getTripPurchaseRestriction() {
-		return tripPurchaseRestriction;
-	}
-
-	public void setTripPurchaseRestriction(PurchaseRestriction tripPurchaseRestriction) {
-		this.tripPurchaseRestriction = tripPurchaseRestriction;
-	}
-
 	public int getTripId() {
 		return tripId;
 	}
@@ -182,5 +190,21 @@ public class Trip {
 
 	public void setTripTicketAvailability(int tripTicketAvailability) {
 		this.tripTicketAvailability = tripTicketAvailability;
+	}
+
+	public int getMaxTicketsPerUser() {
+		return maxTicketsPerUser;
+	}
+
+	public void setMaxTicketsPerUser(int maxTicketsPerUser) {
+		this.maxTicketsPerUser = maxTicketsPerUser;
+	}
+
+	public String getTripDepartureHour() {
+		return tripDepartureHour;
+	}
+
+	public void setTripDepartureHour(String tripDepartureHour) {
+		this.tripDepartureHour = tripDepartureHour;
 	}
 }
