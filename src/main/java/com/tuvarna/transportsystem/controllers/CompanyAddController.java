@@ -191,19 +191,19 @@ public class CompanyAddController implements Initializable {
 		 * number between 0-int.maxvalue
 		 */
 		if (!pattern.matcher(ticketsQuantityTextField.getText().trim()).matches()) {
-			System.out.println("Invalid quantity");
+			informationLabel.setText("Invalid quantity!");
 			// display error messages
 			return;
 		}
 
 		if (!pattern.matcher(seatsCapacityTextField.getText().trim()).matches()) {
-			System.out.println("Invalid seats capacity");
+			informationLabel.setText("Invalid seats capacity!");
 			// display error messages
 			return;
 		}
 
 		if (!pattern.matcher(durationTextField.getText().trim()).matches()) {
-			System.out.println("Invalid duration");
+			informationLabel.setText("Invalid duration!");
 			// display error messages
 			return;
 		}
@@ -211,20 +211,21 @@ public class CompanyAddController implements Initializable {
 		// departure date
 		TextField departureDate = departureDatePicker.getEditor();
 		String departure = departureDate.getText();
-		DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
+		DateFormat formatDepartureDate = new SimpleDateFormat("MM.dd.yyyy");
 		Date dateDeparture = formatDepartureDate.parse(departure);
 
 		// arrival date
 		TextField arrivalDate = arrivalDatePicker.getEditor();
 		String arrival = arrivalDate.getText();
-		DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
+		DateFormat formatArrivalDate = new SimpleDateFormat("MM.dd.yyyy");
 		Date dateArrival = formatArrivalDate.parse(arrival);
 		// SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(arrival);
 
 		/* Date validation */
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
-			System.out.println("Invalid interval");
+			informationLabel.setText("Invalid interval!");
+
 			// display error message here
 			return;
 		}
@@ -239,7 +240,7 @@ public class CompanyAddController implements Initializable {
 
 		/* Validate locations; they cannot be the same */
 		if (departureChoiceBox.getValue() == arrivalChoiceBox.getValue()) {
-			System.out.println("Invalid locations");
+			informationLabel.setText("Invalid locations!");
 			// display error message
 			return;
 		}
@@ -277,7 +278,7 @@ public class CompanyAddController implements Initializable {
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 
-		informationLabel.setText(arrival);
+		informationLabel.setText("You added new trip!");
 
 		/*
 		 * Parent userPanel = FXMLLoader.load(getClass().getResource("/views/.fxml"));
