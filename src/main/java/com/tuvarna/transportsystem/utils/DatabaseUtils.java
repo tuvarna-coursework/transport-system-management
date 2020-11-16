@@ -96,7 +96,11 @@ public class DatabaseUtils {
 		locationService.save(new Location("Veliko Tarnovo"));
 		locationService.save(new Location("Sliven"));
 		locationService.save(new Location("Gabrovo"));
+		locationService.save(new Location("Razgrad"));
+		locationService.save(new Location("Shumen"));
+		locationService.save(new Location("Blagoevgrad"));
 		locationService.save(new Location("Burgas"));
+
 
 		/*
 		 * Authentication and authorisation is first and foremost distinguished between
@@ -123,7 +127,12 @@ public class DatabaseUtils {
 		userTypeService.save(new UserType("User"));
 		userTypeService.save(new UserType("Admin"));
 		userTypeService.save(new UserType("Transport Company"));
+
+
+
 	}
+
+
 
 	public static void testMappings() {
 		
