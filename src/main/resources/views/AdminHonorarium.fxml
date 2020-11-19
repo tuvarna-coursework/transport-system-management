@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="489.0" prefWidth="731.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.AdminHonorariumController">
+    <children>
+        <AnchorPane layoutY="-2.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="69.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
+                <Button layoutX="11.0" layoutY="243.0" mnemonicParsing="false" onAction="#goBack" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Back" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+                <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+                <Button layoutX="11.0" layoutY="292.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Honorarium" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                    <font>
+                        <Font name="Tahoma" size="12.0" />
+                    </font>
+                </Button>
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="282.0" layoutY="126.0" prefHeight="5.0" prefWidth="418.0" style="-fx-background-color: #34495E;" />
+        <Label alignment="CENTER" layoutX="430.0" layoutY="148.0" prefHeight="26.0" prefWidth="118.0" style="-fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Choose user" textFill="WHITE" />
+        <Button layoutX="368.0" layoutY="56.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="246.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="CHENGE USER HONORARIUM" textFill="WHITE">
+         <font>
+            <Font size="15.0" />
+         </font></Button>
+      <TextField layoutX="431.0" layoutY="185.0" prefHeight="27.0" prefWidth="118.0" promptText="Username" />
+      <Button layoutX="430.0" layoutY="292.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="New raiting" textFill="WHITE" />
+      <TextField layoutX="430.0" layoutY="258.0" prefHeight="26.0" prefWidth="118.0" promptText="Honorarium" />
+      <Button layoutX="430.0" layoutY="221.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="New honorarium" textFill="WHITE" />
+      <TextField layoutX="430.0" layoutY="326.0" prefHeight="26.0" prefWidth="118.0" promptText="Raiting" />
+      <Button layoutX="472.0" layoutY="370.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Edit" textFill="WHITE" />
+    </children>
+</AnchorPane>
