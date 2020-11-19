@@ -26,6 +26,10 @@ public class TripService implements CrudService<Trip> {
 	public List<Trip> getByArrivalLocation(String location) {
 		return tripDAO.getByArrivalLocation(location);
 	}
+	
+	public List<Trip> getByLocations(String departure, String arrival){
+		return tripDAO.getByLocations(departure, arrival);
+	}
 
 	public List<Trip> getByDepartureDate(Date date) {
 		return tripDAO.getByDepartureDate(date);
@@ -37,6 +41,10 @@ public class TripService implements CrudService<Trip> {
 	
 	public List<Trip> getByDepartureHour(String hour){
 		return tripDAO.getByDepartureHour(hour);
+	}
+	
+	public void updateTripTicketAvailability(Trip trip, int newValue) {
+		tripDAO.updateTripTicketAvailability(trip, newValue);
 	}
 
 	@Override

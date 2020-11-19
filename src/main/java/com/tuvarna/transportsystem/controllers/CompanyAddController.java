@@ -2,6 +2,8 @@ package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.*;
 import com.tuvarna.transportsystem.services.*;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
+
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -211,13 +213,13 @@ public class CompanyAddController implements Initializable {
 		// departure date
 		TextField departureDate = departureDatePicker.getEditor();
 		String departure = departureDate.getText();
-		DateFormat formatDepartureDate = new SimpleDateFormat("MM.dd.yyyy");
+		DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
 		Date dateDeparture = formatDepartureDate.parse(departure);
 
 		// arrival date
 		TextField arrivalDate = arrivalDatePicker.getEditor();
 		String arrival = arrivalDate.getText();
-		DateFormat formatArrivalDate = new SimpleDateFormat("MM.dd.yyyy");
+		DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
 		Date dateArrival = formatArrivalDate.parse(arrival);
 		// SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(arrival);
 
@@ -253,10 +255,6 @@ public class CompanyAddController implements Initializable {
 		String arrivalLocation = arrivalChoiceBox.getValue();
 		Location arrivalLocationObj = (Location) new LocationService().getByName(arrivalLocation);
 
-		// tickets quantity for trip
-		String ticketsQuantity = ticketsQuantityTextField.getText().trim();
-		int checkedTicketsQuantity = Integer.parseInt(ticketsQuantity);
-
 		// trip type radio buttons
 		RadioButton selectedTripType = (RadioButton) radioTypeTrip.getSelectedToggle();
 		String tripType = selectedTripType.getText().trim();
@@ -274,9 +272,16 @@ public class CompanyAddController implements Initializable {
 		int duration = Integer.parseInt(durationTextField.getText().trim().toString());
 
 		Trip newTrip = new Trip(tripTypeClass, departureLocationObj, arrivalLocationObj, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, checkedTicketsQuantity, duration, departureTime);
+				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, duration,
+				departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
+
+		/*
+		 * In the UserTrip table a new entry will be added with the logged in user
+		 * (owner in this case) and the newly created trip
+		 */
+		new UserService().addTrip(DatabaseUtils.currentUser, newTrip);
 
 		informationLabel.setText("You added new trip!");
 

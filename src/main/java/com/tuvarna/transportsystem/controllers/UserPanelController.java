@@ -1,7 +1,5 @@
 package com.tuvarna.transportsystem.controllers;
 
-import com.tuvarna.transportsystem.entities.Trip;
-import com.tuvarna.transportsystem.services.TripService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,11 +11,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import com.tuvarna.transportsystem.entities.Ticket;
+import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.TicketService;
+import com.tuvarna.transportsystem.services.TripService;
+import com.tuvarna.transportsystem.services.UserService;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 public class UserPanelController implements Initializable {
 
@@ -36,7 +48,6 @@ public class UserPanelController implements Initializable {
 	@FXML
 	private Label informationLabel;
 
-
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		loadquantity();
@@ -44,7 +55,62 @@ public class UserPanelController implements Initializable {
 		loadDepartureArrivalLocation();
 
 	}
-	public void loadquantity(){
+
+	private boolean processTicketPurchase() throws ParseException {
+		String departureStation = departureChoiceBox.getValue().trim();
+		String arrivalStation = arrivalChoiceBox.getValue().trim();
+
+		TripService tripService = new TripService();
+		/* Get trips by both locations */
+		List<Trip> trips = tripService.getByLocations(departureStation, arrivalStation);
+
+		if (trips == null) {
+			return false;
+		}
+
+		/* FIX FORMAT */
+		TextField departureDate = tripDatePicker.getEditor();
+		String departure = departureDate.getText();
+		DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
+		Date dateDeparture = formatDepartureDate.parse(departure);
+
+		List<Trip> filteredTrips = new ArrayList<>();
+
+		/*
+		 * Currently the logic assumes there is one trip only and not a selection of
+		 * trips the customer can choose from. Will await front end changes.
+		 */
+
+		/* Iterate through the trips and validate all the fields */
+		for (Trip trip : trips) {
+			// boolean matchesDates = trip.getTripArrivalDate() == dateDeparture;
+			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
+			boolean matchesTime = trip.getTripDepartureHour()
+					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
+
+			/* If all the criteria matches check if there are enough available tickets */
+			if (checkQuantity && matchesTime) {
+				int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
+
+				/* If there are enough tickets substitute the bought tickets */
+				if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
+					tripService.updateTripTicketAvailability(trip,
+							(ticketsToPurchase < 0) ? 0 : trip.getTripTicketAvailability() - ticketsToPurchase);
+
+					TicketService ticketService = new TicketService();
+					Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip);
+					ticketService.save(ticket);
+
+					UserService userService = new UserService();
+					userService.addTicket(DatabaseUtils.currentUser, ticket);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void loadquantity() {
 		list.removeAll(list);
 		String number_01 = ("1");
 		String number_02 = ("2");
@@ -62,6 +128,7 @@ public class UserPanelController implements Initializable {
 		quantityChoiceBox.getItems().addAll(list);
 
 	}
+
 	public void loadTime() {
 		list.removeAll(list);
 		String time_01 = "00:00";
@@ -82,7 +149,8 @@ public class UserPanelController implements Initializable {
 				time_12, time_13, time_14);
 		timeChoiceBox.getItems().addAll(list);
 	}
-	public void loadDepartureArrivalLocation(){
+
+	public void loadDepartureArrivalLocation() {
 		list.removeAll(list);
 		String city_01 = "Varna";
 		String city_02 = "Sofia";
@@ -102,7 +170,6 @@ public class UserPanelController implements Initializable {
 
 	}
 
-
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/SchedulePanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
@@ -120,7 +187,8 @@ public class UserPanelController implements Initializable {
 		window.setScene(ticketScene);
 		window.show();
 	}
-	public void logOut(javafx.event.ActionEvent event)throws IOException{
+
+	public void logOut(javafx.event.ActionEvent event) throws IOException {
 		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);
 
@@ -129,21 +197,10 @@ public class UserPanelController implements Initializable {
 		window.show();
 
 	}
-	public void buyTicket(javafx.event.ActionEvent event)throws IOException{
 
-		/*String departureStation=departureChoiceBox.getValue();
-		String arrivalStation = arrivalChoiceBox.getValue();
-		TripService tripService= new TripService();
-		Trip departure = (Trip) tripService.getByDepartureLocation(departureStation);
-		Trip arrival = (Trip) tripService.getByArrivalLocation(arrivalStation);
-		departure.getTripDepartureDate();
-		arrival.getTripArrivalLocation();*/
-
-
-
-
-		informationLabel.setText("You bought ticket");
-
-
+	public void buyTicket(javafx.event.ActionEvent event) throws IOException, ParseException {
+		if (processTicketPurchase()) {
+			informationLabel.setText("You bought ticket");
+		}
 	}
 }

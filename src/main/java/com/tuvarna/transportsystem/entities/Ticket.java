@@ -25,6 +25,7 @@ public class Ticket {
 	@Column(name = "ticket_id")
 	private int ticketId;
 
+	@Column(name = "ticket_purchasedate")
 	private Date ticketPurchaseDate;
 
 	@ManyToMany(mappedBy = "tickets")

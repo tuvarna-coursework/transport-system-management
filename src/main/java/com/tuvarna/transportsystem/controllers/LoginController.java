@@ -80,17 +80,18 @@ public class LoginController implements Initializable {
 				UserService userService = new UserService();
 				UserTypeService userTypeService = new UserTypeService();
 
-				User checkUserName = userService.getByName(username);
-				User checkPassword = userService.getByName(username);
-				User checkType = userService.getByName(username);
-
-				String name = checkUserName.getUserLoginName();
-				String pass = checkPassword.getUserPassword();
-				UserType type = checkType.getUserType();
+				User checkUser = userService.getByName(username);
+			
+				String name = checkUser.getUserLoginName();
+				String pass = checkUser.getUserPassword();
+				UserType type = checkUser.getUserType();
 				String usertype = type.getUserTypeName();
 
 				if (username.equals(name) && BCrypt.checkpw(password, pass)) {
 					informationLabel.setText("CORRECT");
+					
+					/* Login successful, remember the logged in user */
+					DatabaseUtils.currentUser = checkUser;
 
 					if (usertype.equals("Admin")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/AdminPanel.fxml"));

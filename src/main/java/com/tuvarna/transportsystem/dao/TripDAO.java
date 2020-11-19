@@ -42,37 +42,52 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 
 	/* Test it */
 	public List<Trip> getByTripType(String type) {
-		return entityManager.createQuery("SELECT t FROM Trip t, TripType tt WHERE t.trip_type_id = tt.triptype_id "
-				+ "AND tt.triptype_name = :type").setParameter("type", type).getResultList();
+		return entityManager.createQuery("SELECT t FROM Trip t, TripType tt WHERE t.tripType = tt.tripTypeId "
+				+ "AND tt.tripTypeName = :type").setParameter("type", type).getResultList();
 	}
 
 	public List<Trip> getByDepartureLocation(String location) {
 		return entityManager
-				.createQuery("SELECT t FROM Trip t, Location l WHERE t.trip_departure_location_id = l.location_id "
-						+ "AND l.location_name = :location")
+				.createQuery("SELECT t FROM Trip t, Location l WHERE t.tripDepartureLocation = l.locationId"
+						+ "AND l.locationName = :location")
 				.setParameter("location", location).getResultList();
 	}
 
 	public List<Trip> getByArrivalLocation(String location) {
 		return entityManager
-				.createQuery("SELECT t FROM Trip t, Location l WHERE t.trip_arrival_location_id = l.location_id "
-						+ "AND l.location_name = :location")
+				.createQuery("SELECT t FROM Trip t, Location l WHERE t.tripArrivalLocation = l.locationId"
+						+ "AND l.locationName = :location")
 				.setParameter("location", location).getResultList();
+	}
+	
+	public List<Trip> getByLocations(String departure, String arrival){
+		return entityManager
+				.createQuery("SELECT t FROM Trip t, Location l, Location l2 WHERE (t.tripDepartureLocation = l.locationId"
+						+ " AND l.locationName = :departure) AND"
+						+ "(t.tripArrivalLocation = l2.locationId AND l2.locationName = :arrival)")
+				.setParameter("departure", departure)
+				.setParameter("arrival", arrival)
+				.getResultList();
 	}
 
 	public List<Trip> getByDepartureDate(Date date) {
-		return  entityManager.createQuery("FROM Location WHERE trip_departure_date = :date")
+		return  entityManager.createQuery("FROM Trip WHERE trip_departure_date = :date")
 				.setParameter("date", date).getResultList();
 	}
 
 	public List<Trip> getByArrivalDate(Date date) {
-		return  entityManager.createQuery("FROM Location WHERE trip_arrival_date = :date")
+		return  entityManager.createQuery("FROM Trip WHERE trip_arrival_date = :date")
 				.setParameter("date", date).getResultList();
 	}
 	
 	public List<Trip> getByDepartureHour(String hour){
-		return  entityManager.createQuery("FROM Location WHERE trip_hour_of_departure = :hour")
+		return  entityManager.createQuery("FROM Trip WHERE trip_hour_of_departure = :hour")
 				.setParameter("hour", hour).getResultList();
+	}
+	
+	public void updateTripTicketAvailability(Trip trip, int newValue) {
+			trip.setTripTicketAvailability(newValue);
+			executeInsideTransaction(entityManager -> entityManager.merge(trip));	
 	}
 
 	@Override
@@ -108,7 +123,7 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 	public void deleteByName(String name) {
 	}
 
-	@Deprecated
+	@Deprecated 
 	@Override
 	public Trip getByName(String name) {
 		return null;

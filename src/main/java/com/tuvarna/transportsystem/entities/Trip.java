@@ -66,7 +66,7 @@ public class Trip {
 	private TransportType tripTransportType;
 
 	@ManyToMany(mappedBy = "trips")
-	private Set<User> users;
+	private List<User> users = new ArrayList<>();
 
 	@OneToMany(mappedBy = "trip")
 	private List<Ticket> tickets;
@@ -92,13 +92,16 @@ public class Trip {
 	@Column(name = "trip_hour_of_departure")
 	private String tripDepartureHour;
 
+	@Column(name = "trip_ticket_price")
+	private double tripTicketPrice;
+
 	public Trip() {
 
 	}
 
 	public Trip(TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
 			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType, int maxTicketsPerUser,
-			int tripTicketAvailability, int tripDuration, String tripDepartureHour) {
+			int tripDuration, String tripDepartureHour) {
 		this.tripType = tripType;
 		this.tripDepartureDate = tripDepartureDate;
 		this.tripArrivalDate = tripArrivalDate;
@@ -107,9 +110,10 @@ public class Trip {
 		this.tripDepartureLocation = tripDepartureLocation;
 		this.tripTransportType = tripTransportType;
 		this.maxTicketsPerUser = maxTicketsPerUser;
-		this.tripTicketAvailability = tripTicketAvailability;
+		this.tripTicketAvailability = 999;
 		this.tripDuration = tripDuration;
 		this.tripDepartureHour = tripDepartureHour;
+		this.tripTicketPrice = 0.0;
 	}
 
 	public int getTripDuration() {
@@ -206,5 +210,13 @@ public class Trip {
 
 	public void setTripDepartureHour(String tripDepartureHour) {
 		this.tripDepartureHour = tripDepartureHour;
+	}
+
+	public double getTripTicketPrice() {
+		return tripTicketPrice;
+	}
+
+	public void setTripTicketPrice(double tripTicketPrice) {
+		this.tripTicketPrice = tripTicketPrice;
 	}
 }

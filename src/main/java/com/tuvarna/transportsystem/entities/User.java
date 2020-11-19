@@ -77,12 +77,12 @@ public class User {
 									 * Can't use ALL for a bidirectional many-to-many table since the REMOVE will
 									 * always remove more records than it should
 									 */
-	@JoinTable(name = "\"UserRole\"", schema = "\"TransportSystem\"", joinColumns = {
+	@JoinTable(name = "\"UsersRole\"", schema = "\"TransportSystem\"", joinColumns = {
 			@JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
 	private List<Role> roles = new ArrayList<>(); // owner side of UserRole join table: user_id (PK) role_id (FK)
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-	@JoinTable(name = "\"UserTrip\"", schema = "\"TransportSystem\"", joinColumns = {
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "\"UsersTrip\"", schema = "\"TransportSystem\"", joinColumns = {
 			@JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "trip_id") })
 	private List<Trip> trips = new ArrayList<>();
 
@@ -90,8 +90,8 @@ public class User {
 	 * This has been converted to a ManyToMany relation since the user will have
 	 * multiple tickets and a ticket will belong to multiple people.
 	 */
-	@ManyToMany
-	@JoinTable(name = "\"UserTicket\"", schema = "\"TransportSystem\"", joinColumns = {
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "\"UsersTicket\"", schema = "\"TransportSystem\"", joinColumns = {
 			@JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "ticket_id") })
 	private List<Ticket> tickets = new ArrayList<>(); // this is like an instance of the UserTicket table
 
