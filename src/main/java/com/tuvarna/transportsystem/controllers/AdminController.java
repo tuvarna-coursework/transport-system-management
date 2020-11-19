@@ -184,4 +184,15 @@ public class AdminController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 	}
+
+	public void goToHonorarium(javafx.event.ActionEvent event) throws IOException{
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/AdminHonorarium.fxml"));
+		Scene adminScene = new Scene(userPanel);
+
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
+
+	}
+
 }
