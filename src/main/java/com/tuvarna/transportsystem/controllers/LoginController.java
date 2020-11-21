@@ -80,7 +80,8 @@ public class LoginController implements Initializable {
 				UserService userService = new UserService();
 				UserTypeService userTypeService = new UserTypeService();
 
-				User checkUser = userService.getByName(username);
+				/* Case handled by try-catch block */
+				User checkUser = userService.getByName(username).get();
 			
 				String name = checkUser.getUserLoginName();
 				String pass = checkUser.getUserPassword();

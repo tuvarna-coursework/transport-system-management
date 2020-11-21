@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.UserDAO;
 import com.tuvarna.transportsystem.entities.Location;
@@ -8,6 +9,7 @@ import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
+import com.tuvarna.transportsystem.entities.UserProfile;
 
 public class UserService implements CrudService<User> {
 	private UserDAO userDAO;
@@ -40,6 +42,10 @@ public class UserService implements CrudService<User> {
 	public void updateLocation(User user, Location location) {
 		userDAO.updateLocation(user, location);
 	}
+	
+	public void updateUserProfile(User user, UserProfile profile) {
+		userDAO.updateUserProfile(user, profile);
+	}
 
 	public List<User> getByFullName(String name) {
 		return userDAO.getByFullName(name);
@@ -58,12 +64,12 @@ public class UserService implements CrudService<User> {
 	}
 
 	@Override
-	public User getById(int id) {
+	public Optional<User> getById(int id) {
 		return userDAO.getById(id);
 	}
 
 	@Override
-	public User getByName(String name) {
+	public Optional<User> getByName(String name) {
 		return userDAO.getByName(name);
 	}
 

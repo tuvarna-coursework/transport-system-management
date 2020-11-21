@@ -142,8 +142,15 @@ public class AdminController implements Initializable {
 			}
 
 			/* Add null check even though it is 100% sure that it will be in the database */
-			Location location = (Location) new LocationService()
-					.getByName(companyLocationChoiceBox.getSelectionModel().getSelectedItem().toString());
+			LocationService locationService = new LocationService();
+			String locationName = companyLocationChoiceBox.getSelectionModel().getSelectedItem().toString();
+
+			if (!locationService.getByName(locationName).isPresent()) {
+				System.out.println("ERROR: Location not present in database.");
+				return;
+			}
+
+			Location location = (Location) new LocationService().getByName(locationName).get();
 
 			/* Create a unique User Profile associated with this user */
 			UserProfileService userProfileService = new UserProfileService();
@@ -185,7 +192,7 @@ public class AdminController implements Initializable {
 		window.show();
 	}
 
-	public void goToHonorarium(javafx.event.ActionEvent event) throws IOException{
+	public void goToHonorarium(javafx.event.ActionEvent event) throws IOException {
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/AdminHonorarium.fxml"));
 		Scene adminScene = new Scene(userPanel);
 

@@ -2,6 +2,7 @@ package com.tuvarna.transportsystem.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.TransportTypeDAO;
 import com.tuvarna.transportsystem.dao.TripDAO;
@@ -48,7 +49,7 @@ public class TripService implements CrudService<Trip> {
 	}
 
 	@Override
-	public Trip getById(int id) {
+	public Optional<Trip> getById(int id) {
 		return tripDAO.getById(id);
 	}
 
@@ -69,7 +70,7 @@ public class TripService implements CrudService<Trip> {
 
 	@Deprecated
 	@Override
-	public Trip getByName(String name) {
+	public Optional<Trip> getByName(String name) {
 		return tripDAO.getByName(name);
 	}
 

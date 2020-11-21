@@ -28,7 +28,8 @@ public class UserProfile {
 	private User user;
 
 	public UserProfile() {
-
+		this.userProfileRating = 0.0; // prevent exceptions in controllers, default values
+		this.userProfileHonorarium = 0.0;
 	}
 
 	public UserProfile(double userProfileRating, double userProfileHonorarium) {

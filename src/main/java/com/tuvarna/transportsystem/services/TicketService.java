@@ -2,6 +2,7 @@ package com.tuvarna.transportsystem.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.TicketDAO;
 import com.tuvarna.transportsystem.entities.Ticket;
@@ -26,7 +27,7 @@ public class TicketService implements CrudService<Ticket> {
 	}
 
 	@Override
-	public Ticket getById(int id) {
+	public Optional<Ticket> getById(int id) {
 		return ticketDAO.getById(id);
 	}
 
@@ -47,7 +48,7 @@ public class TicketService implements CrudService<Ticket> {
 
 	@Deprecated
 	@Override
-	public Ticket getByName(String name) {
+	public Optional<Ticket> getByName(String name) {
 		return ticketDAO.getByName(name);
 	}
 

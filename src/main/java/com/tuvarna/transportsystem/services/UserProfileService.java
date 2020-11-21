@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.UserProfileDAO;
 import com.tuvarna.transportsystem.entities.UserProfile;
@@ -29,7 +30,7 @@ public class UserProfileService implements CrudService<UserProfile> {
 	}
 
 	@Override
-	public UserProfile getById(int id) {
+	public Optional<UserProfile> getById(int id) {
 		return userProfileDAO.getById(id);
 	}
 
@@ -50,7 +51,7 @@ public class UserProfileService implements CrudService<UserProfile> {
 
 	@Deprecated
 	@Override
-	public UserProfile getByName(String name) {
+	public Optional<UserProfile> getByName(String name) {
 		/* Entity has no name column */
 		return null;
 	}

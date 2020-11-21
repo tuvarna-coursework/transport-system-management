@@ -41,7 +41,7 @@ CREATE TABLE "TransportSystem"."Users" (
 	user_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	user_fullname varchar(50) NOT NULL,
 	user_loginname varchar(50) NOT NULL,
-	user_password varchar(50) NOT NULL,
+	user_password varchar(255) NOT NULL,
 	userprofile_id integer,
 	usertype_id integer,
 	user_location_id integer NOT NULL,
@@ -209,7 +209,7 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- object: user_id | type: CONSTRAINT --
 -- ALTER TABLE "TransportSystem"."UsersTicket" DROP CONSTRAINT IF EXISTS user_id CASCADE;
 ALTER TABLE "TransportSystem"."UsersTicket" ADD CONSTRAINT user_id FOREIGN KEY (user_id)
-REFERENCES "TransportSystem"."User" (user_id) MATCH FULL
+REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- object: ticket_id | type: CONSTRAINT --

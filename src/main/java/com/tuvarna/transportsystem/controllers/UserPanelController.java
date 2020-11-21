@@ -103,6 +103,13 @@ public class UserPanelController implements Initializable {
 
 					UserService userService = new UserService();
 					userService.addTicket(DatabaseUtils.currentUser, ticket);
+
+					/* For every 5 purchased tickets, the user gains a rating of 0.2 */
+					if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
+						DatabaseUtils.currentUser.getUserProfile().setUserProfileRating(
+								DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
+					}
+
 					return true;
 				}
 			}

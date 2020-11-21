@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -39,15 +40,15 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Location getById(int id) {
-		return (Location) entityManager.createQuery("FROM Location WHERE location_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public Optional<Location> getById(int id) {
+		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_id = :id")
+				.setParameter("id", id).getSingleResult()); 
 	}
 
 	@Override
-	public Location getByName(String name) {
-		return (Location) entityManager.createQuery("FROM Location WHERE location_name = :name")
-				.setParameter("name", name).getSingleResult();
+	public Optional<Location> getByName(String name) {
+		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_name = :name")
+				.setParameter("name", name).getSingleResult());
 	}
 
 	@Override
@@ -69,13 +70,21 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 
 	@Override
 	public void deleteById(int id) {
-		Location location = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+		
+		Location location = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(location));
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		Location location = this.getByName(name);
+		if (!this.getByName(name).isPresent()) {
+			return;
+		}
+		
+		Location location = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(location));
 	}
 

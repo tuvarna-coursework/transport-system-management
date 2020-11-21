@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,9 @@ import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.entities.User;
+import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
@@ -86,6 +89,11 @@ public class UserDAO implements GenericDAOInterface<User> {
 		user.setUserLocation(location);
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
 	}
+	
+	public void updateUserProfile(User user, UserProfile profile) {
+		user.setUserProfile(profile);
+		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
 
 	/*
 	 * HQL looks for the entity name rather than the table name it was mapped for.
@@ -119,16 +127,16 @@ public class UserDAO implements GenericDAOInterface<User> {
 	}
 
 	@Override
-	public User getById(int id) {
-		return (User) entityManager.createQuery("FROM User WHERE user_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public Optional<User> getById(int id) {
+		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_id = :id").setParameter("id", id)
+				.getSingleResult()); // check if the return type has to be Optional<Class> or it is ok like this
 	}
 
 	@Override
-	public User getByName(String name) {
+	public Optional<User> getByName(String name) {
 		/* Name refers to login name, separate function for full name */
-		return (User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
-				.getSingleResult();
+		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
+				.getSingleResult());
 	}
 
 	@Override
@@ -150,13 +158,21 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	@Override
 	public void deleteById(int id) {
-		User user = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+		
+		User user = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(user));
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		User user = this.getByName(name);
+		if (!this.getByName(name).isPresent()) {
+			return;
+		}
+		
+		User user = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(user));
 	}
 

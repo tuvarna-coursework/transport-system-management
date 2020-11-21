@@ -2,6 +2,7 @@ package com.tuvarna.transportsystem.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -91,9 +92,9 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 	}
 
 	@Override
-	public Trip getById(int id) {
-		return (Trip) entityManager.createQuery("FROM Trip WHERE trip_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public Optional<Trip> getById(int id) {
+		return Optional.ofNullable((Trip) entityManager.createQuery("FROM Trip WHERE trip_id = :id").setParameter("id", id)
+				.getSingleResult()); // check if the return type has to be Optional<Class> or it is ok like this
 	}
 
 	@Override
@@ -109,7 +110,11 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 
 	@Override
 	public void deleteById(int id) {
-		Trip trip = this.getById(id);
+		if (!this.getById(id).isPresent()){
+			return;
+		}
+		
+		Trip trip = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(trip));
 	}
 
@@ -125,7 +130,7 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 
 	@Deprecated 
 	@Override
-	public Trip getByName(String name) {
+	public Optional<Trip> getByName(String name) {
 		return null;
 	}
 

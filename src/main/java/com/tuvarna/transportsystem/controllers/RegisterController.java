@@ -64,7 +64,12 @@ public class RegisterController implements Initializable {
 		String userlocation = locationChoiceBox.getValue();
 
 		LocationService locationService = new LocationService();
-		Location location = (Location) locationService.getByName(userlocation);
+
+		if (!locationService.getByName(userlocation).isPresent()) {
+			System.out.println("ERROR: Location not found in database");
+			return;
+		}
+		Location location = locationService.getByName(userlocation).get();
 
 		UserProfile profile = new UserProfile(0.0, 0.0);
 		new UserProfileService().save(profile);
@@ -72,7 +77,7 @@ public class RegisterController implements Initializable {
 		UserService userService = new UserService();
 		User user = new User(fullname, username, password, profile, type, location);
 		userService.save(user);
-		
+
 		userService.addRole(user, DatabaseUtils.ROLE_USER);
 
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));

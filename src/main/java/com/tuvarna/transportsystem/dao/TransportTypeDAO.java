@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -39,16 +40,15 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public TransportType getById(int id) {
-		return (TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_id = :id")
-				.setParameter("id", id).getSingleResult(); // check if the return type has to be Optional<Class> or it
-															// is ok like this
+	public Optional<TransportType> getById(int id) {
+		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_id = :id")
+				.setParameter("id", id).getSingleResult()); 
 	}
 
 	@Override
-	public TransportType getByName(String name) {
-		return (TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
-				.setParameter("name", name).getSingleResult();
+	public Optional<TransportType> getByName(String name) {
+		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
+				.setParameter("name", name).getSingleResult());
 	}
 
 	@Override
@@ -70,13 +70,21 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 
 	@Override
 	public void deleteById(int id) {
-		TransportType type = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+		
+		TransportType type = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		TransportType type = this.getByName(name);
+		if (!this.getByName(name).isPresent()) {
+			return;
+		}
+		
+		TransportType type = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}
 

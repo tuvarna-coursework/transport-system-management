@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -37,15 +38,16 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Role getById(int id) {
-		return (Role) entityManager.createQuery("FROM Role WHERE role_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public Optional<Role> getById(int id) {
+		return Optional.ofNullable((Role) entityManager.createQuery("FROM Role WHERE role_id = :id")
+				.setParameter("id", id).getSingleResult()); // check if the return type has to be Optional<Class> or it
+															// is ok like this
 	}
 
 	@Override
-	public Role getByName(String name) {
-		return (Role) entityManager.createQuery("FROM Role WHERE role_name = :name").setParameter("name", name)
-				.getSingleResult();
+	public Optional<Role> getByName(String name) {
+		return Optional.ofNullable((Role) entityManager.createQuery("FROM Role WHERE role_name = :name")
+				.setParameter("name", name).getSingleResult());
 	}
 
 	@Override
@@ -67,13 +69,21 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 
 	@Override
 	public void deleteById(int id) {
-		Role role = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+
+		Role role = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(role));
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		Role role = this.getByName(name);
+		if (!this.getByName(name).isPresent()) {
+			return;
+		}
+
+		Role role = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(role));
 	}
 

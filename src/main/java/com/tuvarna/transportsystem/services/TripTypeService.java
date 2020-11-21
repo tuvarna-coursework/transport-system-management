@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.TripTypeDAO;
 import com.tuvarna.transportsystem.entities.TripType;
@@ -13,12 +14,12 @@ public class TripTypeService implements CrudService<TripType> {
 	}
 
 	@Override
-	public TripType getById(int id) {
+	public Optional<TripType> getById(int id) {
 		return tripTypeDAO.getById(id);
 	}
 
 	@Override
-	public TripType getByName(String name) {
+	public Optional<TripType> getByName(String name) {
 		return tripTypeDAO.getByName(name);
 	}
 

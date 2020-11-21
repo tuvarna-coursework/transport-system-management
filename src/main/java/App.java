@@ -1,11 +1,4 @@
 
-
-import org.hibernate.Session;
-
-import com.tuvarna.transportsystem.entities.Location;
-import com.tuvarna.transportsystem.services.LocationService;
-import com.tuvarna.transportsystem.services.RoleService;
-import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 import javafx.application.Application;
@@ -17,7 +10,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/UserPanel.fxml"));
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/AdminPanel.fxml"));
 		stage.setTitle("Transport Company");
 
 		Scene scene = new Scene(root);
@@ -28,12 +21,7 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		
-		//DatabaseUtils.testMappings();
-		
 		DatabaseUtils.init();
-		//DatabaseUtils.populateAuxiliaryTables();
-	
 		launch(args);
 	}
 }

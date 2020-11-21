@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.UserTypeDAO;
 import com.tuvarna.transportsystem.entities.UserType;
@@ -13,12 +14,12 @@ public class UserTypeService implements CrudService<UserType> {
 	}
 
 	@Override
-	public UserType getById(int id) {
+	public Optional<UserType> getById(int id) {
 		return userTypeDAO.getById(id);
 	}
 
 	@Override
-	public UserType getByName(String name) {
+	public Optional<UserType> getByName(String name) {
 		return userTypeDAO.getByName(name);
 	}
 

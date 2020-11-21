@@ -44,7 +44,7 @@
             </RadioButton>
             <ChoiceBox fx:id="companyLocationChoiceBox" layoutX="94.0" layoutY="207.0" prefWidth="150.0" />
             <Label alignment="CENTER" layoutX="36.0" layoutY="210.0" prefHeight="18.0" prefWidth="50.0" text="Location" textFill="WHITE" />
-            <Button layoutX="11.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToHonorarium" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Honorarium" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+            <Button layoutX="11.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToHonorarium" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Edit user rating/honorarium" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>

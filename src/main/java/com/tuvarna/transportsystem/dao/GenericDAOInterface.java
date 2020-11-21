@@ -1,12 +1,13 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenericDAOInterface<T> {
 
-	public T getById(int id);
+	public Optional<T> getById(int id);
 	
-	public T getByName(String name);
+	public Optional<T> getByName(String name);
 	
 	public List<T> getAll();
 	

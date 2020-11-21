@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.dao;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -67,10 +68,23 @@ public class UserProfileDAO implements GenericDAOInterface<UserProfile> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public UserProfile getById(int id) {
-		return (UserProfile) entityManager.createQuery("FROM UserProfile WHERE userprofile_id = :id")
-				.setParameter("id", id).getSingleResult(); // check if the return type has to be Optional<Class> or it
-															// is ok like this
+	public Optional<UserProfile> getById(int id) {
+		return Optional.ofNullable((UserProfile) entityManager
+				.createQuery("FROM UserProfile WHERE userprofile_id = :id").setParameter("id", id).getSingleResult()); // check
+																														// if
+																														// the
+																														// return
+																														// type
+																														// has
+																														// to
+																														// be
+																														// Optional<Class>
+																														// or
+																														// it
+																														// is
+																														// ok
+																														// like
+																														// this
 	}
 
 	@Override
@@ -86,13 +100,17 @@ public class UserProfileDAO implements GenericDAOInterface<UserProfile> {
 
 	@Override
 	public void deleteById(int id) {
-		UserProfile profile = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+
+		UserProfile profile = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(profile));
 	}
 
 	@Deprecated
 	@Override
-	public UserProfile getByName(String name) {
+	public Optional<UserProfile> getByName(String name) {
 		/* Entity has no name column */
 		return null;
 	}

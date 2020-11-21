@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.RoleDAO;
 import com.tuvarna.transportsystem.entities.Role;
@@ -13,12 +14,12 @@ public class RoleService implements CrudService<Role> {
 	}
 
 	@Override
-	public Role getById(int id) {
+	public Optional<Role> getById(int id) {
 		return roleDAO.getById(id);
 	}
 
 	@Override
-	public Role getByName(String name) {
+	public Optional<Role> getByName(String name) {
 		return roleDAO.getByName(name);
 	}
 

@@ -2,6 +2,7 @@ package com.tuvarna.transportsystem.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
@@ -59,9 +60,9 @@ public class TicketDAO implements GenericDAOInterface<Ticket>{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Ticket getById(int id) {
-		return (Ticket) entityManager.createQuery("FROM Ticket WHERE ticket_id = :id").setParameter("id", id)
-				.getSingleResult(); // check if the return type has to be Optional<Class> or it is ok like this
+	public Optional<Ticket> getById(int id) {
+		return Optional.ofNullable((Ticket) entityManager.createQuery("FROM Ticket WHERE ticket_id = :id").setParameter("id", id)
+				.getSingleResult()); 
 	}
 
 	@Override
@@ -77,13 +78,17 @@ public class TicketDAO implements GenericDAOInterface<Ticket>{
 
 	@Override
 	public void deleteById(int id) {
-		Ticket ticket = this.getById(id);
+		if (!this.getById(id).isPresent()) {
+			return;
+		}
+		
+		Ticket ticket = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(ticket));
 	}
 	
 	@Deprecated
 	@Override
-	public Ticket getByName(String name) {
+	public Optional<Ticket> getByName(String name) {
 		/* No name column */
 		return null;
 	}

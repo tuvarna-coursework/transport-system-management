@@ -247,18 +247,28 @@ public class CompanyAddController implements Initializable {
 			return;
 		}
 
+		LocationService locationService = new LocationService();
+
 		// departure location
-		String departureLocation = departureChoiceBox.getValue();
-		Location departureLocationObj = (Location) new LocationService().getByName(departureLocation);
+		String departureLocation = departureChoiceBox.getValue().trim();
+		String arrivalLocation = arrivalChoiceBox.getValue().trim();
+
+		if ((!locationService.getByName(departureLocation).isPresent())
+				|| (locationService.getByName(arrivalLocation).isPresent())) {
+			System.out.println("ERROR: Departure or arrival location not found in database. ");
+			return;
+		}
+
+		Location departureLocationObj = locationService.getByName(departureLocation).get();
 
 		// arrival location
-		String arrivalLocation = arrivalChoiceBox.getValue();
-		Location arrivalLocationObj = (Location) new LocationService().getByName(arrivalLocation);
+
+		Location arrivalLocationObj = locationService.getByName(arrivalLocation).get();
 
 		// trip type radio buttons
 		RadioButton selectedTripType = (RadioButton) radioTypeTrip.getSelectedToggle();
 		String tripType = selectedTripType.getText().trim();
-		TripType tripTypeClass = new TripTypeService().getByName(tripType);
+		TripType tripTypeClass = new TripTypeService().getByName(tripType).get();
 
 		// departure time
 		String departureTime = timeChoiceBox.getValue();
@@ -266,14 +276,13 @@ public class CompanyAddController implements Initializable {
 		// trip BUS type
 		RadioButton selectedBusType = (RadioButton) radioBusType.getSelectedToggle();
 		String busType = selectedBusType.getText();
-		TransportType transportTypeClass = new TransportTypeService().getByName(busType);
+		TransportType transportTypeClass = new TransportTypeService().getByName(busType).get();
 
 		// Duration
 		int duration = Integer.parseInt(durationTextField.getText().trim().toString());
 
 		Trip newTrip = new Trip(tripTypeClass, departureLocationObj, arrivalLocationObj, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, duration,
-				departureTime);
+				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, duration, departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 

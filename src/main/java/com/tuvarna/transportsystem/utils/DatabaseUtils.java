@@ -122,7 +122,7 @@ public class DatabaseUtils {
 		UserProfile profile = new UserProfile();
 		userProfileService.save(profile);
 		UserService userService = new UserService();
-		userService.save(new User("Gesha", "root", "root", profile, userTypeService.getByName("Admin"), locationService.getByName("Varna")));
+		userService.save(new User("Gesha", "root", "root", profile, userTypeService.getByName("Admin").get(), locationService.getByName("Varna").get()));
 	}
 
 	/*
@@ -131,20 +131,22 @@ public class DatabaseUtils {
 	 */
 	public static void initFields() {
 		/* Hard coded for debug */
-		UserService userService = new UserService();
-		currentUser = userService.getById(1);
-		
 		RoleService roleService = new RoleService();
 		UserTypeService userTypeService = new UserTypeService();
-		try {
-			ROLE_ADMIN = roleService.getByName("Admin");
-			ROLE_USER = roleService.getByName("User");
+		UserService userService = new UserService();
+		currentUser = userService.getById(1).get();
+		
+		
 
-			USERTYPE_DISTRIBUTOR = userTypeService.getByName("Distributor");
-			USERTYPE_CASHIER = userTypeService.getByName("Cashier");
-			USERTYPE_USER = userTypeService.getByName("User");
-			USERTYPE_ADMIN = userTypeService.getByName("Admin");
-			USERTYPE_COMPANY = userTypeService.getByName("Transport Company");
+		try {
+			ROLE_ADMIN = roleService.getByName("Admin").get();
+			ROLE_USER = roleService.getByName("User").get();
+
+			USERTYPE_DISTRIBUTOR = userTypeService.getByName("Distributor").get();
+			USERTYPE_CASHIER = userTypeService.getByName("Cashier").get();
+			USERTYPE_USER = userTypeService.getByName("User").get();
+			USERTYPE_ADMIN = userTypeService.getByName("Admin").get();
+			USERTYPE_COMPANY = userTypeService.getByName("Transport Company").get();
 		} catch (Exception e) {
 			System.out.println("Please run DatabaseUtils.populateAuxiliaryTables() before calling this function.");
 		}
@@ -156,8 +158,8 @@ public class DatabaseUtils {
 		UserProfile profile = new UserProfile(5.1, 5.2);
 		new UserProfileService().save(profile);
 
-		UserType type = new UserTypeService().getById(2); // prepopulated already
-		Location location = (Location) new LocationService().getByName("Varna");
+		UserType type = new UserTypeService().getById(2).get(); // prepopulated already
+		Location location = (Location) new LocationService().getByName("Varna").get();
 
 		UserService userService = new UserService();
 		String fullname = "bat gergi";
@@ -167,7 +169,7 @@ public class DatabaseUtils {
 
 		// userService.save(user);
 
-		User user = userService.getById(1);
+		User user = userService.getById(1).get();
 		// user.addTicket(new TicketService().getById(1));
 
 		userService.save(user);

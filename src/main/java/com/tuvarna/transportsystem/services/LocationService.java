@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.LocationDAO;
 import com.tuvarna.transportsystem.entities.Location;
@@ -13,12 +14,12 @@ public class LocationService implements CrudService<Location> {
 	}
 
 	@Override
-	public Location getById(int id) {
+	public Optional<Location> getById(int id) {
 		return locationDAO.getById(id);
 	}
 
 	@Override
-	public Location getByName(String name) {
+	public Optional<Location> getByName(String name) {
 		return locationDAO.getByName(name);
 	}
 

@@ -8,8 +8,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -17,8 +15,8 @@
    <children>
       <AnchorPane layoutY="-2.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
-            <Button fx:id="addButton" layoutX="11.0" layoutY="288.0" mnemonicParsing="false" onAction="#addButtonOnAction" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="69.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
+            <Button fx:id="addButton" layoutX="11.0" layoutY="243.0" mnemonicParsing="false" onAction="#addButtonOnAction" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>
@@ -28,15 +26,10 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
-            <TextField fx:id="nameField" layoutX="95.0" layoutY="221.0" />
-            <Label alignment="CENTER" layoutX="10.0" layoutY="225.0" prefHeight="16.0" prefWidth="102.0" text="Name" textFill="WHITE" />
-            <Label alignment="CENTER" layoutX="29.0" layoutY="180.0" prefHeight="18.0" prefWidth="42.0" text="Type" textFill="WHITE" />
-            <ImageView fitHeight="60.0" fitWidth="57.0" layoutX="90.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/icons8-male-user-96.png" />
-               </image>
-            </ImageView>
-            <RadioButton fx:id="company" layoutX="83.0" layoutY="190.0" mnemonicParsing="false" text="Company" textFill="WHITE">
+            <TextField fx:id="nameField" layoutX="95.0" layoutY="176.0" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="180.0" prefHeight="16.0" prefWidth="102.0" text="Name" textFill="WHITE" />
+            <Label alignment="CENTER" layoutX="29.0" layoutY="135.0" prefHeight="18.0" prefWidth="42.0" text="Type" textFill="WHITE" />
+            <RadioButton fx:id="company" layoutX="83.0" layoutY="142.0" mnemonicParsing="false" text="Company" textFill="WHITE">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>
@@ -44,13 +37,18 @@
                   <ToggleGroup fx:id="radioButtonAdmin" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="distributor" layoutX="83.0" layoutY="164.0" mnemonicParsing="false" text="Distributor" textFill="WHITE" toggleGroup="$radioButtonAdmin">
+            <RadioButton fx:id="distributor" layoutX="83.0" layoutY="119.0" mnemonicParsing="false" text="Distributor" textFill="WHITE" toggleGroup="$radioButtonAdmin">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>
             </RadioButton>
-            <ChoiceBox fx:id="companyLocationChoiceBox" layoutX="94.0" layoutY="252.0" prefWidth="150.0" />
-            <Label alignment="CENTER" layoutX="36.0" layoutY="255.0" prefHeight="18.0" prefWidth="50.0" text="Location" textFill="WHITE" />
+            <ChoiceBox fx:id="companyLocationChoiceBox" layoutX="94.0" layoutY="207.0" prefWidth="150.0" />
+            <Label alignment="CENTER" layoutX="36.0" layoutY="210.0" prefHeight="18.0" prefWidth="50.0" text="Location" textFill="WHITE" />
+            <Button layoutX="11.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToHonorarium" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Edit user rating/honorarium" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Tahoma" size="12.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
       <TableView layoutX="282.0" layoutY="146.0" prefHeight="210.0" prefWidth="418.0">
