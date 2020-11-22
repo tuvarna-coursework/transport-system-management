@@ -70,21 +70,11 @@ public class UserProfileDAO implements GenericDAOInterface<UserProfile> {
 	@Override
 	public Optional<UserProfile> getById(int id) {
 		return Optional.ofNullable((UserProfile) entityManager
-				.createQuery("FROM UserProfile WHERE userprofile_id = :id").setParameter("id", id).getSingleResult()); // check
-																														// if
-																														// the
-																														// return
-																														// type
-																														// has
-																														// to
-																														// be
-																														// Optional<Class>
-																														// or
-																														// it
-																														// is
-																														// ok
-																														// like
-																														// this
+				.createQuery("FROM UserProfile WHERE userprofile_id = :id").setParameter("id", id)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

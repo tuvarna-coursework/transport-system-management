@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -27,6 +28,9 @@ public class AdminHonorariumController implements Initializable {
 
 	@FXML
 	private TextField userRatingTextField;
+	
+	@FXML
+	private Label informationLabel;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,7 +63,7 @@ public class AdminHonorariumController implements Initializable {
 		boolean isChanged = false;
 
 		if (!userService.getByName(userName).isPresent()) {
-			System.out.println("ERROR: User not found in database");
+			informationLabel.setText("User not found.");
 			return;
 		}
 
@@ -68,7 +72,7 @@ public class AdminHonorariumController implements Initializable {
 
 		/* Nothing to update; terminate */
 		if (userHonorariumTextField.getText().isEmpty() && userRatingTextField.getText().isEmpty()) {
-			System.out.println("No changes to be made");
+			informationLabel.setText("No changes to be made.");
 			return;
 		} else {
 			if (userRatingTextField.getText().isEmpty()) {

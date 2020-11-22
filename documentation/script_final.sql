@@ -119,6 +119,16 @@ CREATE TABLE "TransportSystem"."Trip" (
 -- ALTER TABLE "TransportSystem"."Trip" OWNER TO postgres;
 -- ddl-end --
 
+-- object: "TransportSystem"."Request" | type: TABLE --
+-- DROP TABLE IF EXISTS "TransportSystem"."Request" CASCADE;
+CREATE TABLE "TransportSystem"."Request" (
+	request_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
+	ticket_quantity integer NOT NULL,
+	request_trip_id integer NOT NULL,
+	CONSTRAINT "Request_pk" PRIMARY KEY (request_id)
+);
+
+
 -- object: "TransportSystem"."UserProfile" | type: TABLE --
 -- DROP TABLE IF EXISTS "TransportSystem"."UserProfile" CASCADE;
 CREATE TABLE "TransportSystem"."UserProfile" (
@@ -239,6 +249,13 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ALTER TABLE "TransportSystem"."Trip" DROP CONSTRAINT IF EXISTS trip_transporttype_id CASCADE;
 ALTER TABLE "TransportSystem"."Trip" ADD CONSTRAINT trip_transporttype_id FOREIGN KEY (trip_transporttype_id)
 REFERENCES "TransportSystem"."TransportType" (transport_type_id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: request_trip_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."Request" DROP CONSTRAINT IF EXISTS request_trip_id CASCADE;
+ALTER TABLE "TransportSystem"."Request" ADD CONSTRAINT request_trip_id FOREIGN KEY (request_trip_id)
+REFERENCES "TransportSystem"."Trip" (trip_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 

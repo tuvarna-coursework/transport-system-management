@@ -8,6 +8,7 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class RoleDAO implements GenericDAOInterface<Role> {
 	private EntityManager entityManager;
 
@@ -40,14 +41,21 @@ public class RoleDAO implements GenericDAOInterface<Role> {
 	@Override
 	public Optional<Role> getById(int id) {
 		return Optional.ofNullable((Role) entityManager.createQuery("FROM Role WHERE role_id = :id")
-				.setParameter("id", id).getSingleResult()); // check if the return type has to be Optional<Class> or it
-															// is ok like this
+				.setParameter("id", id)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
 	public Optional<Role> getByName(String name) {
 		return Optional.ofNullable((Role) entityManager.createQuery("FROM Role WHERE role_name = :name")
-				.setParameter("name", name).getSingleResult());
+				.setParameter("name", name)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

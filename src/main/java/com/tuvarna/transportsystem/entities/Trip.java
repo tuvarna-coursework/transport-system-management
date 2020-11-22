@@ -70,6 +70,9 @@ public class Trip {
 
 	@OneToMany(mappedBy = "trip")
 	private List<Ticket> tickets;
+	
+	@OneToMany(mappedBy = "trip")
+	private List<Request> requests;
 
 	@Column(name = "trip_maxtickets_per_user")
 	private int maxTicketsPerUser;

@@ -7,15 +7,14 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import com.tuvarna.transportsystem.entities.TransportType;
-import com.tuvarna.transportsystem.entities.TripType;
+import com.tuvarna.transportsystem.entities.Request;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
-public class TripTypeDAO implements GenericDAOInterface<TripType> {
+public class RequestDAO implements GenericDAOInterface<Request> {
 	private EntityManager entityManager;
 
-	public TripTypeDAO() {
+	public RequestDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
 	}
 
@@ -40,10 +39,9 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Optional<TripType> getById(int id) {
-		return Optional.ofNullable((TripType) entityManager.createQuery("FROM TripType WHERE triptype_id = :id")
+	public Optional<Request> getById(int id) {
+		return Optional.ofNullable((Request) entityManager.createQuery("FROM Request WHERE request_id = :id")
 				.setParameter("id", id)
 				.getResultList()
 				.stream()
@@ -52,30 +50,14 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 	}
 
 	@Override
-	public Optional<TripType> getByName(String name) {
-		return Optional.ofNullable((TripType) entityManager.createQuery("FROM TripType WHERE triptype_name = :name")
-				.setParameter("name", name)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+	public List<Request> getAll() {
+		return entityManager.createQuery("FROM Request").getResultList();
 	}
 
 	@Override
-	public List<TripType> getAll() {
-		return entityManager.createQuery("FROM TripType").getResultList();
-	}
-
-	@Override
-	public void save(TripType type) {
+	public void save(Request request) {
 		/* Lambda functions unapplicable if JRE is below 1.8 (please update if so) */
-		executeInsideTransaction(entityManager -> entityManager.persist(type));
-	}
-
-	@Override
-	public void updateName(TripType type, String newValue) {
-		type.setTripTypeName(newValue);
-		executeInsideTransaction(entityManager -> entityManager.merge(type));
+		executeInsideTransaction(entityManager -> entityManager.persist(request));
 	}
 
 	@Override
@@ -84,22 +66,29 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 			return;
 		}
 
-		TripType type = this.getById(id).get();
-		executeInsideTransaction(entityManager -> entityManager.remove(type));
-	}
-
-	@Override
-	public void deleteByName(String name) {
-		if (!this.getByName(name).isPresent()) {
-			return;
-		}
-
-		TripType type = this.getByName(name).get();
-		executeInsideTransaction(entityManager -> entityManager.remove(type));
+		Request request = this.getById(id).get();
+		executeInsideTransaction(entityManager -> entityManager.remove(request));
 	}
 
 	@Deprecated
 	@Override
-	public void update(TripType type, String[] newValues) {
+	public Optional<Request> getByName(String name) {
+		/* No name */
+		return null;
+	}
+
+	@Deprecated
+	@Override
+	public void updateName(Request entity, String newValue) {
+	}
+
+	@Deprecated
+	@Override
+	public void deleteByName(String name) {
+	}
+
+	@Deprecated
+	@Override
+	public void update(Request entity, String[] newValues) {
 	}
 }

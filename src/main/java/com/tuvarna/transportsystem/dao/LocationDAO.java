@@ -10,6 +10,7 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class LocationDAO implements GenericDAOInterface<Location> {
 	private EntityManager entityManager;
 
@@ -38,17 +39,25 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Optional<Location> getById(int id) {
+		/* .getSingleResult throws exception if value is null, we need it returnable */
 		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_id = :id")
-				.setParameter("id", id).getSingleResult()); 
+				.setParameter("id", id)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
 	public Optional<Location> getByName(String name) {
 		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_name = :name")
-				.setParameter("name", name).getSingleResult());
+				.setParameter("name", name)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

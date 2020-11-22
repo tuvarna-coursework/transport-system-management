@@ -94,7 +94,10 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 	@Override
 	public Optional<Trip> getById(int id) {
 		return Optional.ofNullable((Trip) entityManager.createQuery("FROM Trip WHERE trip_id = :id").setParameter("id", id)
-				.getSingleResult()); // check if the return type has to be Optional<Class> or it is ok like this
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

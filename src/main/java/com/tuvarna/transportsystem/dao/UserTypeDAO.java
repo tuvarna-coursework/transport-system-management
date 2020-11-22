@@ -10,6 +10,7 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class UserTypeDAO implements GenericDAOInterface<UserType> {
 	private EntityManager entityManager;
 
@@ -42,13 +43,20 @@ public class UserTypeDAO implements GenericDAOInterface<UserType> {
 	@Override
 	public Optional<UserType> getById(int id) {
 		return Optional.ofNullable((UserType) entityManager.createQuery("FROM UserType WHERE usertype_id = :id").setParameter("id", id)
-				.getSingleResult()); 
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
 	public Optional<UserType> getByName(String name) {
 		return Optional.ofNullable((UserType) entityManager.createQuery("FROM UserType WHERE usertype_name = :name")
-				.setParameter("name", name).getSingleResult());
+				.setParameter("name", name)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

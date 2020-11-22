@@ -61,8 +61,12 @@ public class TicketDAO implements GenericDAOInterface<Ticket>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public Optional<Ticket> getById(int id) {
-		return Optional.ofNullable((Ticket) entityManager.createQuery("FROM Ticket WHERE ticket_id = :id").setParameter("id", id)
-				.getSingleResult()); 
+		return Optional.ofNullable((Ticket) entityManager.createQuery("FROM Ticket WHERE ticket_id = :id")
+				.setParameter("id", id)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

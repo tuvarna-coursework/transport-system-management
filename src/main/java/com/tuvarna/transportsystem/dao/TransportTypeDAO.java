@@ -10,6 +10,7 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	private EntityManager entityManager;
 
@@ -42,13 +43,21 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	@Override
 	public Optional<TransportType> getById(int id) {
 		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_id = :id")
-				.setParameter("id", id).getSingleResult()); 
+				.setParameter("id", id)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
 	public Optional<TransportType> getByName(String name) {
 		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
-				.setParameter("name", name).getSingleResult());
+				.setParameter("name", name)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override

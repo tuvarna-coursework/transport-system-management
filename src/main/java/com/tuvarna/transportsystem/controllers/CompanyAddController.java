@@ -254,7 +254,7 @@ public class CompanyAddController implements Initializable {
 		String arrivalLocation = arrivalChoiceBox.getValue().trim();
 
 		if ((!locationService.getByName(departureLocation).isPresent())
-				|| (locationService.getByName(arrivalLocation).isPresent())) {
+				|| (!locationService.getByName(arrivalLocation).isPresent())) {
 			System.out.println("ERROR: Departure or arrival location not found in database. ");
 			return;
 		}

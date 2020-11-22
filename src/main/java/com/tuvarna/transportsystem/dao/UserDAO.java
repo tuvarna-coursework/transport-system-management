@@ -128,15 +128,23 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	@Override
 	public Optional<User> getById(int id) {
+		/* .getSingleResult() throws exception if value is null, we want a returnable null value */
 		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_id = :id").setParameter("id", id)
-				.getSingleResult()); // check if the return type has to be Optional<Class> or it is ok like this
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
 	public Optional<User> getByName(String name) {
 		/* Name refers to login name, separate function for full name */
-		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_loginname = :name").setParameter("name", name)
-				.getSingleResult());
+		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_loginname = :name")
+				.setParameter("name", name)
+				.getResultList()
+				.stream()
+				.findFirst()
+				.orElse(null));
 	}
 
 	@Override
