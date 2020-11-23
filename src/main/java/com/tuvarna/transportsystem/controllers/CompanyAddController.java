@@ -68,6 +68,10 @@ public class CompanyAddController implements Initializable {
 	private RadioButton radioTypeNormal;
 	@FXML
 	private TextField durationTextField;
+	@FXML
+	private TextField priceTextField;
+	@FXML
+	private TextField ticketsAvailabilityTextField;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -192,45 +196,47 @@ public class CompanyAddController implements Initializable {
 		 * Validate the text fields. In this case the pattern should be only a full
 		 * number between 0-int.maxvalue
 		 */
-		if (!pattern.matcher(ticketsQuantityTextField.getText().trim()).matches()) {
+		if (!pattern.matcher(ticketsAvailabilityTextField.getText().trim()).matches()) {
 			informationLabel.setText("Invalid quantity!");
+			// display error messages
 			return;
 		}
 
 		if (!pattern.matcher(seatsCapacityTextField.getText().trim()).matches()) {
 			informationLabel.setText("Invalid seats capacity!");
+			// display error messages
 			return;
 		}
 
 		if (!pattern.matcher(durationTextField.getText().trim()).matches()) {
 			informationLabel.setText("Invalid duration!");
+			// display error messages
 			return;
 		}
 
 		// departure date
 		TextField departureDate = departureDatePicker.getEditor();
 		String departure = departureDate.getText();
+		//DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
 
-		/*
-		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
-		 * splitted and only the date is taken.
-		 */
 		String dateFormatPattern = new SimpleDateFormat().toLocalizedPattern().split(" ")[0];
 		DateFormat formatDepartureDate = new SimpleDateFormat(dateFormatPattern);
-
 		Date dateDeparture = formatDepartureDate.parse(departure);
 
 		// arrival date
 		TextField arrivalDate = arrivalDatePicker.getEditor();
 		String arrival = arrivalDate.getText();
-
+		//DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
 		DateFormat formatArrivalDate = new SimpleDateFormat(dateFormatPattern);
 		Date dateArrival = formatArrivalDate.parse(arrival);
+		// SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(arrival);
 
 		/* Date validation */
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
 			informationLabel.setText("Invalid interval!");
+
+			// display error message here
 			return;
 		}
 
@@ -245,6 +251,7 @@ public class CompanyAddController implements Initializable {
 		/* Validate locations; they cannot be the same */
 		if (departureChoiceBox.getValue() == arrivalChoiceBox.getValue()) {
 			informationLabel.setText("Invalid locations!");
+			// display error message
 			return;
 		}
 
@@ -263,16 +270,15 @@ public class CompanyAddController implements Initializable {
 		Location departureLocationObj = locationService.getByName(departureLocation).get();
 
 		// arrival location
+
 		Location arrivalLocationObj = locationService.getByName(arrivalLocation).get();
 
-		// trip type radio buttons
+		// trip type EXPRESS/NORMAL
 		RadioButton selectedTripType = (RadioButton) radioTypeTrip.getSelectedToggle();
-		
 		if (radioTypeTrip.getSelectedToggle() == null) {
 			informationLabel.setText("Please select trip type (Express or Normal).");
 			return;
 		}
-		
 		String tripType = selectedTripType.getText().trim();
 		TripType tripTypeClass = new TripTypeService().getByName(tripType).get();
 
@@ -281,20 +287,25 @@ public class CompanyAddController implements Initializable {
 
 		// trip BUS type
 		RadioButton selectedBusType = (RadioButton) radioBusType.getSelectedToggle();
-		
 		if (radioBusType.getSelectedToggle() == null) {
 			informationLabel.setText("Please select bus type (Regular or Big bus).");
 			return;
 		}
-		
 		String busType = selectedBusType.getText();
 		TransportType transportTypeClass = new TransportTypeService().getByName(busType).get();
 
 		// Duration
 		int duration = Integer.parseInt(durationTextField.getText().trim().toString());
+		//price
+		String getPrice= priceTextField.getText();
+		double price = Double.parseDouble(getPrice);
+
+		//tickets availability
+		int ticketsAvailability= Integer.parseInt(ticketsAvailabilityTextField.getText().trim().toString());
+
 
 		Trip newTrip = new Trip(tripTypeClass, departureLocationObj, arrivalLocationObj, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, duration, departureTime);
+				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson,ticketsAvailability, price, duration, departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 
