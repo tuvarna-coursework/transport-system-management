@@ -50,7 +50,7 @@ public class UserPanelController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		loadquantity();
+		loadQuantity();
 		loadTime();
 		loadDepartureArrivalLocation();
 
@@ -68,11 +68,15 @@ public class UserPanelController implements Initializable {
 			return false;
 		}
 
-		/* FIX FORMAT */
-		TextField departureDate = tripDatePicker.getEditor();
-		String departure = departureDate.getText();
-		DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
-		Date dateDeparture = formatDepartureDate.parse(departure);
+		/*
+		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
+		 * splitted and only the date is taken.
+		 */
+		String dateFormatPattern = new SimpleDateFormat().toLocalizedPattern().split(" ")[0];
+		DateFormat formatDepartureDate = new SimpleDateFormat(dateFormatPattern);
+
+		Date dateDeparture = formatDepartureDate.parse(tripDatePicker.getEditor().getText());
+
 
 		List<Trip> filteredTrips = new ArrayList<>();
 
@@ -83,13 +87,13 @@ public class UserPanelController implements Initializable {
 
 		/* Iterate through the trips and validate all the fields */
 		for (Trip trip : trips) {
-			// boolean matchesDates = trip.getTripArrivalDate() == dateDeparture;
+		    boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
 			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
 			boolean matchesTime = trip.getTripDepartureHour()
 					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
 
 			/* If all the criteria matches check if there are enough available tickets */
-			if (checkQuantity && matchesTime) {
+			if (matchesDates && checkQuantity && matchesTime) {
 				int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
 
 				/* If there are enough tickets substitute the bought tickets */
@@ -117,7 +121,7 @@ public class UserPanelController implements Initializable {
 		return false;
 	}
 
-	public void loadquantity() {
+	public void loadQuantity() {
 		list.removeAll(list);
 		String number_01 = ("1");
 		String number_02 = ("2");
@@ -207,7 +211,9 @@ public class UserPanelController implements Initializable {
 
 	public void buyTicket(javafx.event.ActionEvent event) throws IOException, ParseException {
 		if (processTicketPurchase()) {
-			informationLabel.setText("You bought ticket");
+			informationLabel.setText("You bought a ticket.");
+		} else {
+			informationLabel.setText("No available tickets for the specified trip.");
 		}
 	}
 }
