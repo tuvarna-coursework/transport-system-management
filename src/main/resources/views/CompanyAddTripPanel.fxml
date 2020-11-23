@@ -51,10 +51,7 @@
          <toggleGroup>
             <ToggleGroup fx:id="radioTypeTrip" />
          </toggleGroup></RadioButton>
-      <RadioButton fx:id="radioTypeNormal" layoutX="389.0" layoutY="105.0" mnemonicParsing="false" text="Normal" textFill="WHITE">
-         <toggleGroup>
-            <ToggleGroup fx:id="TypeTrip" />
-         </toggleGroup></RadioButton>
+      <RadioButton fx:id="radioTypeNormal" layoutX="389.0" layoutY="105.0" mnemonicParsing="false" text="Normal" textFill="WHITE" toggleGroup="$radioTypeTrip" />
       <Label alignment="CENTER" layoutX="355.0" layoutY="83.0" prefHeight="18.0" prefWidth="40.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Type" textFill="WHITE" />
       <TextField fx:id="seatsCapacityTextField" layoutX="481.0" layoutY="233.0" promptText="Seats capacity" />
       <RadioButton fx:id="radioBigBus" layoutX="304.0" layoutY="167.0" mnemonicParsing="false" text="Big bus" textFill="WHITE">
@@ -76,14 +73,14 @@
       <DatePicker fx:id="arrivalDatePicker" layoutX="302.0" layoutY="428.0" prefHeight="26.0" prefWidth="149.0" promptText="Arrival date" />
       <AnchorPane layoutX="256.0" layoutY="199.0" prefHeight="7.0" prefWidth="514.0" style="-fx-background-color: #34495E;" />
       <TextField fx:id="durationTextField" layoutX="303.0" layoutY="345.0" promptText="Duration " />
-      <TextField fx:id="ticketsQuantityTextField" layoutX="481.0" layoutY="345.0" promptText="Tickets quantity" />
+      <TextField fx:id="ticketsAvailabilityTextField" layoutX="481.0" layoutY="345.0" promptText="Tickets availability" />
       <ChoiceBox fx:id="restrictionChoiceBox" layoutX="302.0" layoutY="291.0" prefWidth="150.0" />
       <Label alignment="CENTER" layoutX="347.0" layoutY="373.0" prefHeight="18.0" prefWidth="62.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Date" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="320.0" layoutY="266.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Tickets restriction" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="498.0" layoutY="211.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Seats capacity" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="498.0" layoutY="266.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Price" textFill="WHITE" />
-      <TextField layoutX="481.0" layoutY="291.0" promptText="Price" />
+      <TextField fx:id="priceTextField" layoutX="481.0" layoutY="291.0" promptText="Price" />
       <Label alignment="CENTER" layoutX="318.0" layoutY="323.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Duration" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="498.0" layoutY="323.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Tickets quantity" textFill="WHITE" />
+      <Label alignment="CENTER" layoutX="498.0" layoutY="323.0" prefHeight="16.0" prefWidth="114.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Tickets availability" textFill="WHITE" />
     </children>
 </AnchorPane>

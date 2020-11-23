@@ -43,7 +43,7 @@
             </font>
         </Label>
       <Button layoutX="514.0" layoutY="370.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Denial" textFill="WHITE" />
-      <TableView layoutX="259.0" layoutY="144.0" prefHeight="210.0" prefWidth="530.0">
+      <TableView layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="530.0">
         <columns>
           <TableColumn prefWidth="66.39996337890625" text="Request id" />
           <TableColumn prefWidth="88.00006103515625" text="Departure" />
