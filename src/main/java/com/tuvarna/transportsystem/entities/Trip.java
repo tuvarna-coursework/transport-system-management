@@ -104,7 +104,7 @@ public class Trip {
 
 	public Trip(TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
 			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType, int maxTicketsPerUser,
-			int tripDuration, String tripDepartureHour) {
+			int tripTicketAvailability,double tripTicketPrice,int tripDuration, String tripDepartureHour) {
 		this.tripType = tripType;
 		this.tripDepartureDate = tripDepartureDate;
 		this.tripArrivalDate = tripArrivalDate;
@@ -113,10 +113,10 @@ public class Trip {
 		this.tripDepartureLocation = tripDepartureLocation;
 		this.tripTransportType = tripTransportType;
 		this.maxTicketsPerUser = maxTicketsPerUser;
-		this.tripTicketAvailability = 999;
+		this.tripTicketAvailability = tripTicketAvailability;
 		this.tripDuration = tripDuration;
 		this.tripDepartureHour = tripDepartureHour;
-		this.tripTicketPrice = 0.0;
+		this.tripTicketPrice = tripTicketPrice;
 	}
 
 	public int getTripDuration() {
