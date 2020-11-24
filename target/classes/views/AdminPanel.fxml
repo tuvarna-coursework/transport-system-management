@@ -49,19 +49,23 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
+            <Label fx:id="informationLabel" alignment="CENTER" layoutX="48.0" layoutY="350.0" prefHeight="16.0" prefWidth="149.0" textFill="WHITE" />
          </children>
       </AnchorPane>
-      <TableView layoutX="282.0" layoutY="146.0" prefHeight="210.0" prefWidth="418.0">
+      <TableView fx:id="usersFoundTable" layoutX="282.0" layoutY="146.0" prefHeight="210.0" prefWidth="418.0">
         <columns>
-          <TableColumn prefWidth="97.5999755859375" text="Type" />
-          <TableColumn prefWidth="320.0000305175781" text="Name" />
+          <TableColumn fx:id="userId" prefWidth="15.2" text="Id" />
+          <TableColumn fx:id="userFullName" text="Full name" />
+          <TableColumn fx:id="userNameFound" text="User name" />
+          <TableColumn fx:id="userLocation" text="Location" />
+          <TableColumn fx:id="userType" text="User type" />
         </columns>
       </TableView>
       <AnchorPane layoutX="282.0" layoutY="126.0" prefHeight="5.0" prefWidth="418.0" style="-fx-background-color: #34495E;" />
-      <TextField layoutX="282.0" layoutY="58.0" prefHeight="18.0" prefWidth="74.0" />
-      <Label alignment="CENTER" layoutX="282.0" layoutY="30.0" prefHeight="18.0" prefWidth="74.0" style="-fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="USER ID" textFill="WHITE" />
-      <Button layoutX="448.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Delete" textFill="WHITE" />
-      <Button layoutX="282.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Search" textFill="WHITE" />
+      <TextField fx:id="searchField" layoutX="282.0" layoutY="58.0" prefHeight="18.0" prefWidth="74.0" />
+      <ChoiceBox fx:id="searchCriteriaChoiceBox" layoutX="370.0" layoutY="56.6" prefHeight="26.0" prefWidth="192.0" />
+      <Button fx:id="deleteButton" onAction="#deleteButtonOnAction" layoutX="448.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Delete" textFill="WHITE" />
+      <Button fx:id="searchButton" onAction="#searchButtonOnAction" layoutX="282.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Search" textFill="WHITE" />
       <Button layoutX="366.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Update" textFill="WHITE" />
    </children>
 </AnchorPane>

@@ -1,5 +1,8 @@
 package com.tuvarna.transportsystem.controllers;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,13 +13,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.entities.UserType;
@@ -25,9 +33,11 @@ import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class AdminController implements Initializable {
-	ObservableList list = FXCollections.observableArrayList();
+	ObservableList locationList = FXCollections.observableArrayList();
+	ObservableList searchCriteriaList = FXCollections.observableArrayList();
 
 	@FXML
 	private RadioButton distributor;
@@ -36,7 +46,7 @@ public class AdminController implements Initializable {
 	private RadioButton company;
 
 	@FXML
-	private TextField nameField;
+	private TextField nameCreationField;
 
 	@FXML
 	private Button addButton;
@@ -47,14 +57,86 @@ public class AdminController implements Initializable {
 	@FXML
 	private ChoiceBox<String> companyLocationChoiceBox;
 
+	@FXML
+	private Label informationLabel;
+
+	@FXML
+	private TextField searchField;
+
+	@FXML
+	private Button searchButton;
+
+	@FXML
+	private Button deleteButton;
+
+	@FXML
+	private ChoiceBox<String> searchCriteriaChoiceBox;
+
+	@FXML
+	private TableView<User> usersFoundTable;
+
+	@FXML
+	private TableColumn<User, Integer> userId;
+
+	@FXML
+	private TableColumn<User, String> userFullName;
+
+	@FXML
+	private TableColumn<User, String> userNameFound;
+
+	@FXML
+	private TableColumn<User, String> userLocation;
+
+	@FXML
+	private TableColumn<User, String> userType;
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		loadLocation();
+		loadSearchCriteria();
 
+		/* Integers must be ObservableItem<Integer> for JavaFX table */
+		userId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getUserId()).asObject());
+
+		userFullName.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
+						return new SimpleStringProperty(param.getValue().getUserFullName());
+					}
+				});
+
+		userNameFound.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
+						return new SimpleStringProperty(param.getValue().getUserLoginName());
+					}
+				});
+
+		userLocation.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
+						return new SimpleStringProperty(param.getValue().getUserLocation().getLocationName());
+					}
+				});
+
+		userType.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
+						return new SimpleStringProperty(param.getValue().getUserType().getUserTypeName());
+					}
+				});
 	}
 
 	public void loadLocation() {
-		list.removeAll(list);
+		locationList.removeAll(locationList);
 		String city_01 = "Varna";
 		String city_02 = "Sofia";
 		String city_03 = "Shumen";
@@ -66,8 +148,22 @@ public class AdminController implements Initializable {
 		String city_09 = "Stara Zagora";
 		String city_10 = "Blagoevgrad";
 		String city_11 = "Sliven";
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11);
-		companyLocationChoiceBox.getItems().addAll(list);
+		locationList.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10,
+				city_11);
+		companyLocationChoiceBox.getItems().addAll(locationList);
+
+	}
+
+	public void loadSearchCriteria() {
+		searchCriteriaList.removeAll(searchCriteriaList);
+		String name = "Search by user name";
+		String location = "Search by location";
+		String type = "Search by user type";
+		String fullName = "Search by full name";
+
+		searchCriteriaList.addAll(name, fullName, location, type);
+		searchCriteriaChoiceBox.getItems().addAll(searchCriteriaList);
+		searchCriteriaChoiceBox.getSelectionModel().selectFirst();
 	}
 
 	private String generateUserName(String input) {
@@ -124,7 +220,7 @@ public class AdminController implements Initializable {
 	}
 
 	public void addButtonOnAction(javafx.event.ActionEvent event) throws IOException {
-		if (nameField.getText() != null) {
+		if (!nameCreationField.getText().isEmpty()) {
 			UserService userService = new UserService();
 			UserType userType;
 
@@ -133,16 +229,18 @@ public class AdminController implements Initializable {
 			} else if (company.isSelected()) {
 				userType = DatabaseUtils.USERTYPE_COMPANY;
 			} else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Constraint mismatch");
-				alert.setHeaderText("Please specify the type of the user you wish to create");
-
-				alert.showAndWait();
+				informationLabel.setText("Please specify the user type.");
 				return;
 			}
 
 			/* Add null check even though it is 100% sure that it will be in the database */
 			LocationService locationService = new LocationService();
+
+			if (companyLocationChoiceBox.getSelectionModel().getSelectedIndex() < 0) {
+				informationLabel.setText("Please select a location.");
+				return;
+			}
+
 			String locationName = companyLocationChoiceBox.getSelectionModel().getSelectedItem().toString();
 
 			if (!locationService.getByName(locationName).isPresent()) {
@@ -157,10 +255,10 @@ public class AdminController implements Initializable {
 			UserProfile profile = new UserProfile();
 			userProfileService.save(profile);
 
-			String username = this.generateUserName(nameField.getText());
+			String username = this.generateUserName(nameCreationField.getText());
 			String password = this.generatePassword();
 
-			User user = new User(nameField.getText(), username, password, profile, userType, location);
+			User user = new User(nameCreationField.getText(), username, password, profile, userType, location);
 
 			userService.save(user);
 			userService.addRole(user, DatabaseUtils.ROLE_USER);
@@ -175,11 +273,96 @@ public class AdminController implements Initializable {
 
 			alert.showAndWait();
 		} else {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Constraint mismatch");
-			alert.setHeaderText("Please provide a name for the user you wish to create");
+			informationLabel.setText("Please provide a fullname for the user you wish to create.");
+		}
+	}
 
-			alert.showAndWait();
+	public void searchButtonOnAction(javafx.event.ActionEvent event) throws IOException {
+		if (searchField.getText().isEmpty()) {
+			informationLabel.setText("Please enter keyword to search.");
+			return;
+		}
+
+		String keyword = searchField.getText().trim();
+		UserService userService = new UserService();
+
+		String selectedCriteria = searchCriteriaChoiceBox.getSelectionModel().getSelectedItem();
+
+		if (selectedCriteria.equals("Search by user name")) {
+			if (!userService.getByName(keyword).isPresent()) {
+				informationLabel.setText("User not found in database.");
+				return;
+			}
+
+			User user = userService.getByName(keyword).get();
+
+			ObservableList<User> userList = FXCollections.observableArrayList();
+			userList.add(user);
+
+			usersFoundTable.setItems(userList);
+		} else if (selectedCriteria.equals("Search by full name")) {
+			if (userService.getByFullName(keyword).isEmpty()) {
+				informationLabel.setText("No users found.");
+				return;
+			}
+
+			List<User> usersFound = userService.getByFullName(keyword);
+
+			ObservableList<User> userList = FXCollections.observableArrayList();
+			userList.addAll(usersFound);
+
+			usersFoundTable.setItems(userList);
+
+		} else if (selectedCriteria.equals("Search by location")) {
+			if (userService.getByUserLocation(keyword).isEmpty()) {
+				informationLabel.setText("No users found.");
+				return;
+			}
+			
+			List<User> usersFound = userService.getByUserLocation(keyword);
+
+			ObservableList<User> userList = FXCollections.observableArrayList();
+			userList.addAll(usersFound);
+
+			usersFoundTable.setItems(userList);
+		} else if (selectedCriteria.equals("Search by user type")) {
+			if (userService.getByUserType(keyword).isEmpty()) {
+				informationLabel.setText("No users found.");
+				return;
+			}
+			
+			List<User> usersFound = userService.getByUserType(keyword);
+
+			ObservableList<User> userList = FXCollections.observableArrayList();
+			userList.addAll(usersFound);
+
+			usersFoundTable.setItems(userList);
+		}
+	}
+
+	public void deleteButtonOnAction(javafx.event.ActionEvent event) throws IOException {
+		if (usersFoundTable.getSelectionModel().getSelectedIndex() < 0) {
+			informationLabel.setText("No user selected to delete");
+			return;
+		}
+
+		User user = usersFoundTable.getSelectionModel().getSelectedItem();
+
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Confirm deletion");
+		alert.setHeaderText("Are you sure you would like to delete this user?");
+		alert.setResizable(false);
+		alert.setContentText("Please beaware that this user will be permanently deleted.");
+
+		Optional<ButtonType> result = alert.showAndWait();
+
+		if (result.get() == ButtonType.OK) {
+			UserService userService = new UserService();
+			userService.deleteById(user.getUserId());
+
+			usersFoundTable.getItems().removeIf(u -> u.getUserId() == user.getUserId());
+
+			informationLabel.setText("User successfully deleted.");
 		}
 	}
 

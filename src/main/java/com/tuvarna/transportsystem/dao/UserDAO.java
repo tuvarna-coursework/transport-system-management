@@ -111,7 +111,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 	 * negatively. Change to inner join one day
 	 */
 	public List<User> getByUserType(String type) {
-		return entityManager.createQuery("SELECT u FROM User u, UserType ut WHERE ut.usertype_name = :type")
+		return entityManager.createQuery("SELECT u FROM User u, UserType ut WHERE ut.userTypeName = :type")
 				.setParameter("type", type).getResultList();
 	}
 
@@ -122,7 +122,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	/* Test */
 	public List<User> getByUserLocation(String location) {
-		return entityManager.createQuery("SELECT u FROM User u, Location l WHERE l.location_name = :location")
+		return entityManager.createQuery("SELECT u FROM User u, Location l WHERE l.locationName = :location")
 				.setParameter("location", location).getResultList();
 	}
 
