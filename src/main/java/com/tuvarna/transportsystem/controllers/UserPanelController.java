@@ -50,7 +50,7 @@ public class UserPanelController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		loadQuantity();
+		loadquantity();
 		loadTime();
 		loadDepartureArrivalLocation();
 
@@ -87,7 +87,7 @@ public class UserPanelController implements Initializable {
 
 		/* Iterate through the trips and validate all the fields */
 		for (Trip trip : trips) {
-		    boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
+			boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
 			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
 			boolean matchesTime = trip.getTripDepartureHour()
 					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
@@ -121,7 +121,7 @@ public class UserPanelController implements Initializable {
 		return false;
 	}
 
-	public void loadQuantity() {
+	public void loadquantity() {
 		list.removeAll(list);
 		String number_01 = ("1");
 		String number_02 = ("2");
@@ -190,8 +190,8 @@ public class UserPanelController implements Initializable {
 		window.show();
 	}
 
-	public void goToTicket(javafx.event.ActionEvent event) throws IOException {
-		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
+	public void goToMyTicket(javafx.event.ActionEvent event) throws IOException {
+		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/UserMyTicketPanel.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
