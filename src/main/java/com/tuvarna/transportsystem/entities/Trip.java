@@ -31,22 +31,13 @@ public class Trip {
 	@JoinColumn(name = "trip_type_id")
 	private TripType tripType;
 
-	@ManyToOne /*
-				 * No cascade; according to sql script you can't remove a location if it is
-				 * associated with a trip/user
-				 */
-	@JoinColumn(name = "trip_departure_location_id") /*
-														 * even though there is a mappedBy attribute, this is the owner
-														 * side // mapped with One to Many since the location id can
-														 * belong to multiple trips // regardless of the fact that one
-														 * Trip can have only one departure location Hibernate throws
-														 * exception that the PK is not unique otherwise.
-														 */
-	private Location tripDepartureLocation;
-
 	@ManyToOne
-	@JoinColumn(name = "trip_arrival_location_id")
-	private Location tripArrivalLocation;
+	@JoinColumn(name = "trip_route_id")
+	private Route route;
+	
+	@ManyToOne
+	@JoinColumn(name = "trip_cashier_id")
+	private User cashier; /* Cashier is initially null but the distributor will set a cashier for the available trips */
 
 	/*
 	 * Copied from User class:
@@ -70,7 +61,7 @@ public class Trip {
 
 	@OneToMany(mappedBy = "trip")
 	private List<Ticket> tickets;
-	
+
 	@OneToMany(mappedBy = "trip")
 	private List<Request> requests;
 
@@ -102,21 +93,29 @@ public class Trip {
 
 	}
 
-	public Trip(TripType tripType, Location tripDepartureLocation, Location tripArrivalLocation, Date tripDepartureDate,
-			Date tripArrivalDate, int tripCapacity, TransportType tripTransportType, int maxTicketsPerUser,
-			int tripTicketAvailability,double tripTicketPrice,int tripDuration, String tripDepartureHour) {
+	public Trip(TripType tripType, Route route, User cashier, Date tripDepartureDate, Date tripArrivalDate, int tripCapacity,
+			TransportType tripTransportType, int maxTicketsPerUser, int tripTicketAvailability, double tripTicketPrice,
+			int tripDuration, String tripDepartureHour) {
 		this.tripType = tripType;
 		this.tripDepartureDate = tripDepartureDate;
 		this.tripArrivalDate = tripArrivalDate;
 		this.tripCapacity = tripCapacity;
-		this.tripArrivalLocation = tripArrivalLocation;
-		this.tripDepartureLocation = tripDepartureLocation;
+		this.route = route;
+		this.cashier = cashier;
 		this.tripTransportType = tripTransportType;
 		this.maxTicketsPerUser = maxTicketsPerUser;
 		this.tripTicketAvailability = tripTicketAvailability;
 		this.tripDuration = tripDuration;
 		this.tripDepartureHour = tripDepartureHour;
 		this.tripTicketPrice = tripTicketPrice;
+	}
+
+	public User getCashier() {
+		return cashier;
+	}
+
+	public void setCashier(User cashier) {
+		this.cashier = cashier;
 	}
 
 	public int getTripDuration() {
@@ -135,20 +134,12 @@ public class Trip {
 		this.tripType = tripType;
 	}
 
-	public Location getTripDepartureLocation() {
-		return tripDepartureLocation;
+	public Route getRoute() {
+		return route;
 	}
 
-	public void setTripDepartureLocation(Location tripDepartureLocation) {
-		this.tripDepartureLocation = tripDepartureLocation;
-	}
-
-	public Location getTripArrivalLocation() {
-		return tripArrivalLocation;
-	}
-
-	public void setTripArrivalLocation(Location tripArrivalLocation) {
-		this.tripArrivalLocation = tripArrivalLocation;
+	public void setRoute(Route route) {
+		this.route = route;
 	}
 
 	public Date getTripDepartureDate() {

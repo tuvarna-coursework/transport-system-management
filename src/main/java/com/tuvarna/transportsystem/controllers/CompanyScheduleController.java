@@ -63,7 +63,7 @@ public class CompanyScheduleController implements Initializable {
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-                return new SimpleStringProperty(param.getValue().getTripDepartureLocation().getLocationName());
+                return new SimpleStringProperty(param.getValue().getRoute().getRouteDepartureLocation().getLocationName());
             }
         });
         col_departureDate.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Trip,String>, ObservableValue<String>>(){
@@ -77,7 +77,7 @@ public class CompanyScheduleController implements Initializable {
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-                return new SimpleStringProperty(param.getValue().getTripArrivalLocation().getLocationName());
+                return new SimpleStringProperty(param.getValue().getRoute().getRouteArrivalLocation().getLocationName());
             }
         });
 

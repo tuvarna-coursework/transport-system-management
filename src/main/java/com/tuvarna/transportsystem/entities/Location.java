@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,11 +30,14 @@ public class Location {
 	@OneToMany(mappedBy = "userLocation")
 	private List<User> users; // one location can belong to multiple users
 
-	@OneToMany(mappedBy = "tripDepartureLocation")
-	private List<Trip> tripDepartures;
+	@OneToMany(mappedBy = "routeDepartureLocation")
+	private List<Route> departureLocations;
 
-	@OneToMany(mappedBy = "tripArrivalLocation")
-	private List<Trip> tripArrivals;
+	@OneToMany(mappedBy = "routeArrivalLocation")
+	private List<Route> arrivalLocations;
+
+	@ManyToMany(mappedBy = "attachmentLocations")
+	private List<Route> routes;
 
 	public Location() {
 

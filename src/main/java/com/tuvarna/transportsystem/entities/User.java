@@ -55,6 +55,9 @@ public class User {
 																	 */
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
+	
+	@OneToMany(mappedBy = "cashier") /* Non-owner side: One cashier will appear in multiple trips */
+	private List<Trip> trip;
 
 	/*
 	 * Even though one user has one type it makes sense that this is a OneToOne

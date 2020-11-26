@@ -3,8 +3,11 @@ package com.tuvarna.transportsystem.controllers;
 import com.tuvarna.transportsystem.entities.*;
 import com.tuvarna.transportsystem.services.*;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import javafx.collections.FXCollections;
+import java.lang.String;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,8 +30,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,11 +44,12 @@ public class CompanyAddController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
 	@FXML
-	private ChoiceBox<String> departureChoiceBox;
-	@FXML
-	private ChoiceBox<String> arrivalChoiceBox;
+	private ChoiceBox<String> routeChoiceBox;
 	@FXML
 	private ChoiceBox<String> timeChoiceBox;
+
+	@FXML
+	private ComboBox<String> attachmentComboBox;
 	@FXML
 	private ToggleGroup radioBusType;
 	@FXML
@@ -75,14 +83,13 @@ public class CompanyAddController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		loadDeparture();
-		loadArrival();
+		loadRoutes();
 		loadTime();
 		loadRestrictionQuantity();
-
+		loadAttachmentLocations();
 	}
 
-	public void loadTime() {
+	private void loadTime() {
 		list.removeAll(list);
 		String time_01 = "00:00";
 		String time_02 = "03:15";
@@ -103,45 +110,35 @@ public class CompanyAddController implements Initializable {
 		timeChoiceBox.getItems().addAll(list);
 	}
 
-	public void loadArrival() {
-		list.removeAll(list);
-		String city_01 = "Varna";
-		String city_02 = "Sofia";
-		String city_03 = "Shumen";
-		String city_04 = "Veliko Tarnovo";
-		String city_05 = "Razgrad";
-		String city_06 = "Gabrovo";
-		String city_07 = "Plovdiv";
-		String city_08 = "Burgas";
-		String city_09 = "Stara Zagora";
-		String city_10 = "Blagoevgrad";
-		String city_11 = "Sliven";
+	private void loadRoutes() {
+		RouteService routeService = new RouteService();
 
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11);
-		arrivalChoiceBox.getItems().addAll(list);
+		List<Route> routes = routeService.getAll();
+
+		routes.forEach(r -> {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append(r.getRouteDepartureLocation().getLocationName()).append(" - ");
+			sb.append(r.getRouteArrivalLocation().getLocationName());
+			routeChoiceBox.getItems().add(sb.toString());
+		});
 
 	}
 
-	public void loadDeparture() {
-		list.removeAll(list);
-		String city_01 = "Varna";
-		String city_02 = "Sofia";
-		String city_03 = "Shumen";
-		String city_04 = "Veliko Tarnovo";
-		String city_05 = "Razgrad";
-		String city_06 = "Gabrovo";
-		String city_07 = "Plovdiv";
-		String city_08 = "Burgas";
-		String city_09 = "Stara Zagora";
-		String city_10 = "Blagoevgrad";
-		String city_11 = "Sliven";
+	private void loadAttachmentLocations() {
+		/* By default there will be no attachment location */
+		attachmentComboBox.getItems().add("None");
+		attachmentComboBox.getSelectionModel().selectFirst();
 
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11);
-		departureChoiceBox.getItems().addAll(list);
-
+		/*
+		 * Add all locations and during the trip creation check if the selected
+		 * attachment location is the same as either the arrival or departure location
+		 * of the route (it must not be the same)
+		 */
+		new LocationService().getAll().forEach(l -> attachmentComboBox.getItems().add(l.getLocationName()));
 	}
 
-	public void loadRestrictionQuantity() {
+	private void loadRestrictionQuantity() {
 		list.removeAll(list);
 		String number_01 = ("1");
 		String number_02 = ("2");
@@ -217,7 +214,7 @@ public class CompanyAddController implements Initializable {
 		// departure date
 		TextField departureDate = departureDatePicker.getEditor();
 		String departure = departureDate.getText();
-		//DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
+		// DateFormat formatDepartureDate = new SimpleDateFormat("MM/dd/yyyy");
 
 		String dateFormatPattern = new SimpleDateFormat().toLocalizedPattern().split(" ")[0];
 		DateFormat formatDepartureDate = new SimpleDateFormat(dateFormatPattern);
@@ -226,7 +223,7 @@ public class CompanyAddController implements Initializable {
 		// arrival date
 		TextField arrivalDate = arrivalDatePicker.getEditor();
 		String arrival = arrivalDate.getText();
-		//DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
+		// DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
 		DateFormat formatArrivalDate = new SimpleDateFormat(dateFormatPattern);
 		Date dateArrival = formatArrivalDate.parse(arrival);
 		// SimpleDateFormat("dd/MM/yyyy",Locale.ENGLISH).parse(arrival);
@@ -235,43 +232,60 @@ public class CompanyAddController implements Initializable {
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
 			informationLabel.setText("Invalid interval!");
-
-			// display error message here
 			return;
 		}
 
 		// tickets restriction
 		int ticketsPerPerson = Integer.parseInt(restrictionChoiceBox.getValue().toString());
-		// int ticketRestriction=Integer.parseInt(ticketPerPerson);
 
 		// trip capacity
 		String seatsCapacity = seatsCapacityTextField.getText();
 		int chechedSeatsCapacity = Integer.parseInt(seatsCapacity);
 
-		/* Validate locations; they cannot be the same */
-		if (departureChoiceBox.getValue() == arrivalChoiceBox.getValue()) {
-			informationLabel.setText("Invalid locations!");
-			// display error message
+		/* Route validation */
+		if (routeChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+			informationLabel.setText("Please select route!");
 			return;
 		}
 
-		LocationService locationService = new LocationService();
+		/* Route format: Varna - Sofia */
+		String[] routeLocations = routeChoiceBox.getSelectionModel().getSelectedItem().split(" - ");
 
-		// departure location
-		String departureLocation = departureChoiceBox.getValue().trim();
-		String arrivalLocation = arrivalChoiceBox.getValue().trim();
+		RouteService routeService = new RouteService();
+		List<Route> routes = routeService.getAll();
+		Route route = null;
 
-		if ((!locationService.getByName(departureLocation).isPresent())
-				|| (!locationService.getByName(arrivalLocation).isPresent())) {
-			System.out.println("ERROR: Departure or arrival location not found in database. ");
-			return;
+		/*
+		 * Find a route with a matching departure and arrival location (the one we need)
+		 */
+		for (Route currentRoute : routes) {
+			if (currentRoute.getRouteDepartureLocation().getLocationName().equals(routeLocations[0].trim())
+					&& currentRoute.getRouteArrivalLocation().getLocationName().equals(routeLocations[1].trim())) {
+				route = currentRoute;
+				break;
+			}
 		}
 
-		Location departureLocationObj = locationService.getByName(departureLocation).get();
+		/*
+		 * Check if there is an attachment selected; if it is none then continue with
+		 * the logic but if there is something selected then add it to the route
+		 */
+		if (!attachmentComboBox.getSelectionModel().getSelectedItem().toString().equals("None")) {
+			Location location = new LocationService()
+					.getByName(attachmentComboBox.getSelectionModel().getSelectedItem().toString()).get();
 
-		// arrival location
+			/*
+			 * Make sure the attachment location doesn't match the departure or arrival
+			 * location
+			 */
+			if (location.getLocationName().equals(route.getRouteArrivalLocation().getLocationName())
+					|| location.getLocationName().equals(route.getRouteDepartureLocation().getLocationName())) {
+				informationLabel.setText("Attachment location invalid - matches either arrival or departure location");
+				return;
+			}
 
-		Location arrivalLocationObj = locationService.getByName(arrivalLocation).get();
+			routeService.addAttachmentLocation(route, location);
+		}
 
 		// trip type EXPRESS/NORMAL
 		RadioButton selectedTripType = (RadioButton) radioTypeTrip.getSelectedToggle();
@@ -296,16 +310,18 @@ public class CompanyAddController implements Initializable {
 
 		// Duration
 		int duration = Integer.parseInt(durationTextField.getText().trim().toString());
-		//price
-		String getPrice= priceTextField.getText();
+
+		// price
+		String getPrice = priceTextField.getText();
 		double price = Double.parseDouble(getPrice);
 
-		//tickets availability
-		int ticketsAvailability= Integer.parseInt(ticketsAvailabilityTextField.getText().trim().toString());
+		// tickets availability
+		int ticketsAvailability = Integer.parseInt(ticketsAvailabilityTextField.getText().trim().toString());
 
-
-		Trip newTrip = new Trip(tripTypeClass, departureLocationObj, arrivalLocationObj, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson,ticketsAvailability, price, duration, departureTime);
+		/* TEST ONLY: Hard coded cashier until front end changes are made */
+		Trip newTrip = new Trip(tripTypeClass, route, DatabaseUtils.currentUser, dateDeparture, dateArrival,
+				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, ticketsAvailability, price, duration,
+				departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 

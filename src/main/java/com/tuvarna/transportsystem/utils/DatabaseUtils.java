@@ -1,12 +1,12 @@
 package com.tuvarna.transportsystem.utils;
 
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Role;
+import com.tuvarna.transportsystem.entities.Route;
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.entities.User;
@@ -14,6 +14,7 @@ import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.RoleService;
+import com.tuvarna.transportsystem.services.RouteService;
 import com.tuvarna.transportsystem.services.TransportTypeService;
 import com.tuvarna.transportsystem.services.TripTypeService;
 import com.tuvarna.transportsystem.services.UserProfileService;
@@ -36,7 +37,7 @@ public class DatabaseUtils {
 
 	public static void init() {
 		globalSession = createSession();
-		//populateAuxiliaryTables();
+		populateAuxiliaryTables();
 		initFields();
 	}
 
@@ -78,16 +79,27 @@ public class DatabaseUtils {
 		 * locations. Ensures that tickets have a valid location as well.
 		 */
 		LocationService locationService = new LocationService();
-		locationService.save(new Location("Varna"));
-		locationService.save(new Location("Sofia"));
-		locationService.save(new Location("Plovdiv"));
-		locationService.save(new Location("Veliko Tarnovo"));
-		locationService.save(new Location("Sliven"));
-		locationService.save(new Location("Gabrovo"));
-		locationService.save(new Location("Razgrad"));
-		locationService.save(new Location("Shumen"));
-		locationService.save(new Location("Blagoevgrad"));
-		locationService.save(new Location("Burgas"));
+		Location varna = new Location("Varna");
+		Location sofia = new Location("Sofia");
+		Location plovdiv = new Location("Plovdiv");
+		Location turnovo = new Location("Veliko Tarnovo");
+		Location sliven = new Location("Sliven");
+		Location gabrovo = new Location("Gabrovo");
+		Location razgrad = new Location("Razgrad");
+		Location shumen = new Location("Shumen");
+		Location blagoevgrad = new Location("Blagoevgrad");
+		Location burgas = new Location("Burgas");
+
+		locationService.save(varna);
+		locationService.save(sofia);
+		locationService.save(plovdiv);
+		locationService.save(turnovo);
+		locationService.save(sliven);
+		locationService.save(gabrovo);
+		locationService.save(razgrad);
+		locationService.save(shumen);
+		locationService.save(blagoevgrad);
+		locationService.save(burgas);
 
 		/*
 		 * Authentication and authorisation is first and foremost distinguished between
@@ -114,15 +126,40 @@ public class DatabaseUtils {
 		userTypeService.save(new UserType("User"));
 		userTypeService.save(new UserType("Admin"));
 		userTypeService.save(new UserType("Transport Company"));
-		
-		/* String userFullName, String userLoginName, String userPassword, UserProfile userProfile,
-			UserType userType, Location userLocation*/
-		
+
+		/*
+		 * String userFullName, String userLoginName, String userPassword, UserProfile
+		 * userProfile, UserType userType, Location userLocation
+		 */
+
 		UserProfileService userProfileService = new UserProfileService();
 		UserProfile profile = new UserProfile();
 		userProfileService.save(profile);
 		UserService userService = new UserService();
-		userService.save(new User("Gesha", "root", "root", profile, userTypeService.getByName("Admin").get(), locationService.getByName("Varna").get()));
+		userService.save(new User("Gesha", "root", "root", profile, userTypeService.getByName("Admin").get(),
+				locationService.getByName("Varna").get()));
+
+		/*
+		 * Add routes. Routes are inputted before the trip creation and during trip
+		 * creation the company selects a route
+		 */
+		RouteService routeService = new RouteService();
+		Route route1 = new Route(varna, sofia);
+		Route route2 = new Route(sofia, varna);
+		Route route3 = new Route(burgas, plovdiv);
+		Route route4 = new Route(plovdiv, burgas);
+		
+		routeService.save(route1);
+		routeService.save(route2);
+		routeService.save(route3);
+		routeService.save(route4);
+
+		routeService.addAttachmentLocation(route1, turnovo);
+		routeService.addAttachmentLocation(route2, turnovo);
+		routeService.addAttachmentLocation(route3, sliven);
+		routeService.addAttachmentLocation(route4, sliven);
+
+		
 	}
 
 	/*
@@ -135,8 +172,6 @@ public class DatabaseUtils {
 		UserTypeService userTypeService = new UserTypeService();
 		UserService userService = new UserService();
 		currentUser = userService.getById(1).get();
-		
-		
 
 		try {
 			ROLE_ADMIN = roleService.getByName("Admin").get();

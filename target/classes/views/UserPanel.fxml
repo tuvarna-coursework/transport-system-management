@@ -26,12 +26,12 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
-            <Label fx:id="informationLabel" alignment="CENTER" layoutX="43.0" layoutY="320.0" prefHeight="18.0" prefWidth="169.0" textFill="WHITE">
+            <Label fx:id="informationLabel" alignment="CENTER" layoutX="11.0" layoutY="320.0" prefHeight="19.0" prefWidth="234.0" textFill="WHITE">
                <font>
-                  <Font name="Tahoma" size="15.0" />
+                  <Font name="Tahoma" size="12.0" />
                </font>
             </Label>
-            <Button layoutX="11.0" layoutY="258.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="My tickets" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+            <Button layoutX="11.0" layoutY="258.0" mnemonicParsing="false" onAction="#goToMyTicket" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="My tickets" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
                   <Font name="Tahoma" size="12.0" />
                </font>

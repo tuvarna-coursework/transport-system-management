@@ -24,5 +24,6 @@
 	    <mapping class="com.tuvarna.transportsystem.entities.Trip"/>
 	    <mapping class="com.tuvarna.transportsystem.entities.User"/>
 	    <mapping class="com.tuvarna.transportsystem.entities.Request"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.Route"/>
 	</session-factory>
 </hibernate-configuration>

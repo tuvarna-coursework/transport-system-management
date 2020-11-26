@@ -31,6 +31,10 @@ public class TripService implements CrudService<Trip> {
 	public List<Trip> getByLocations(String departure, String arrival){
 		return tripDAO.getByLocations(departure, arrival);
 	}
+	
+	public List<Trip> getByAttachmentLocations(String location){
+		return tripDAO.getByAttachmentLocation(location);
+	}
 
 	public List<Trip> getByDepartureDate(Date date) {
 		return tripDAO.getByDepartureDate(date);
