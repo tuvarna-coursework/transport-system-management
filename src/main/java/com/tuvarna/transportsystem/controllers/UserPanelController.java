@@ -166,7 +166,7 @@ public class UserPanelController implements Initializable {
 		String city_01 = "Varna";
 		String city_02 = "Sofia";
 		String city_03 = "Shumen";
-		String city_04 = "Veliko Tarnovo";
+		String city_04 = "Veliko Turnovo";
 		String city_05 = "Razgrad";
 		String city_06 = "Gabrovo";
 		String city_07 = "Plovdiv";
@@ -174,8 +174,19 @@ public class UserPanelController implements Initializable {
 		String city_09 = "Stara Zagora";
 		String city_10 = "Blagoevgrad";
 		String city_11 = "Sliven";
+		String city_12 = "Pleven";
+		String city_13 = "Omurtag";
+		String city_14 = "Ruse";
+		String city_15 = "Dobrich";
+		String city_16 = "Montana";
+		String city_17 = "Vraca";
+		String city_18 = "Yambol";
+		String city_19 = "Pernik";
+		String city_20 = "Lovech";
+		String city_21 = "Turgovishte";
 
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11);
+		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
 		departureChoiceBox.getItems().addAll(list);
 		arrivalChoiceBox.getItems().addAll(list);
 
