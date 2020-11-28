@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="313.0" prefWidth="480.0" style="-fx-background-color: #34495E;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.CompanyLoadStationsController">
+    <header>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="269.0" prefWidth="480.0" style="-fx-background-color: #34495E;">
+         <children>
+            <Label alignment="CENTER" layoutX="176.0" layoutY="3.0" prefHeight="22.0" prefWidth="138.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="MAKE THE ROUTE" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationOneChoiceBox" layoutX="14.0" layoutY="43.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="83.0" layoutY="25.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="1" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationTwoChoiceBox" layoutX="171.0" layoutY="43.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="240.0" layoutY="25.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="2" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationThreeChoiceBox" layoutX="327.0" layoutY="43.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="397.0" layoutY="25.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="3" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationFourChoiceBox" layoutX="14.0" layoutY="96.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="83.0" layoutY="78.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="4" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationFiveChoiceBox" layoutX="171.0" layoutY="96.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="240.0" layoutY="78.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="5" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationSixChoiceBox" layoutX="327.0" layoutY="96.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="397.0" layoutY="78.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="6" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationSevenChoiceBox" layoutX="14.0" layoutY="144.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="83.0" layoutY="126.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="7" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationEightChoiceBox" layoutX="171.0" layoutY="144.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="240.0" layoutY="126.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="8" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationNineChoiceBox" layoutX="327.0" layoutY="144.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="397.0" layoutY="126.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="9" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationTenChoiceBox" layoutX="14.0" layoutY="200.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="77.0" layoutY="182.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="10" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationElevenChoiceBox" layoutX="171.0" layoutY="200.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="234.0" layoutY="182.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="11" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="stationTwelveChoiceBox" layoutX="327.0" layoutY="200.0" prefHeight="24.0" prefWidth="138.0" />
+            <Label layoutX="390.0" layoutY="182.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="12" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="informationLabel" alignment="CENTER" layoutX="134.0" layoutY="238.0" prefHeight="17.0" prefWidth="220.0" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Button fx:id="applyButton" layoutX="404.0" layoutY="231.0" mnemonicParsing="false" onAction="#makeRoute" style="-fx-background-radius: 30; -fx-background-color: #3498DB;" text="Apply" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+         </children></AnchorPane>
+    </header>
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" style="-fx-background-color: #34495E;" />
+    </content>
+    <expandableContent>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+    </expandableContent>
+</DialogPane>
