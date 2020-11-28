@@ -1,5 +1,7 @@
 package com.tuvarna.transportsystem.controllers;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,11 +10,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,6 +41,8 @@ import com.tuvarna.transportsystem.utils.DatabaseUtils;
 public class UserPanelController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
+	boolean isSearchHidden = false;
+
 	@FXML
 	private ChoiceBox<String> departureChoiceBox;
 
@@ -48,25 +57,135 @@ public class UserPanelController implements Initializable {
 	@FXML
 	private Label informationLabel;
 
+	@FXML
+	private Label departureLocationLabel;
+
+	@FXML
+	private Label arrivalLocationLabel;
+
+	@FXML
+	private Label quantityLabel;
+
+	@FXML
+	private Label timeLabel;
+
+	@FXML
+	private TableView<Trip> availableTripsTable;
+
+	@FXML
+	private Button hideShowToggle;
+
+	@FXML
+	private Button searchBuyToggle;
+
+	@FXML
+	private TableColumn<Trip, String> dateCol;
+
+	@FXML
+	private TableColumn<Trip, String> hourCol;
+
+	@FXML
+	private TableColumn<Trip, String> departureStationCol;
+
+	@FXML
+	private TableColumn<Trip, String> arrivalStationCol;
+
+	@FXML
+	private TableColumn<Trip, Integer> durationCol;
+
+	@FXML
+	private TableColumn<Trip, Integer> ticketsLeftCol;
+
+	@FXML
+	private TableColumn<Trip, Double> priceCol;
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		loadquantity();
 		loadTime();
 		loadDepartureArrivalLocation();
 
+		dateCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+						return new SimpleStringProperty(param.getValue().getTripDepartureDate().toString());
+					}
+				});
+		hourCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+						return new SimpleStringProperty(param.getValue().getTripDepartureHour());
+					}
+				});
+		departureStationCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+						/*
+						 * If the departure station matches the searched station, add the departure
+						 * station. If the route is Varna - Sofia and the customer wants a ticket from
+						 * Varna.
+						 * 
+						 * But if the customer wants a ticket from a bus stop in Veliko Tarnovo - Sofia
+						 * then display Veliko Tarnovo as departure station for the customer. At this
+						 * point it is sure that this location is in the RouteAttachment table since it
+						 * is validated elsewhere
+						 */
+						if (param.getValue().getRoute().getRouteDepartureLocation().getLocationName()
+								.equals(departureChoiceBox.getSelectionModel().getSelectedItem())) {
+							return new SimpleStringProperty(
+									param.getValue().getRoute().getRouteDepartureLocation().getLocationName());
+						}
+
+						return new SimpleStringProperty(departureChoiceBox.getSelectionModel().getSelectedItem());
+					}
+				});
+
+		arrivalStationCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+						if (param.getValue().getRoute().getRouteArrivalLocation().getLocationName()
+								.equals(departureChoiceBox.getSelectionModel().getSelectedItem())) {
+							return new SimpleStringProperty(
+									param.getValue().getRoute().getRouteArrivalLocation().getLocationName());
+						}
+
+						return new SimpleStringProperty(arrivalChoiceBox.getSelectionModel().getSelectedItem());
+					}
+				});
+
+		durationCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
+		priceCol.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
+		ticketsLeftCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
+
 	}
 
-	private boolean processTicketPurchase() throws ParseException {
+	private List<Trip> getMatchingTrips() throws ParseException {
 		String departureStation = departureChoiceBox.getValue().trim();
 		String arrivalStation = arrivalChoiceBox.getValue().trim();
 
 		TripService tripService = new TripService();
-		/* Get trips by both locations */
-		List<Trip> trips = tripService.getByLocations(departureStation, arrivalStation);
 
-		if (trips == null) {
-			return false;
-		}
+		/*
+		 * Get trips where the start and end destination searched matches the beginning
+		 * and end of the trip Customer searches: Varna - Sofia and the trip is Varna -
+		 * Sofia
+		 */
+		List<Trip> fullTrips = tripService.getByLocations(departureStation, arrivalStation);
+
+		/*
+		 * Scenario: Trip is Varna - Sofia but the customer wants Veliko Tarnovo - Sofia
+		 * and there is a bus stop in Veliko Tarnovo
+		 */
+		List<Trip> partialTrips = tripService.getByAttachmentLocations(departureStation);
+		partialTrips.addAll(tripService.getByAttachmentLocations(arrivalStation));
 
 		/*
 		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
@@ -77,16 +196,10 @@ public class UserPanelController implements Initializable {
 
 		Date dateDeparture = formatDepartureDate.parse(tripDatePicker.getEditor().getText());
 
-
 		List<Trip> filteredTrips = new ArrayList<>();
 
-		/*
-		 * Currently the logic assumes there is one trip only and not a selection of
-		 * trips the customer can choose from. Will await front end changes.
-		 */
-
 		/* Iterate through the trips and validate all the fields */
-		for (Trip trip : trips) {
+		for (Trip trip : fullTrips) {
 			boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
 			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
 			boolean matchesTime = trip.getTripDepartureHour()
@@ -98,27 +211,32 @@ public class UserPanelController implements Initializable {
 
 				/* If there are enough tickets substitute the bought tickets */
 				if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
-					tripService.updateTripTicketAvailability(trip,
-							(ticketsToPurchase < 0) ? 0 : trip.getTripTicketAvailability() - ticketsToPurchase);
-
-					TicketService ticketService = new TicketService();
-					Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip);
-					ticketService.save(ticket);
-
-					UserService userService = new UserService();
-					userService.addTicket(DatabaseUtils.currentUser, ticket);
-
-					/* For every 5 purchased tickets, the user gains a rating of 0.2 */
-					if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
-						DatabaseUtils.currentUser.getUserProfile().setUserProfileRating(
-								DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
-					}
-
-					return true;
+					filteredTrips.add(trip);
 				}
 			}
 		}
-		return false;
+
+		for (Trip trip : partialTrips) {
+			boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
+			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
+			boolean matchesTime = trip.getTripDepartureHour()
+					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
+
+			/*
+			 * Ticket is bought from a middle point and we must check if the end destination
+			 * is the same, only then it will be added to the filtered trips
+			 */
+			if (trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation)) {
+				if (matchesDates && checkQuantity && matchesTime) {
+					int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
+					if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
+						filteredTrips.add(trip);
+					}
+				}
+			}
+		}
+
+		return filteredTrips;
 	}
 
 	public void loadquantity() {
@@ -209,11 +327,77 @@ public class UserPanelController implements Initializable {
 
 	}
 
-	public void buyTicket(javafx.event.ActionEvent event) throws IOException, ParseException {
-		if (processTicketPurchase()) {
+	public void toggleButtonAction(javafx.event.ActionEvent event) throws IOException, ParseException {
+		if (isSearchHidden) {
+			buyTicket();
+		} else {
+			searchTickets(event);
+		}
+	}
+
+	public void buyTicket() throws ParseException {
+		if (!getMatchingTrips().isEmpty()) {
+			Trip trip = availableTripsTable.getSelectionModel().getSelectedItem();
+
+			if (trip == null) {
+				informationLabel.setText("Please select a trip.");
+				return;
+			}
+
+			TripService tripService = new TripService();
+			int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem());
+
+			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
+
+			TicketService ticketService = new TicketService();
+			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip);
+			ticketService.save(ticket);
+
+			UserService userService = new UserService();
+			userService.addTicket(DatabaseUtils.currentUser, ticket);
+
+			// For every 5 purchased tickets, the user gains a rating of 0.2
+			if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
+				DatabaseUtils.currentUser.getUserProfile()
+						.setUserProfileRating(DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
+			}
+
 			informationLabel.setText("You bought a ticket.");
 		} else {
 			informationLabel.setText("No available tickets for the specified trip.");
 		}
+	}
+
+	public void searchTickets(javafx.event.ActionEvent event) throws ParseException, IOException {
+		list.removeAll(list);
+		list.addAll(this.getMatchingTrips());
+
+		/* Filter all trips that match the search criteria */
+		toggleView(event);
+		availableTripsTable.setItems(list);
+	}
+
+	public void toggleView(javafx.event.ActionEvent event) throws IOException, ParseException {
+		arrivalChoiceBox.setVisible(isSearchHidden);
+		departureChoiceBox.setVisible(isSearchHidden);
+		arrivalChoiceBox.setVisible(isSearchHidden);
+		tripDatePicker.setVisible(isSearchHidden);
+		timeChoiceBox.setVisible(isSearchHidden);
+		quantityChoiceBox.setVisible(isSearchHidden);
+		departureLocationLabel.setVisible(isSearchHidden);
+		arrivalLocationLabel.setVisible(isSearchHidden);
+		quantityLabel.setVisible(isSearchHidden);
+		timeLabel.setVisible(isSearchHidden);
+
+		availableTripsTable.setVisible(!isSearchHidden);
+
+		hideShowToggle.setText((isSearchHidden) ? "Hide search" : "Show search");
+		searchBuyToggle.setText((isSearchHidden) ? "Buy" : "Search");
+
+		/* Expand to show the table in full view, shrink for the search */
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setWidth((!isSearchHidden) ? 760 : 620);
+
+		isSearchHidden = !isSearchHidden;
 	}
 }

@@ -4,6 +4,8 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -38,17 +40,31 @@
             </Button>
          </children>
       </AnchorPane>
+      
+      <TableView visible="false" fx:id="availableTripsTable" layoutX="259.0" layoutY="130.0" prefHeight="216.0" prefWidth="620.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #34495E;">
+        <columns>
+          <TableColumn fx:id="dateCol" prefWidth="55.2000732421875" text="Date" />
+          <TableColumn fx:id="hourCol" prefWidth="42.4000244140625" text="Hour" />
+            <TableColumn fx:id="departureStationCol" prefWidth="85.5999755859375" text="Departure St." />
+            <TableColumn fx:id="arrivalStationCol" prefWidth="66.39993286132812" text="Arrival St." />
+            <TableColumn fx:id="durationCol" prefWidth="87.99993896484375" text="Duration(min.)" />
+            <TableColumn fx:id="ticketsLeftCol" prefWidth="72.60003662109375" text="Tickets left" />
+            <TableColumn fx:id="priceCol" prefWidth="62.4000244140625" text="Price" />
+        </columns>
+      </TableView>
+      
       <DatePicker fx:id="tripDatePicker" layoutX="346.0" layoutY="217.0" prefHeight="26.0" prefWidth="192.0" promptText="Date" />
-      <Button layoutX="471.0" layoutY="401.0" mnemonicParsing="false" onAction="#buyTicket" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Buy" textFill="WHITE" />
+      <Button fx:id="searchBuyToggle" layoutX="471.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleButtonAction" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Search" textFill="WHITE" />
+      <Button fx:id="hideShowToggle" layoutX="271.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleView" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Hide search" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="346.0" layoutY="31.0" prefHeight="26.0" prefWidth="192.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Buy your ticket" textFill="WHITE" />
       <ChoiceBox fx:id="departureChoiceBox" layoutX="346.0" layoutY="125.0" prefHeight="26.0" prefWidth="192.0" />
       <ChoiceBox fx:id="arrivalChoiceBox" layoutX="346.0" layoutY="179.0" prefHeight="26.0" prefWidth="192.0" />
       <ChoiceBox fx:id="quantityChoiceBox" layoutX="346.0" layoutY="276.0" prefHeight="26.0" prefWidth="192.0" />
       <AnchorPane layoutX="229.0" layoutY="86.0" prefHeight="5.0" prefWidth="376.0" style="-fx-background-color: #34495E;" />
-      <Label alignment="CENTER" layoutX="381.0" layoutY="101.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Departure location" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="381.0" layoutY="156.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Arrival location" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="381.0" layoutY="251.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Quantity" textFill="WHITE" />
+      <Label fx:id="departureLocationLabel" alignment="CENTER" layoutX="381.0" layoutY="101.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Departure location" textFill="WHITE" />
+      <Label fx:id="arrivalLocationLabel" alignment="CENTER" layoutX="381.0" layoutY="156.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Arrival location" textFill="WHITE" />
+      <Label fx:id="quantityLabel" alignment="CENTER" layoutX="381.0" layoutY="251.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Quantity" textFill="WHITE" />
       <ChoiceBox fx:id="timeChoiceBox" layoutX="346.0" layoutY="332.0" prefHeight="26.0" prefWidth="192.0" />
-      <Label alignment="CENTER" layoutX="381.0" layoutY="309.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Time" textFill="WHITE" />
+      <Label fx:id="timeLabel" alignment="CENTER" layoutX="381.0" layoutY="309.0" prefHeight="18.0" prefWidth="122.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Time" textFill="WHITE" />
    </children>
 </AnchorPane>
