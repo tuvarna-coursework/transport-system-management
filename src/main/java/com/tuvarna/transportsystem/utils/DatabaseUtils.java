@@ -37,7 +37,7 @@ public class DatabaseUtils {
 
 	public static void init() {
 		globalSession = createSession();
-		populateAuxiliaryTables();
+		//populateAuxiliaryTables();
 		initFields();
 	}
 
@@ -82,13 +82,27 @@ public class DatabaseUtils {
 		Location varna = new Location("Varna");
 		Location sofia = new Location("Sofia");
 		Location plovdiv = new Location("Plovdiv");
-		Location turnovo = new Location("Veliko Tarnovo");
+		Location turnovo = new Location("Veliko Turnovo");
 		Location sliven = new Location("Sliven");
 		Location gabrovo = new Location("Gabrovo");
 		Location razgrad = new Location("Razgrad");
 		Location shumen = new Location("Shumen");
 		Location blagoevgrad = new Location("Blagoevgrad");
 		Location burgas = new Location("Burgas");
+
+		Location pleven = new Location("Pleven");
+		Location omurtag = new Location("Omurtag");
+		Location ruse = new Location("Ruse");
+		Location dobrich = new Location("Dobrich");
+		Location montana = new Location("Montana");
+		Location vraca = new Location("Vraca");
+		Location staraZagora= new Location("Stara Zagora");
+		Location yambol= new Location("Yambol");
+		Location pernik = new Location("Pernik");
+		Location lovech = new Location("Lovech");
+		Location turgovishte = new Location("Turgovishte");
+
+
 
 		locationService.save(varna);
 		locationService.save(sofia);
@@ -100,6 +114,20 @@ public class DatabaseUtils {
 		locationService.save(shumen);
 		locationService.save(blagoevgrad);
 		locationService.save(burgas);
+		//new locations
+		locationService.save(pleven);
+		locationService.save(omurtag);
+		locationService.save(ruse);
+		locationService.save(dobrich);
+		locationService.save(montana);
+		locationService.save(vraca);
+		locationService.save(staraZagora);
+		locationService.save(yambol);
+		locationService.save(pernik);
+		locationService.save(lovech);
+		locationService.save(turgovishte);
+
+
 
 		/*
 		 * Authentication and authorisation is first and foremost distinguished between
