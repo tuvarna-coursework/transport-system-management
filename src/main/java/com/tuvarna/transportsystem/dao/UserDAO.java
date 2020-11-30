@@ -14,6 +14,7 @@ import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
+import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
@@ -43,6 +44,37 @@ public class UserDAO implements GenericDAOInterface<User> {
 			tx.rollback();
 			throw e;
 		}
+	}
+
+	/*
+	 * Application: Get transport company's name and display it to the user
+	 * schedule. Iterate through the UsersTrip joined table and look for a user
+	 * binded with the trip id. One trip can belong to one user (the trip creator
+	 * thus the transport company).
+	 */
+	public Optional<User> getUserByTripId(int tripId) {
+		List<User> usersFound = this.getAll();
+
+		TripService tripService = new TripService();
+
+		if (!tripService.getById(tripId).isPresent()) {
+			return null;
+		}
+
+		Trip trip = tripService.getById(tripId).get();
+
+		/*
+		 * If I call .contains of the list it doesn't work even if I override Trip's
+		 * .equals method and hashcode..
+		 */
+		for (User user : usersFound) {
+			for (Trip currentTrip : user.getTrips()) {
+				if (currentTrip.getTripId() == trip.getTripId()) {
+					return Optional.ofNullable(user);
+				}
+			}
+		}
+		return null;
 	}
 
 	/* Joined table functionality */
@@ -89,7 +121,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 		user.setUserLocation(location);
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
 	}
-	
+
 	public void updateUserProfile(User user, UserProfile profile) {
 		user.setUserProfile(profile);
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
@@ -128,23 +160,19 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	@Override
 	public Optional<User> getById(int id) {
-		/* .getSingleResult() throws exception if value is null, we want a returnable null value */
-		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_id = :id").setParameter("id", id)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+		/*
+		 * .getSingleResult() throws exception if value is null, we want a returnable
+		 * null value
+		 */
+		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_id = :id")
+				.setParameter("id", id).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
 	public Optional<User> getByName(String name) {
 		/* Name refers to login name, separate function for full name */
 		return Optional.ofNullable((User) entityManager.createQuery("FROM User WHERE user_loginname = :name")
-				.setParameter("name", name)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+				.setParameter("name", name).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
@@ -169,7 +197,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 		if (!this.getById(id).isPresent()) {
 			return;
 		}
-		
+
 		User user = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(user));
 	}
@@ -179,7 +207,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 		if (!this.getByName(name).isPresent()) {
 			return;
 		}
-		
+
 		User user = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(user));
 	}

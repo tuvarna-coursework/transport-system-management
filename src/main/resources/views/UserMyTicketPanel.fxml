@@ -43,12 +43,12 @@
         </Button>
       <TableView fx:id="myTicketTableView" layoutX="239.0" layoutY="130.0" prefHeight="216.0" prefWidth="422.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #34495E;">
         <columns>
-          <TableColumn prefWidth="62.4000244140625" text="Ticket №" />
-          <TableColumn prefWidth="55.2000732421875" text="Date" />
-            <TableColumn prefWidth="85.5999755859375" text="Departure St." />
-            <TableColumn prefWidth="66.39993286132812" text="Arrival St." />
-            <TableColumn prefWidth="57.60003662109375" text="Quantity" />
-            <TableColumn prefWidth="87.99993896484375" text="Duration(min.)" />
+          <TableColumn fx:id="ticketIdCol" prefWidth="62.4000244140625" text="Ticket №" />
+          <TableColumn fx:id="ticketDateCol" prefWidth="55.2000732421875" text="Date" />
+          <TableColumn fx:id="ticketHourCol" prefWidth="57.60003662109375" text="Time" />
+            <TableColumn fx:id="ticketDepartureCol" prefWidth="85.5999755859375" text="Departure St." />
+            <TableColumn fx:id="ticketArrivalCol" prefWidth="66.39993286132812" text="Arrival St." />
+            <TableColumn fx:id="ticketDurationCol" prefWidth="87.99993896484375" text="Duration(min.)" />
         </columns>
       </TableView>
       <Label alignment="CENTER" layoutX="361.0" layoutY="370.0" prefHeight="42.0" prefWidth="178.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="TRIP CANCELATION" textFill="WHITE">

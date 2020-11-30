@@ -213,4 +213,25 @@ public class Trip {
 	public void setTripTicketPrice(double tripTicketPrice) {
 		this.tripTicketPrice = tripTicketPrice;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + maxTicketsPerUser;
+		result = prime * result + ((route == null) ? 0 : route.hashCode());
+		result = prime * result + ((tripArrivalDate == null) ? 0 : tripArrivalDate.hashCode());
+		result = prime * result + tripCapacity;
+		result = prime * result + ((tripDepartureDate == null) ? 0 : tripDepartureDate.hashCode());
+		result = prime * result + ((tripDepartureHour == null) ? 0 : tripDepartureHour.hashCode());
+		result = prime * result + tripDuration;
+		result = prime * result + tripId;
+		result = prime * result + tripTicketAvailability;
+		long temp;
+		temp = Double.doubleToLongBits(tripTicketPrice);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((tripTransportType == null) ? 0 : tripTransportType.hashCode());
+		result = prime * result + ((tripType == null) ? 0 : tripType.hashCode());
+		return result;
+	}
 }

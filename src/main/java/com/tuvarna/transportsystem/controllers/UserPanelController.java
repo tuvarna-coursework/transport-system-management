@@ -39,7 +39,6 @@ import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 public class UserPanelController implements Initializable {
-
 	ObservableList list = FXCollections.observableArrayList();
 	boolean isSearchHidden = false;
 

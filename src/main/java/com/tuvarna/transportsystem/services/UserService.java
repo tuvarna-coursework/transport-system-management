@@ -18,6 +18,10 @@ public class UserService implements CrudService<User> {
 		this.userDAO = new UserDAO();
 	}
 
+	public Optional<User> getUserByTripId(int tripId) {
+		return userDAO.getUserByTripId(tripId);
+	}
+
 	/* Functionality for joined tables */
 	public void addRole(User user, Role role) {
 		userDAO.addRole(user, role);
@@ -42,7 +46,7 @@ public class UserService implements CrudService<User> {
 	public void updateLocation(User user, Location location) {
 		userDAO.updateLocation(user, location);
 	}
-	
+
 	public void updateUserProfile(User user, UserProfile profile) {
 		userDAO.updateUserProfile(user, profile);
 	}
