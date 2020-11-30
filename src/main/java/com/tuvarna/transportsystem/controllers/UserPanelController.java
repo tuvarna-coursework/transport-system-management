@@ -359,8 +359,9 @@ public class UserPanelController implements Initializable {
 
 			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
 
+			/* Hard code locations */
 			TicketService ticketService = new TicketService();
-			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip);
+			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, trip.getRoute().getRouteDepartureLocation(), trip.getRoute().getRouteArrivalLocation());
 			ticketService.save(ticket);
 
 			UserService userService = new UserService();

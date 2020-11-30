@@ -109,12 +109,13 @@ public class CompanyAddController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		//loadRoutes();
+		// loadRoutes();
 		loadTime();
 		loadRestrictionQuantity();
-		//loadAttachmentLocations();
+		// loadAttachmentLocations();
 		loadLocation();
 	}
+
 	public void loadLocation() {
 		list.removeAll(list);
 		String city_01 = "Varna";
@@ -139,7 +140,7 @@ public class CompanyAddController implements Initializable {
 		String city_20 = "Lovech";
 		String city_21 = "Turgovishte";
 		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		departureChoiceBox.getItems().addAll(list);
 		arrivalChoiceBox.getItems().addAll(list);
 
@@ -270,12 +271,12 @@ public class CompanyAddController implements Initializable {
 		String seatsCapacity = seatsCapacityTextField.getText();
 		int chechedSeatsCapacity = Integer.parseInt(seatsCapacity);
 
-		//validation for departure and arrival. !=null
-		if(departureChoiceBox.getValue()==null){
+		// validation for departure and arrival. !=null
+		if (departureChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select departure station!");
 			return;
 		}
-		if(arrivalChoiceBox.getValue()==null){
+		if (arrivalChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select arrival station!");
 			return;
 		}
@@ -312,16 +313,15 @@ public class CompanyAddController implements Initializable {
 		int ticketsAvailability = Integer.parseInt(ticketsAvailabilityTextField.getText().trim().toString());
 
 		/*
-			Validation to add stations first, before make the trip!
+		 * Validation to add stations first, before make the trip!
 		 */
-		if(globalRoute == null){
+		if (globalRoute == null) {
 			informationLabel.setText("Add stations for the trip first!");
 			return;
 		}
-		/* TEST ONLY: Hard coded cashier until front end changes are made */
-		Trip newTrip = new Trip(tripTypeClass, globalRoute, DatabaseUtils.currentUser, dateDeparture, dateArrival,
-				chechedSeatsCapacity, transportTypeClass, ticketsPerPerson, ticketsAvailability, price, duration,
-				departureTime);
+
+		Trip newTrip = new Trip(tripTypeClass, globalRoute, dateDeparture, dateArrival, chechedSeatsCapacity,
+				transportTypeClass, ticketsPerPerson, ticketsAvailability, price, duration, departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
 
@@ -336,54 +336,49 @@ public class CompanyAddController implements Initializable {
 	}
 
 	public void addStations(javafx.event.ActionEvent event) throws IOException {
-		if(departureChoiceBox.getValue()==null){
+		if (departureChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select departure station!");
 			return;
 		}
-		if(arrivalChoiceBox.getValue()==null){
+		if (arrivalChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select arrival station!");
 			return;
 		}
 
-		//creating the route
+		// creating the route
 		String departureStation = departureChoiceBox.getValue().toString();
 		String arrivalStation = arrivalChoiceBox.getValue().toString();
 		LocationService locationService = new LocationService();
 		Location locationDeparture = locationService.getByName(departureStation).get();
 		Location locationArrival = locationService.getByName(arrivalStation).get();
 		RouteService routeService = new RouteService();
-		Route route= new Route(locationDeparture,locationArrival);
-		routeService.save(route);
-		globalRoute=route;
+		Route route = new Route(locationDeparture, locationArrival);
+
+		if (!routeService.getAll().contains(route)) {
+			routeService.save(route);
+		}
+
+		globalRoute = route;
 
 		try {
 			Stage stage = new Stage();
-			FXMLLoader userPanel =new FXMLLoader(getClass().getResource("/views/CompanyLoadStations.fxml"));
-			DialogPane root =(DialogPane)userPanel.load();
+			FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyLoadStations.fxml"));
+			DialogPane root = (DialogPane) userPanel.load();
 
-			//sending the route and stations to other controller
-			CompanyLoadStationsController controller =(CompanyLoadStationsController) userPanel.getController();
-			String ar=arrivalChoiceBox.getValue().toString();
-			String dp=departureChoiceBox.getValue().toString();
-			controller.getRouteLocations(ar,dp,route);
+			// sending the route and stations to other controller
+			CompanyLoadStationsController controller = (CompanyLoadStationsController) userPanel.getController();
+			String ar = arrivalChoiceBox.getValue().toString();
+			String dp = departureChoiceBox.getValue().toString();
+			controller.getRouteLocations(ar, dp, route);
 
 			Scene adminScene = new Scene(root);
 			stage.setScene(adminScene);
 			stage.setTitle("Transport Company");
 			stage.showAndWait();
 
-		}catch (Exception e){
+		} catch (Exception e) {
 			System.out.println("Problem");
 
 		}
-
-
 	}
-
-
-
-
 }
-
-
-

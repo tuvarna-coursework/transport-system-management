@@ -55,9 +55,6 @@ public class User {
 																	 */
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
-	
-	@OneToMany(mappedBy = "cashier") /* Non-owner side: One cashier will appear in multiple trips */
-	private List<Trip> trip;
 
 	/*
 	 * Even though one user has one type it makes sense that this is a OneToOne
@@ -98,6 +95,24 @@ public class User {
 			@JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "ticket_id") })
 	private List<Ticket> tickets = new ArrayList<>(); // this is like an instance of the UserTicket table
 
+	/*
+	 * A many to many relationship of the same entity: CompanyCashier. Owner side is
+	 * company_id and we will use that side for queries
+	 */
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "\"CompanyCashier\"", schema = "\"TransportSystem\"", joinColumns = {
+			@JoinColumn(name = "company_id") }, inverseJoinColumns = { @JoinColumn(name = "cashier_id") })
+	private List<User> cashiers = new ArrayList<>();
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "\"CompanyCashier\"", schema = "\"TransportSystem\"", joinColumns = {
+			@JoinColumn(name = "cashier_id") }, inverseJoinColumns = { @JoinColumn(name = "company_id") })
+	private List<User> companies = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "cashiers")
+	private List<Trip> tripsMappedByCashiers;
+
 	public User() {
 
 	}
@@ -134,6 +149,14 @@ public class User {
 
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
+	}
+	
+	public List<User> getCashiers() {
+		return cashiers;
+	}
+
+	public void setCashiers(List<User> cashiers) {
+		this.cashiers = cashiers;
 	}
 
 	public UserProfile getUserProfile() {

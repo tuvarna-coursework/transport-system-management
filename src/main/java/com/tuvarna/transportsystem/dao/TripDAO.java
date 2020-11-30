@@ -12,6 +12,7 @@ import javax.persistence.EntityTransaction;
 
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
@@ -100,6 +101,16 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 	public List<Trip> getByDepartureHour(String hour) {
 		return entityManager.createQuery("FROM Trip WHERE trip_hour_of_departure = :hour").setParameter("hour", hour)
 				.getResultList();
+	}
+	
+	public void addCashierForTrip(Trip trip, User cashier) {
+		trip.getCashiers().add(cashier);
+		executeInsideTransaction(entityManager -> entityManager.merge(trip));
+	}
+	
+	public void removeCashierFromTrip(Trip trip, User cashier) {
+		trip.getCashiers().remove(cashier);
+		executeInsideTransaction(entityManager -> entityManager.merge(trip));
 	}
 
 	public void updateTripTicketAvailability(Trip trip, int newValue) {

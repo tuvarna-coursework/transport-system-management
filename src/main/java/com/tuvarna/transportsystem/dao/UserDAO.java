@@ -92,6 +92,11 @@ public class UserDAO implements GenericDAOInterface<User> {
 		user.getTickets().add(ticket);
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
 	}
+	
+	public void addCashierToTransportCompany(User company, User cashier) {
+		company.getCashiers().add(cashier);
+		executeInsideTransaction(entityManager -> entityManager.merge(company));
+	}
 
 	public void removeRole(User user, Role role) {
 		if (user.getRoles().contains(role)) {
@@ -115,6 +120,14 @@ public class UserDAO implements GenericDAOInterface<User> {
 		}
 
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
+	}
+	
+	public void removeCashierFromCompany(User company, User cashier) {
+		if (company.getCashiers().contains(cashier)) {
+			company.getCashiers().remove(cashier);
+		}
+		
+		executeInsideTransaction(entityManager -> entityManager.merge(company));
 	}
 
 	public void updateLocation(User user, Location location) {
@@ -143,7 +156,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 	 * negatively. Change to inner join one day
 	 */
 	public List<User> getByUserType(String type) {
-		return entityManager.createQuery("SELECT u FROM User u, UserType ut WHERE ut.userTypeName = :type")
+		return entityManager.createQuery("SELECT u FROM User u, UserType ut WHERE u.userType = ut.userTypeId AND ut.userTypeName = :type")
 				.setParameter("type", type).getResultList();
 	}
 
@@ -154,7 +167,7 @@ public class UserDAO implements GenericDAOInterface<User> {
 
 	/* Test */
 	public List<User> getByUserLocation(String location) {
-		return entityManager.createQuery("SELECT u FROM User u, Location l WHERE l.locationName = :location")
+		return entityManager.createQuery("SELECT u FROM User u, Location l WHERE u.userLocation = l.locationId AND l.locationName = :location")
 				.setParameter("location", location).getResultList();
 	}
 

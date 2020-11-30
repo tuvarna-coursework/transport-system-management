@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -34,10 +35,6 @@ public class Trip {
 	@ManyToOne
 	@JoinColumn(name = "trip_route_id")
 	private Route route;
-	
-	@ManyToOne
-	@JoinColumn(name = "trip_cashier_id")
-	private User cashier; /* Cashier is initially null but the distributor will set a cashier for the available trips */
 
 	/*
 	 * Copied from User class:
@@ -55,6 +52,11 @@ public class Trip {
 				 */
 	@JoinColumn(name = "trip_transporttype_id")
 	private TransportType tripTransportType;
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "\"TripCashier\"", schema = "\"TransportSystem\"", joinColumns = {
+			@JoinColumn(name = "trip_id") }, inverseJoinColumns = { @JoinColumn(name = "cashier_id") })
+	private List<User> cashiers = new ArrayList<>();
 
 	@ManyToMany(mappedBy = "trips")
 	private List<User> users = new ArrayList<>();
@@ -93,7 +95,7 @@ public class Trip {
 
 	}
 
-	public Trip(TripType tripType, Route route, User cashier, Date tripDepartureDate, Date tripArrivalDate, int tripCapacity,
+	public Trip(TripType tripType, Route route, Date tripDepartureDate, Date tripArrivalDate, int tripCapacity,
 			TransportType tripTransportType, int maxTicketsPerUser, int tripTicketAvailability, double tripTicketPrice,
 			int tripDuration, String tripDepartureHour) {
 		this.tripType = tripType;
@@ -101,21 +103,12 @@ public class Trip {
 		this.tripArrivalDate = tripArrivalDate;
 		this.tripCapacity = tripCapacity;
 		this.route = route;
-		this.cashier = cashier;
 		this.tripTransportType = tripTransportType;
 		this.maxTicketsPerUser = maxTicketsPerUser;
 		this.tripTicketAvailability = tripTicketAvailability;
 		this.tripDuration = tripDuration;
 		this.tripDepartureHour = tripDepartureHour;
 		this.tripTicketPrice = tripTicketPrice;
-	}
-
-	public User getCashier() {
-		return cashier;
-	}
-
-	public void setCashier(User cashier) {
-		this.cashier = cashier;
 	}
 
 	public int getTripDuration() {
@@ -213,25 +206,12 @@ public class Trip {
 	public void setTripTicketPrice(double tripTicketPrice) {
 		this.tripTicketPrice = tripTicketPrice;
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + maxTicketsPerUser;
-		result = prime * result + ((route == null) ? 0 : route.hashCode());
-		result = prime * result + ((tripArrivalDate == null) ? 0 : tripArrivalDate.hashCode());
-		result = prime * result + tripCapacity;
-		result = prime * result + ((tripDepartureDate == null) ? 0 : tripDepartureDate.hashCode());
-		result = prime * result + ((tripDepartureHour == null) ? 0 : tripDepartureHour.hashCode());
-		result = prime * result + tripDuration;
-		result = prime * result + tripId;
-		result = prime * result + tripTicketAvailability;
-		long temp;
-		temp = Double.doubleToLongBits(tripTicketPrice);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((tripTransportType == null) ? 0 : tripTransportType.hashCode());
-		result = prime * result + ((tripType == null) ? 0 : tripType.hashCode());
-		return result;
+
+	public List<User> getCashiers() {
+		return cashiers;
+	}
+
+	public void setCashiers(List<User> cashiers) {
+		this.cashiers = cashiers;
 	}
 }

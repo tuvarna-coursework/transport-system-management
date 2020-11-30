@@ -34,7 +34,15 @@ public class Ticket {
 	@ManyToOne
 	@JoinColumn(name = "trip_id")
 	private Trip trip; // One trip can occur on multiple tickets
-
+	
+	@ManyToOne
+	@JoinColumn(name = "ticket_departurelocation_id")
+	private Location departureLocation;
+	
+	@ManyToOne
+	@JoinColumn(name = "ticket_arrivallocation_id")
+	private Location arrivalLocation;
+	
 	public Ticket() {
 
 	}
@@ -43,9 +51,11 @@ public class Ticket {
 	 * NOTE that User is a foreign key and ONLY the ID will be persisted into the
 	 * database
 	 */
-	public Ticket(Date ticketPurchaseDate, Trip trip) {
+	public Ticket(Date ticketPurchaseDate, Trip trip, Location departure, Location arrival) {
 		this.setTicketPurchaseDate(ticketPurchaseDate);
 		this.setTrip(trip);
+		this.setDepartureLocation(departure);
+		this.setArrivalLocation(arrival);
 	}
 
 	public Trip getTrip() {
@@ -70,5 +80,21 @@ public class Ticket {
 
 	public void setTicketId(int ticketId) {
 		this.ticketId = ticketId;
+	}
+
+	public Location getDepartureLocation() {
+		return departureLocation;
+	}
+
+	public void setDepartureLocation(Location departureLocation) {
+		this.departureLocation = departureLocation;
+	}
+
+	public Location getArrivalLocation() {
+		return arrivalLocation;
+	}
+
+	public void setArrivalLocation(Location arrivalLocation) {
+		this.arrivalLocation = arrivalLocation;
 	}
 }

@@ -35,6 +35,12 @@ public class Location {
 
 	@OneToMany(mappedBy = "routeArrivalLocation")
 	private List<Route> arrivalLocations;
+	
+	@OneToMany(mappedBy = "departureLocation")
+	private List<Ticket> departureLocationsTicket;
+	
+	@OneToMany(mappedBy = "arrivalLocation")
+	private List<Ticket> arrivalLocationsTicket;
 
 	@ManyToMany(mappedBy = "attachmentLocations")
 	private List<Route> routes;

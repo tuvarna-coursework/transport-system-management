@@ -8,6 +8,7 @@ import com.tuvarna.transportsystem.dao.TransportTypeDAO;
 import com.tuvarna.transportsystem.dao.TripDAO;
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.entities.User;
 
 public class TripService implements CrudService<Trip> {
 	private TripDAO tripDAO;
@@ -46,6 +47,14 @@ public class TripService implements CrudService<Trip> {
 	
 	public List<Trip> getByDepartureHour(String hour){
 		return tripDAO.getByDepartureHour(hour);
+	}
+	
+	public void addCashierForTrip(Trip trip, User cashier) {
+		tripDAO.addCashierForTrip(trip, cashier);
+	}
+	
+	public void removeCashierFromTrip(Trip trip, User cashier) {
+		tripDAO.removeCashierFromTrip(trip, cashier);
 	}
 	
 	public void updateTripTicketAvailability(Trip trip, int newValue) {

@@ -103,7 +103,6 @@ CREATE TABLE "TransportSystem"."Trip" (
 	trip_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	trip_type_id integer,
 	trip_route_id integer NOT NULL,
-	trip_cashier_id integer NOT NULL,
 	trip_departure_date date NOT NULL,
 	trip_arrival_date date NOT NULL,
 	trip_capacity integer NOT NULL,
@@ -185,12 +184,28 @@ CREATE TABLE "TransportSystem"."UsersTicket" (
 	ticket_id integer NOT NULL
 );
 
+-- object: "TransportSystem"."CompanyCashier" | type: TABLE --
+-- DROP TABLE IF EXISTS "TransportSystem"."CompanyCashier" CASCADE;
+CREATE TABLE "TransportSystem"."CompanyCashier" (
+	company_id integer NOT NULL,
+	cashier_id integer NOT NULL
+);
+
+-- object: "TransportSystem"."TripCashier" | type: TABLE --
+-- DROP TABLE IF EXISTS "TransportSystem"."TripCashier" CASCADE;
+CREATE TABLE "TransportSystem"."TripCashier"(
+	trip_id integer NOT NULL,
+	cashier_id integer NOT NULL
+);
+
 -- object: "TransportSystem"."Ticket" | type: TABLE --
 -- DROP TABLE IF EXISTS "TransportSystem"."Ticket" CASCADE;
 CREATE TABLE "TransportSystem"."Ticket" (
 	ticket_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	ticket_purchasedate date NOT NULL,
 	trip_id integer NOT NULL,
+	ticket_departurelocation_id integer NOT NULL,
+	ticket_arrivallocation_id integer NOT NULL, 
 	CONSTRAINT "Ticket_pk" PRIMARY KEY (ticket_id)
 
 );
@@ -240,6 +255,29 @@ ALTER TABLE "TransportSystem"."UsersTicket" ADD CONSTRAINT ticket_id FOREIGN KEY
 REFERENCES "TransportSystem"."Ticket" (ticket_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE CASCADE;
 
+-- object: company_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."CompanyCashier" DROP CONSTRAINT IF EXISTS company_id CASCADE;
+ALTER TABLE "TransportSystem"."CompanyCashier" ADD CONSTRAINT company_id FOREIGN KEY (company_id)
+REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- object: cashier_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."CompanyCashier" DROP CONSTRAINT IF EXISTS cashier_id CASCADE;
+ALTER TABLE "TransportSystem"."CompanyCashier" ADD CONSTRAINT cashier_id FOREIGN KEY (cashier_id)
+REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- object: trip_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."TripCashier" DROP CONSTRAINT IF EXISTS trip_id CASCADE;
+ALTER TABLE "TransportSystem"."TripCashier" ADD CONSTRAINT trip_id FOREIGN KEY (trip_id)
+REFERENCES "TransportSystem"."Trip" (trip_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- object: trip_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."TripCashier" DROP CONSTRAINT IF EXISTS trip_id CASCADE;
+ALTER TABLE "TransportSystem"."TripCashier" ADD CONSTRAINT cashier_id FOREIGN KEY (cashier_id)
+REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- object: trip_type_id | type: CONSTRAINT --
 -- ALTER TABLE "TransportSystem"."Trip" DROP CONSTRAINT IF EXISTS trip_type_id CASCADE;
@@ -248,12 +286,7 @@ REFERENCES "TransportSystem"."TripType" (triptype_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: trip_cashier_id | type: CONSTRAINT --
--- ALTER TABLE "TransportSystem"."Trip" DROP CONSTRAINT IF EXISTS trip_type_id CASCADE;
-ALTER TABLE "TransportSystem"."Trip" ADD CONSTRAINT trip_cashier_id FOREIGN KEY (trip_cashier_id)
-REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
-ON DELETE RESTRICT ON UPDATE CASCADE;
--- ddl-end --
+
 
 -- object: trip_location_id | type: CONSTRAINT --
 -- ALTER TABLE "TransportSystem"."Trip" DROP CONSTRAINT IF EXISTS trip_location_id CASCADE;
@@ -294,6 +327,20 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 -- ALTER TABLE "TransportSystem"."Ticket" DROP CONSTRAINT IF EXISTS trip_id CASCADE;
 ALTER TABLE "TransportSystem"."Ticket" ADD CONSTRAINT trip_id FOREIGN KEY (trip_id)
 REFERENCES "TransportSystem"."Trip" (trip_id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: trip_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."Ticket" DROP CONSTRAINT IF EXISTS trip_id CASCADE;
+ALTER TABLE "TransportSystem"."Ticket" ADD CONSTRAINT ticket_departurelocation_id FOREIGN KEY (ticket_departurelocation_id)
+REFERENCES "TransportSystem"."Location" (location_id) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: trip_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."Ticket" DROP CONSTRAINT IF EXISTS trip_id CASCADE;
+ALTER TABLE "TransportSystem"."Ticket" ADD CONSTRAINT ticket_arrivallocation_id FOREIGN KEY (ticket_arrivallocation_id)
+REFERENCES "TransportSystem"."Location" (location_id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
