@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -44,10 +45,10 @@
             <TableColumn prefWidth="105.60009765625" text="Chashier location" />
             </columns>
         </TableView>
-        <TextField layoutX="266.0" layoutY="113.0" promptText="Fullname" />
+        <TextField fx:id="fullnameTextField" layoutX="266.0" layoutY="113.0" promptText="Fullname" />
         <Button layoutX="500.0" layoutY="164.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Add cashier" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="195.0" prefHeight="6.0" prefWidth="386.0" style="-fx-background-color: #34495E;" />
-      <ChoiceBox layoutX="425.0" layoutY="113.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="locationChoiceBox" layoutX="425.0" layoutY="113.0" prefWidth="150.0" />
       <Label alignment="CENTER" layoutX="449.0" layoutY="89.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Location" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="288.0" layoutY="89.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Fullname" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="360.0" layoutY="24.0" prefHeight="42.0" prefWidth="178.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="CREATE CASHIER" textFill="WHITE">
@@ -56,7 +57,7 @@
          </font>
       </Label>
       <Label alignment="CENTER" layoutX="286.0" layoutY="144.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Company" textFill="WHITE" />
-      <ChoiceBox layoutX="264.0" layoutY="165.0" prefWidth="150.0" />
       <AnchorPane layoutX="236.0" layoutY="75.0" prefHeight="6.0" prefWidth="413.0" style="-fx-background-color: #34495E;" />
+      <ComboBox fx:id="companyComboBox" layoutX="265.0" layoutY="165.0" prefWidth="150.0" />
     </children>
 </AnchorPane>
