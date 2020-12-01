@@ -13,14 +13,25 @@ public class RouteService implements CrudService<Route> {
 	public RouteService() {
 		this.routeDAO = new RouteDAO();
 	}
-
-	public void addAttachmentLocation(Route route, Location location) {
-		routeDAO.addAttachmentLocation(route, location);
+	
+	public List<Location> getAttachmentLocationsInRouteById(int routeId){
+		return routeDAO.getAttachmentLocationsInRouteById(routeId);
+	}
+	
+	
+	public String getArrivalHourAtAttachmentLocation(int routeId, int locationId) {
+		return routeDAO.getArrivalHourAtAttachmentLocation(routeId, locationId);
 	}
 
+	public void addAttachmentLocation(Route route, Location location, String hourOfDeparture) {
+		routeDAO.addAttachmentLocation(route, location, hourOfDeparture);
+	}
+
+	/*
 	public void removeAttachmentLocation(Route route, Location location) {
 		routeDAO.removeAttachmentLocation(route, location);
 	}
+	*/
 
 	@Override
 	public Optional<Route> getById(int id) {

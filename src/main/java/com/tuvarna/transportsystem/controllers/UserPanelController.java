@@ -31,8 +31,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.LocationService;
+import com.tuvarna.transportsystem.services.RouteService;
 import com.tuvarna.transportsystem.services.TicketService;
 import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.services.UserService;
@@ -167,24 +170,36 @@ public class UserPanelController implements Initializable {
 	}
 
 	private List<Trip> getMatchingTrips() throws ParseException {
+		if (departureChoiceBox.getSelectionModel().getSelectedItem().equals(null)) {
+			informationLabel.setText("Please select departure station.");
+			return null;
+		}
+
+		if (arrivalChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+			informationLabel.setText("Please select arrival station.");
+			return null;
+		}
+
+		if (tripDatePicker.getValue().equals(null)) {
+			informationLabel.setText("Please select a date.");
+			return null;
+		}
+
+		if (quantityChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+			informationLabel.setText("Please select quantity.");
+			return null;
+		}
+
+		if (timeChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+			informationLabel.setText("Please add time.");
+			return null;
+		}
+
 		String departureStation = departureChoiceBox.getValue().trim();
 		String arrivalStation = arrivalChoiceBox.getValue().trim();
 
 		TripService tripService = new TripService();
-
-		/*
-		 * Get trips where the start and end destination searched matches the beginning
-		 * and end of the trip Customer searches: Varna - Sofia and the trip is Varna -
-		 * Sofia
-		 */
-		List<Trip> fullTrips = tripService.getByLocations(departureStation, arrivalStation);
-
-		/*
-		 * Scenario: Trip is Varna - Sofia but the customer wants Veliko Tarnovo - Sofia
-		 * and there is a bus stop in Veliko Tarnovo
-		 */
-		List<Trip> partialTrips = tripService.getByAttachmentLocations(departureStation);
-		partialTrips.addAll(tripService.getByAttachmentLocations(arrivalStation));
+		List<Trip> fullTrips = tripService.getAll();
 
 		/*
 		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
@@ -199,42 +214,122 @@ public class UserPanelController implements Initializable {
 
 		/* Iterate through the trips and validate all the fields */
 		for (Trip trip : fullTrips) {
-			boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
+			Date dbDate = trip.getTripDepartureDate();
+
+			/*
+			 * Probably the least intuitive approach to fix the difference in formats
+			 * between the current machine and postgresql date but it works and is universal
+			 */
+			boolean matchesDates = dbDate.getYear() == dateDeparture.getYear()
+					&& dbDate.getMonth() == dateDeparture.getMonth() && dbDate.getDay() == dateDeparture.getDay();
 			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
 			boolean matchesTime = trip.getTripDepartureHour()
 					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
+			boolean tripEndPointsSearched = trip.getRoute().getRouteDepartureLocation().getLocationName()
+					.equals(departureStation)
+					&& trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation);
+			boolean tripDepartureMiddlePointSearched = false;
+			boolean tripArrivalMiddlePointSearched = false;
+			boolean endPointToMiddlePointSearched = false;
+			boolean middlePointToEndPointSearched = false;
+
+			RouteService routeService = new RouteService();
+			List<Location> attachmentLocations = routeService
+					.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
+
+			/*
+			 * Scenario: departure station matches start location of the route but the
+			 * arrival station searched doesn't match the end of the route. We are searching
+			 * for: an attachment location with the searched arrival location
+			 */
+			if (trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureStation)
+					&& (!trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation))) {
+
+				for (Location location : attachmentLocations) {
+					if (location.getLocationName().equals(arrivalStation)) {
+						endPointToMiddlePointSearched = true;
+						break;
+					}
+				}
+			}
+			/*
+			 * Scenario: Arrival station matches the end point of the route but the
+			 * departure station is probably a middle point. Check it.
+			 */
+			if ((!trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureStation))
+					&& (trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation))) {
+
+				for (Location attachmentLocation : attachmentLocations) {
+					if (attachmentLocation.getLocationName().equals(departureStation)) {
+						middlePointToEndPointSearched = true;
+
+						int routeId = trip.getRoute().getRouteId();
+						int locationId = attachmentLocation.getLocationId();
+
+						/*
+						 * Initially, matchesTime compares the start point of the route with the
+						 * searched time. If we are buying a ticket from a middle point, it takes time
+						 * until the bus reaches that location and we are searching from another hour.
+						 * In RouteAttachment it is logged when the bus arrives at the middle point.
+						 */
+						matchesTime = timeChoiceBox.getSelectionModel().getSelectedItem()
+								.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
+
+						break;
+					}
+				}
+			}
+
+			/*
+			 * Scenario: We are searching for a trip between 2 middle points. Check if the
+			 * departure location is present in the RouteAttachment table
+			 */
+			for (Location attachmentLocation : attachmentLocations) {
+				if (attachmentLocation.getLocationName().equals(departureStation)) {
+					tripDepartureMiddlePointSearched = true;
+
+					int routeId = trip.getRoute().getRouteId();
+					int locationId = attachmentLocation.getLocationId();
+
+					matchesTime = timeChoiceBox.getSelectionModel().getSelectedItem()
+							.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
+
+					break;
+				}
+			}
+
+			/* Same for arrival */
+			for (Location attachmentLocation : attachmentLocations) {
+				if (attachmentLocation.getLocationName().equals(arrivalStation)) {
+					tripArrivalMiddlePointSearched = true;
+					break;
+				}
+			}
 
 			/* If all the criteria matches check if there are enough available tickets */
 			if (matchesDates && checkQuantity && matchesTime) {
-				int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
 
-				/* If there are enough tickets substitute the bought tickets */
-				if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
-					filteredTrips.add(trip);
-				}
-			}
-		}
+				/*
+				 * If either the customer chose the start and end point of the route (Sofia -
+				 * Varna) or they chose two valid middle points from the RouteAttachment table
+				 * (for example Shumen - Veliko Tarnovo) then a purchase can proceed.
+				 * 
+				 * Also, if the customer chose (Sofia - Veliko Tarnovo) (start of route - middle
+				 * point) or they chose (Veliko Tarnovo - Varna) (middle point - end of route)
+				 * this is also a valid search
+				 */
+				if (tripEndPointsSearched || (tripDepartureMiddlePointSearched && tripArrivalMiddlePointSearched)
+						|| (endPointToMiddlePointSearched || middlePointToEndPointSearched)) {
 
-		for (Trip trip : partialTrips) {
-			boolean matchesDates = trip.getTripArrivalDate().compareTo(dateDeparture) == 1 ? true : false;
-			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
-			boolean matchesTime = trip.getTripDepartureHour()
-					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
-
-			/*
-			 * Ticket is bought from a middle point and we must check if the end destination
-			 * is the same, only then it will be added to the filtered trips
-			 */
-			if (trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation)) {
-				if (matchesDates && checkQuantity && matchesTime) {
 					int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
+
+					/* If there are enough tickets substitute the bought tickets */
 					if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
 						filteredTrips.add(trip);
 					}
 				}
 			}
 		}
-
 		return filteredTrips;
 	}
 
@@ -303,7 +398,7 @@ public class UserPanelController implements Initializable {
 		String city_21 = "Turgovishte";
 
 		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		departureChoiceBox.getItems().addAll(list);
 		arrivalChoiceBox.getItems().addAll(list);
 
@@ -359,9 +454,25 @@ public class UserPanelController implements Initializable {
 
 			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
 
-			/* Hard code locations */
+			LocationService locationService = new LocationService();
+
+			if (!locationService.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).isPresent()) {
+				informationLabel.setText("Unable to purchase ticket.");
+				return;
+			}
+
+			if (!locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem()).isPresent()) {
+				informationLabel.setText("Unable to purchase ticket.");
+				return;
+			}
+
+			Location departureLocation = locationService
+					.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).get();
+			Location arrivalLocation = locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem())
+					.get();
+
 			TicketService ticketService = new TicketService();
-			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, trip.getRoute().getRouteDepartureLocation(), trip.getRoute().getRouteArrivalLocation());
+			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
 			ticketService.save(ticket);
 
 			UserService userService = new UserService();

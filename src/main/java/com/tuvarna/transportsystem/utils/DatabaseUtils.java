@@ -182,10 +182,10 @@ public class DatabaseUtils {
 		routeService.save(route3);
 		routeService.save(route4);
 
-		routeService.addAttachmentLocation(route1, turnovo);
-		routeService.addAttachmentLocation(route2, turnovo);
-		routeService.addAttachmentLocation(route3, sliven);
-		routeService.addAttachmentLocation(route4, sliven);
+		routeService.addAttachmentLocation(route1, turnovo, "03:15");
+		routeService.addAttachmentLocation(route2, turnovo, "03:15");
+		routeService.addAttachmentLocation(route3, sliven, "03:15");
+		routeService.addAttachmentLocation(route4, sliven, "03:15");
 
 		
 	}

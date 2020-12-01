@@ -33,11 +33,8 @@ public class Route {
 	@JoinColumn(name = "route_arrivallocation_id")
 	private Location routeArrivalLocation;
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(name = "\"RouteAttachment\"", schema = "\"TransportSystem\"", joinColumns = {
-			@JoinColumn(name = "route_id") }, inverseJoinColumns = {
-					@JoinColumn(name = "location_id") })
-	private List<Location> attachmentLocations = new ArrayList<>();
+	@OneToMany(mappedBy="route")
+	private List<RouteAttachment> attachmentLocations = new ArrayList<>(); // owner side of many to many RouteAttachment joined table
 
 	@OneToMany(mappedBy = "route")
 	private List<Trip> trips;
@@ -50,12 +47,20 @@ public class Route {
 		this.routeArrivalLocation = routeArrivalLocation;
 	}
 
-	public List<Location> getAttachmentLocations() {
+	public List<RouteAttachment> getAttachmentLocations() {
 		return attachmentLocations;
 	}
 
-	public void setAttachmentLocations(List<Location> attachableLocations) {
-		this.attachmentLocations = attachableLocations;
+	public void setAttachmentLocations(List<RouteAttachment> attachmentLocations) {
+		this.attachmentLocations = attachmentLocations;
+	}
+
+	public List<Trip> getTrips() {
+		return trips;
+	}
+
+	public void setTrips(List<Trip> trips) {
+		this.trips = trips;
 	}
 
 	public int getRouteId() {

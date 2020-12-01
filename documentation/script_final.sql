@@ -137,8 +137,11 @@ CREATE TABLE "TransportSystem"."Route" (
 );
 
 CREATE TABLE "TransportSystem"."RouteAttachment" (
+	route_attachment_id integer NOT NULL,
 	route_id integer NOT NULL,
-	location_id integer NOT NULL
+	location_id integer NOT NULL,
+	hour_of_arrival varchar(50) NOT NULL,
+	CONSTRAINT "RouteAttachment_pk" PRIMARY KEY (route_attachment_id)
 );
 
 

@@ -1,5 +1,6 @@
 package com.tuvarna.transportsystem.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -10,9 +11,11 @@ import javax.persistence.EntityTransaction;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.entities.Route;
+import com.tuvarna.transportsystem.entities.RouteAttachment;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
+@SuppressWarnings("unchecked")
 public class RouteDAO implements GenericDAOInterface<Route> {
 	private EntityManager entityManager;
 
@@ -40,12 +43,36 @@ public class RouteDAO implements GenericDAOInterface<Route> {
 			throw e;
 		}
 	}
-
-	public void addAttachmentLocation(Route route, Location location) {
-		route.getAttachmentLocations().add(location);
-		executeInsideTransaction(entityManager -> entityManager.merge(route));
+	
+	public List<Location> getAttachmentLocationsInRouteById(int routeId){
+		List<RouteAttachment> attachments = entityManager.createQuery("FROM RouteAttachment WHERE route_id = :id")
+				.setParameter("id", routeId).getResultList();
+		
+		List<Location> locations = new ArrayList<>();
+		
+		attachments.forEach(a -> locations.add(a.getLocation()));
+		return locations;
+	}
+	
+	public String getArrivalHourAtAttachmentLocation(int routeId, int locationId) {
+		Optional<RouteAttachment> attachment = Optional.ofNullable((RouteAttachment) entityManager.createQuery("FROM RouteAttachment WHERE route_id = :routeId AND location_id = :locationId")
+				.setParameter("routeId", routeId)
+				.setParameter("locationId", locationId).getResultList().stream().findFirst().orElse(null));
+		
+		if (attachment.isPresent()) {
+			return attachment.get().getHourOfArrival();
+		} else {
+			return null;
+		}
 	}
 
+	public void addAttachmentLocation(Route route, Location location, String hourOfArrival) {
+		RouteAttachment routeAttachment = new RouteAttachment(route, location, hourOfArrival);
+		
+		executeInsideTransaction(entityManager -> entityManager.persist(routeAttachment));
+	}
+
+	/*
 	public void removeAttachmentLocation(Route route, Location location) {
 		if (route.getAttachmentLocations().contains(location)) {
 			route.getAttachmentLocations().remove(location);
@@ -53,6 +80,7 @@ public class RouteDAO implements GenericDAOInterface<Route> {
 
 		executeInsideTransaction(entityManager -> entityManager.merge(route));
 	}
+	*/
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -41,9 +41,9 @@ public class Location {
 	
 	@OneToMany(mappedBy = "arrivalLocation")
 	private List<Ticket> arrivalLocationsTicket;
-
-	@ManyToMany(mappedBy = "attachmentLocations")
-	private List<Route> routes;
+	
+	@OneToMany(mappedBy = "location")
+	private List<RouteAttachment> routeAttachmentLocations; // non-owner side of RouteAttachment joined table (with extra column)
 
 	public Location() {
 

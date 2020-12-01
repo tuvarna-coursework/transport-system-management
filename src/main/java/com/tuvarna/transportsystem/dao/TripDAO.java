@@ -79,7 +79,7 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 		/* Easier to use java stream and not hibernate query language here */
 		this.getAll().stream().forEach(t -> {
 			t.getRoute().getAttachmentLocations().forEach(l -> {
-				if (l.getLocationName().equals(location)) {
+				if (l.getLocation().getLocationName().equals(location)) {
 					returnValue.add(t);
 				}
 			});
