@@ -2,15 +2,11 @@ package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
-import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.UserService;
-import com.tuvarna.transportsystem.services.UserTypeService;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +20,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 
@@ -32,7 +29,7 @@ public class DistributorAddCashierController implements Initializable {
     @FXML
     private Label informationLabel;
     @FXML
-    private ComboBox<User> companyComboBox;
+    private ComboBox<String> companyComboBox;
     @FXML
     private ChoiceBox<String> locationChoiceBox;
     @FXML
@@ -40,36 +37,20 @@ public class DistributorAddCashierController implements Initializable {
 
     ObservableList list = FXCollections.observableArrayList();
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadLocation();
-        companyComboBox.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
-            @Override
-            public ListCell<User> call(ListView<User> userListView) {
-                ListCell<User> cell = new ListCell<User>() {
-                    @Override
-                    protected void updateItem(User item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setText("");
-                        } else {
-                            setText(item.getUserFullName());
-                        }
-                    }
-                };
-                return cell;
-            }
-        });
-        companyComboBox.getItems().addAll(getCompanies());
+        companyComboBox.setItems(getCompanies());
     }
 
-    public ObservableList<User> getCompanies(){
-        ObservableList<User> userList=FXCollections.observableArrayList();
+    public ObservableList<String> getCompanies(){
+        ObservableList<String> userList=FXCollections.observableArrayList();
         UserService userService= new UserService();
         String type= "Transport Company";
         List<User> eList = userService.getByUserType(type);
         for (User ent : eList) {
-            userList.add(ent);
+            userList.add(ent.getUserFullName());
         }
         return userList;
     }
@@ -101,6 +82,57 @@ public class DistributorAddCashierController implements Initializable {
         locationChoiceBox.getItems().addAll(list);
     }
 
+    private String generatePassword() {
+        StringBuilder sb = new StringBuilder();
+        String randomString = "abcABCdItRrGmnNoOzZeEqWw_-()%$#@!^*=+";
+
+        Random random = new Random();
+
+        for (int i = 0; i < 9; i++) {
+            if (i % 2 == 0) {
+                sb.append(random.nextInt(9));
+            } else {
+                sb.append(randomString.charAt(random.nextInt(randomString.length())));
+            }
+        }
+
+        return sb.toString();
+    }
+    private String generateUserName(String input) {
+        StringBuilder sb = new StringBuilder();
+
+        /*
+         * Simple algorithm to generate username based on fullname: Usernames will be in
+         * the format: 4 letters _ 3 digits If it is 4 or less characters it will take
+         * all letters and if not it will take every other character until there are 4
+         * characters.
+         *
+         * Then append 3 random digits
+         */
+        if (input.trim().length() > 4) {
+            for (int i = 0; i < input.trim().length(); i++) {
+                if (i == 4) {
+                    break;
+                }
+
+                if (i % 2 == 0 && input.charAt(i) != ' ') {
+                    sb.append(input.toUpperCase().charAt(i));
+                }
+            }
+        } else {
+            sb.append(input.toUpperCase());
+        }
+
+        sb.append("_");
+
+        Random random = new Random();
+
+        for (int i = 0; i < 3; i++) {
+            sb.append(random.nextInt(9));
+        }
+
+        return sb.toString();
+    }
     public void goToRequest(javafx.event.ActionEvent event) throws IOException {
         Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorRequestPanel.fxml"));
         Scene adminScene = new Scene(userPanel);
@@ -126,6 +158,19 @@ public class DistributorAddCashierController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(adminScene);
         window.show();
+
+    }
+    public void createCashier(javafx.event.ActionEvent event) throws IOException{
+        if(!fullnameTextField.getText().isEmpty()){
+            informationLabel.setText(companyComboBox.getValue());
+            String fullname= fullnameTextField.getText();
+            UserService userService= new UserService();
+            /*
+            NOT FINISHED FUNCTIONALITY!
+             */
+
+        }else informationLabel.setText("Enter cashier full name!");
+
 
     }
 
