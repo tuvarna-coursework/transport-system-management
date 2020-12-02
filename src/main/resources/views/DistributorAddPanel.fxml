@@ -37,12 +37,12 @@
             <Label fx:id="informationLabel" layoutX="10.0" layoutY="313.0" prefHeight="6.0" prefWidth="234.0" textFill="WHITE" />
             </children>
         </AnchorPane>
-        <TableView layoutX="266.0" layoutY="226.0" prefHeight="226.0" prefWidth="349.0">
+        <TableView fx:id="cashierTable" layoutX="266.0" layoutY="226.0" prefHeight="226.0" prefWidth="349.0">
             <columns>
-                <TableColumn prefWidth="83.20001220703125" text="Cashier №" />
-                <TableColumn prefWidth="70.39996337890625" text="Fullname" />
-            <TableColumn prefWidth="87.199951171875" text="Company" />
-            <TableColumn prefWidth="105.60009765625" text="Chashier location" />
+                <TableColumn fx:id="cashierId" prefWidth="83.20001220703125" text="Cashier №" />
+                <TableColumn fx:id="cashierFullName" prefWidth="70.39996337890625" text="Fullname" />
+            <TableColumn fx:id="cashierCompany" prefWidth="87.199951171875" text="Company" />
+            <TableColumn fx:id="cashierLocation" prefWidth="105.60009765625" text="Chashier location" />
             </columns>
         </TableView>
         <TextField fx:id="fullnameTextField" layoutX="266.0" layoutY="113.0" promptText="Fullname" />

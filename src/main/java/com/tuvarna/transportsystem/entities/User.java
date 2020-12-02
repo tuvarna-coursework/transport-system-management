@@ -159,6 +159,14 @@ public class User {
 		this.cashiers = cashiers;
 	}
 
+	public List<User> getCompanies() {
+		return companies;
+	}
+
+	public void setCompanies(List<User> companies) {
+		this.companies = companies;
+	}
+
 	public UserProfile getUserProfile() {
 		return userProfile;
 	}

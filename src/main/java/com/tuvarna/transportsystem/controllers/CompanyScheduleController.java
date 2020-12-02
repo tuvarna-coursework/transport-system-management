@@ -53,6 +53,9 @@ public class CompanyScheduleController implements Initializable {
     private TableColumn<Trip,Double>col_price;
     @FXML
     private TableColumn<Trip,Integer>col_duration;
+    
+    @FXML
+    private TableColumn<Trip, String> col_hourOfDeparture;
 
 
 
@@ -95,6 +98,14 @@ public class CompanyScheduleController implements Initializable {
                 return new SimpleStringProperty(param.getValue().getTripTransportType().getTransportTypeName());
             }
         });
+        
+        col_hourOfDeparture.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Trip,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+                return new SimpleStringProperty(param.getValue().getTripDepartureHour());
+            }
+        });
         col_duration.setCellValueFactory(new PropertyValueFactory<Trip,Integer>("tripDuration"));
         col_price.setCellValueFactory(new PropertyValueFactory<Trip,Double>("tripTicketPrice"));
         col_availableTickets.setCellValueFactory(new PropertyValueFactory<Trip,Integer>("tripTicketAvailability"));
@@ -110,7 +121,9 @@ public class CompanyScheduleController implements Initializable {
 
         List<Trip> eList = tripService.getAll();
         for (Trip ent : eList) {
-            tripList.add(ent);
+        	if (DatabaseUtils.currentUser.getTrips().contains(ent)) {
+        		 tripList.add(ent);
+        	}
         }
         return tripList;
 

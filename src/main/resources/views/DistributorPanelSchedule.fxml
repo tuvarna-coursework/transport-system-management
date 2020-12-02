@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="596.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.DistributorScheduleController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="933.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.DistributorScheduleController">
     <children>
         <AnchorPane layoutY="-1.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
             <children>
@@ -33,18 +33,24 @@
                   <Font name="Tahoma" size="12.0" />
                </font>
             </Button>
+            <Label fx:id="informationLabel" alignment="CENTER" layoutX="10.0" layoutY="307.0" prefHeight="18.0" prefWidth="241.0" textFill="WHITE" />
             </children>
         </AnchorPane>
-        <TableView layoutX="262.0" layoutY="146.0" prefHeight="289.0" prefWidth="328.0">
+         <TableView fx:id="scheduleTable" layoutX="262.0" layoutY="139.0" prefHeight="316.0" prefWidth="666.0">
             <columns>
-                <TableColumn prefWidth="84.0" text="Date" />
-                <TableColumn prefWidth="76.0" text="Departure" />
-                <TableColumn prefWidth="84.0" text="Arival" />
-                <TableColumn prefWidth="82.4000244140625" text="Company" />
+                <TableColumn fx:id="col_departureDate" prefWidth="92.7999267578125" text="Departure Date" />
+                <TableColumn fx:id="col_hourOfDeparture" prefWidth="45.5" text="Hour" />
+                <TableColumn fx:id="col_departure" prefWidth="78.4000244140625" text="Departure" />
+                <TableColumn fx:id="col_arrival" prefWidth="59.199951171875" text="Arival" />
+                <TableColumn fx:id="col_tripType" prefWidth="46.400054931640625" text="Type" />
+                <TableColumn fx:id="col_availableTickets" prefWidth="93.5999755859375" text="Available tickets" />
+                <TableColumn fx:id="col_transportType" prefWidth="67.20001220703125" text="Trans. type" />
+                <TableColumn fx:id="col_price" prefWidth="45.59991455078125" text="Price $" />
+                <TableColumn fx:id="col_duration" prefWidth="97.5999755859375" text="Duration (min.)" />
+                <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
             </columns>
         </TableView>
-        <TextField layoutX="266.0" layoutY="54.0" promptText="Departure station" />
-        <DatePicker layoutX="425.0" layoutY="54.0" prefHeight="18.0" prefWidth="149.0" promptText="Date" />
+       <Button fx:id="viewAttachmentLocationsButton" onAction="#showAttachmentLocations" layoutX="301.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="View attachment locations" textFill="WHITE" />
         <Button layoutX="521.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="7.0" prefWidth="362.0" style="-fx-background-color: #34495E;" />
     </children>

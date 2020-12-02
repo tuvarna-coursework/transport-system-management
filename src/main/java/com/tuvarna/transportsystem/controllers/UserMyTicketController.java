@@ -101,6 +101,7 @@ public class UserMyTicketController implements Initializable {
 					}
 				});
 		
+		
 		ticketDurationCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
 		ticketIdCol.setCellValueFactory(new PropertyValueFactory<Ticket, Integer>("ticketId"));
 		
@@ -110,6 +111,7 @@ public class UserMyTicketController implements Initializable {
 		list.addAll(trips);
 		
 		myTicketTableView.getItems().addAll(list);
+		
 	}
 
 	public void logOut(javafx.event.ActionEvent event) throws IOException {

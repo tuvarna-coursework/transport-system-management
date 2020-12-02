@@ -48,6 +48,44 @@ public class CompanyLoadStationsController implements Initializable {
 	private ChoiceBox<String> stationElevenChoiceBox;
 	@FXML
 	private ChoiceBox<String> stationTwelveChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeOneChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeTwoChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeThreeChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeFourChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeFiveChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeSixChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeSevenChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeEightChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeNineChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeTenChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeElevenChoiceBox;
+	
+	@FXML
+	private ChoiceBox<String> timeTwelveChoiceBox;
+	
+	
 	@FXML
 	private Button applyButton;
 	@FXML
@@ -112,19 +150,26 @@ public class CompanyLoadStationsController implements Initializable {
 	}
 
 	public void makeRoute(javafx.event.ActionEvent event) throws IOException {
+		RouteService routeService = new RouteService();
+		
 		Stage stage = (Stage) applyButton.getScene().getWindow();
 		if (stationOneChoiceBox.getValue() != null && stationOneChoiceBox.getValue().trim().length() != 0) {
 			String st1 = stationOneChoiceBox.getValue();
 			LocationService locationService = new LocationService();
 			Location locationStationOne = locationService.getByName(st1).get();
+			
+			if (timeOneChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
 
 			if (locationStationOne.getLocationName().equals(departure)
 					|| locationStationOne.getLocationName().equals(arrival)) {
 				informationLabel.setText("Station 1 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationOne, "03:15");
+			
+			routeService.addAttachmentLocation(route, locationStationOne, timeOneChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationTwoChoiceBox.getValue() != null && stationTwoChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTwo = new LocationService().getByName(stationTwoChoiceBox.getValue().toString())
@@ -135,8 +180,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 2 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTwo, "06:30");
+			
+			if (timeTwoChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+	
+			routeService.addAttachmentLocation(route, locationStationTwo, timeTwoChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationThreeChoiceBox.getValue() != null && stationThreeChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationThree = new LocationService().getByName(stationThreeChoiceBox.getValue().toString())
@@ -147,8 +197,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 3 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationThree, "08:00");
+			
+			if (timeThreeChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+		
+			routeService.addAttachmentLocation(route, locationStationThree, timeThreeChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationFourChoiceBox.getValue() != null && stationFourChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationFour = new LocationService().getByName(stationFourChoiceBox.getValue().toString())
@@ -159,8 +214,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 4 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationFour, "09:15");
+			
+			if (timeFourChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationFour, timeFourChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationFiveChoiceBox.getValue() != null && stationFiveChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationFive = new LocationService().getByName(stationFiveChoiceBox.getValue().toString())
@@ -171,8 +231,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 5 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationFive, "11:00");
+			
+			if (timeFiveChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationFive, timeFiveChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationSixChoiceBox.getValue() != null && stationSixChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationSix = new LocationService().getByName(stationSixChoiceBox.getValue().toString())
@@ -183,8 +248,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 6 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationSix, "12:30");
+			
+			if (timeSixChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationSix, timeSixChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationSevenChoiceBox.getValue() != null && stationSevenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationSeven = new LocationService().getByName(stationSevenChoiceBox.getValue().toString())
@@ -195,8 +265,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 7 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationSeven, "14:00");
+			
+			if (timeSevenChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationSeven, timeSevenChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationEightChoiceBox.getValue() != null && stationEightChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationEight = new LocationService().getByName(stationEightChoiceBox.getValue().toString())
@@ -207,8 +282,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 8 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationEight, "15:30");
+			
+			if (timeEightChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationEight, timeEightChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationNineChoiceBox.getValue() != null && stationNineChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationNine = new LocationService().getByName(stationNineChoiceBox.getValue().toString())
@@ -219,8 +299,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 9 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationNine, "17:00");
+			
+			if (timeNineChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+		
+			routeService.addAttachmentLocation(route, locationStationNine, timeNineChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationTenChoiceBox.getValue() != null && stationTenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTen = new LocationService().getByName(stationTenChoiceBox.getValue().toString())
@@ -231,8 +316,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 10 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTen, "17:30");
+			
+			if (timeTenChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+			
+			routeService.addAttachmentLocation(route, locationStationTen, timeTenChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationElevenChoiceBox.getValue() != null && stationElevenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationEleven = new LocationService()
@@ -243,8 +333,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 11 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationEleven, "18:45");
+			
+			if (timeElevenChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+		
+			routeService.addAttachmentLocation(route, locationStationEleven, timeElevenChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		if (stationTwelveChoiceBox.getValue() != null && stationTwelveChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTwelve = new LocationService()
@@ -255,8 +350,13 @@ public class CompanyLoadStationsController implements Initializable {
 				informationLabel.setText("Station 12 matches with arrival or departure location");
 				return;
 			}
-			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTwelve, "19:45");
+			
+			if (timeTwelveChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+				informationLabel.setText("Please select time of arrival for all locations.");
+				return;
+			}
+	
+			routeService.addAttachmentLocation(route, locationStationTwelve, timeTwelveChoiceBox.getSelectionModel().getSelectedItem());
 		}
 		stage.close();
 

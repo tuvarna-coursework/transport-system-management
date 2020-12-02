@@ -38,6 +38,7 @@
         <TableView fx:id="companyScheduleTable" layoutX="262.0" layoutY="139.0" prefHeight="316.0" prefWidth="666.0">
             <columns>
                 <TableColumn fx:id="col_departureDate" prefWidth="92.7999267578125" text="Departure Date" />
+                <TableColumn fx:id="col_hourOfDeparture" prefWidth="92.7999267578125" text="Hour" />
                 <TableColumn fx:id="col_departure" prefWidth="78.4000244140625" text="Departure" />
                 <TableColumn fx:id="col_arrival" prefWidth="59.199951171875" text="Arival" />
                 <TableColumn fx:id="col_tripType" prefWidth="46.400054931640625" text="Type" />
