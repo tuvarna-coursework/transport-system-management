@@ -1,5 +1,12 @@
 package com.tuvarna.transportsystem.controllers;
 
+import com.tuvarna.transportsystem.entities.Request;
+import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.RequestService;
+import com.tuvarna.transportsystem.services.TripService;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,104 +16,75 @@ import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DistributorRequestController implements Initializable {
 
     ObservableList list = FXCollections.observableArrayList();
     @FXML
-    private ChoiceBox<String> departureChoiceBox;
+    private TableView<Trip> requestTable;
     @FXML
-    private ChoiceBox<String> arrivalChoiceBox;
+    private TableColumn<Trip,String> departure_col;
     @FXML
-    private ChoiceBox<String> timeChoiceBox;
+    private TableColumn<Trip,String> arrival_col;
     @FXML
-    private ChoiceBox<String> restrictionChoiceBox;
-
+    private TableColumn<Trip,String> hour_col;
+    @FXML
+    private TableColumn<Trip,Integer> capacity_col;
+    @FXML
+    private TableColumn<Trip,Integer> tickets_col;
+    @FXML
+    private TableColumn<Trip,String> company_col;
+    @FXML
+    private TextField requiredTicketsTextField;
+    @FXML
+    private Label informationLabel;
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadLocation();
-        loadTime();
-        loadRestrictionQuantity();
+        departure_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Trip,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+                return new SimpleStringProperty(param.getValue().getRoute().getRouteDepartureLocation().getLocationName());
+            }
+        });
+        arrival_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Trip,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+                return new SimpleStringProperty(param.getValue().getRoute().getRouteArrivalLocation().getLocationName());
+            }
+        });
+        hour_col.setCellValueFactory(new PropertyValueFactory<Trip,String>("tripDepartureHour"));
+        capacity_col.setCellValueFactory(new PropertyValueFactory<Trip,Integer>("tripCapacity"));
+        tickets_col.setCellValueFactory(new PropertyValueFactory<Trip,Integer>("tripTicketAvailability"));
+        requestTable.setItems(getTrips());
 
     }
+    public ObservableList<Trip> getTrips(){
+        ObservableList<Trip> tripList=FXCollections.observableArrayList();
+        TripService tripService= new TripService();
 
-    public void loadLocation() {
-        list.removeAll(list);
-        String city_01 = "Varna";
-        String city_02 = "Sofia";
-        String city_03 = "Shumen";
-        String city_04 = "Veliko Turnovo";
-        String city_05 = "Razgrad";
-        String city_06 = "Gabrovo";
-        String city_07 = "Plovdiv";
-        String city_08 = "Burgas";
-        String city_09 = "Stara Zagora";
-        String city_10 = "Blagoevgrad";
-        String city_11 = "Sliven";
-        String city_12 = "Pleven";
-        String city_13 = "Omurtag";
-        String city_14 = "Ruse";
-        String city_15 = "Dobrich";
-        String city_16 = "Montana";
-        String city_17 = "Vraca";
-        String city_18 = "Yambol";
-        String city_19 = "Pernik";
-        String city_20 = "Lovech";
-        String city_21 = "Turgovishte";
-        list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-                city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
-        departureChoiceBox.getItems().addAll(list);
-        arrivalChoiceBox.getItems().addAll(list);
+        List<Trip> eList = tripService.getAll();
+        for (Trip ent : eList) {
+            if (DatabaseUtils.currentUser.getTrips().contains(ent)) {
+                tripList.add(ent);
+            }
+        }
+        return tripList;
     }
 
-    public void loadTime() {
-        list.removeAll(list);
-        String time_01 = "00:00";
-        String time_02 = "03:15";
-        String time_03 = "06:30";
-        String time_04 = "08:00";
-        String time_05 = "09:15";
-        String time_06 = "11:00";
-        String time_07 = "12:30";
-        String time_08 = "14:10";
-        String time_09 = "15:00";
-        String time_10 = "17:05";
-        String time_11 = "18:30";
-        String time_12 = "19:55";
-        String time_13 = "21:00";
-        String time_14 = "22:30";
-        list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
-                time_12, time_13, time_14);
-        timeChoiceBox.getItems().addAll(list);
-    }
-
-    public void loadRestrictionQuantity() {
-        list.removeAll(list);
-        String number_01 = ("1");
-        String number_02 = ("2");
-        String number_03 = ("3");
-        String number_04 = ("4");
-        String number_05 = ("5");
-        String number_06 = ("6");
-        String number_07 = ("7");
-        String number_08 = ("8");
-        String number_09 = ("9");
-        String number_10 = ("10");
-
-        list.addAll(number_01, number_02, number_03, number_04, number_05, number_06, number_07, number_08, number_09,
-                number_10);
-        restrictionChoiceBox.getItems().addAll(list);
-
-    }
 
     public void goToAddCashier(javafx.event.ActionEvent event) throws IOException {
         Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
@@ -139,13 +117,44 @@ public class DistributorRequestController implements Initializable {
 
     public void makeRequest(){
 
+        Trip trip = requestTable.getSelectionModel().getSelectedItem();
+        int required;
+        if(trip== null){
+            informationLabel.setText("Please select trip!");
+            return;
+        }
+        String requiredTickets= requiredTicketsTextField.getText().trim().toString();
+        if(requiredTickets.isEmpty()){
+            informationLabel.setText("Please enter required tickets!");
+            return;
+        }
+        try {
+            required= Integer.parseInt(requiredTickets);
+        }catch (Exception e){
+            informationLabel.setText("Enter number!");
+            return;
+        }
+        int calCapacity=trip.getTripCapacity();
+        int calTickets=trip.getTripTicketAvailability();
+        int filCal=calCapacity-calTickets;
+        if(required>filCal){
+            informationLabel.setText("Not ENOUGH seats in the bus! Enter less tickets quantity!");
+            return;
+        }
+
+        RequestService requestService = new RequestService();
+        Request request= new Request(required,trip);
+        requestService.save(request);
+        informationLabel.setText("You send a request for " + requiredTicketsTextField.getText() + " tickets for trip #"+trip.getTripId());
+    }
+    public void showRequest(javafx.event.ActionEvent event) throws IOException{
+        Stage stage = new Stage();
+        FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorRequestStatusPanel.fxml"));
+        DialogPane root = (DialogPane) userPanel.load();
+        Scene adminScene = new Scene(root);
+        stage.setScene(adminScene);
+        stage.setTitle("Transport Company");
+        stage.showAndWait();
 
     }
-
-
-
-
-
-
-
 }

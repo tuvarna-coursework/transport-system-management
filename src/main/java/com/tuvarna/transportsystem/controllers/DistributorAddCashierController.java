@@ -196,13 +196,6 @@ public class DistributorAddCashierController implements Initializable {
 			Location userLocation = new LocationService()
 					.getByName(locationChoiceBox.getSelectionModel().getSelectedItem()).get();
 			User company = userService.getByFullName(companyComboBox.getSelectionModel().getSelectedItem()).get(0); // only
-																													// one
-																													// with
-																													// this
-																													// full
-																													// name
-																													// for
-																													// sure
 
 			/* Create a unique User Profile associated with this user */
 			UserProfileService userProfileService = new UserProfileService();
@@ -229,9 +222,18 @@ public class DistributorAddCashierController implements Initializable {
 
 			alert.showAndWait();
 
-		} else
+		} else {
 			informationLabel.setText("Enter cashier full name!");
+		}
 
+	}
+	public void refresh(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
+		Scene adminScene = new Scene(userPanel);
+
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
 	}
 
 }
