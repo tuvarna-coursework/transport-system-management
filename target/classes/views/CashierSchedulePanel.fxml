@@ -8,10 +8,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="489.0" prefWidth="702.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.CashierPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="689.0" prefWidth="942.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.CashierScheduleController">
     <children>
-        <AnchorPane layoutY="-1.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
+        <AnchorPane layoutY="-1.0" prefHeight="689.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
             <children>
                 <Button layoutX="14.0" layoutY="145.0" mnemonicParsing="false" onAction="#goToSell" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Sell tickets" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
@@ -35,19 +38,58 @@
                 </Button>
             </children>
         </AnchorPane>
-        <TableView layoutX="262.0" layoutY="146.0" prefHeight="288.0" prefWidth="434.0">
+        <TableView fx:id="cashierScheduleTable" layoutX="262.0" layoutY="139.0" prefHeight="316.0" prefWidth="666.0">
             <columns>
-                <TableColumn prefWidth="67.20001220703125" text="Date" />
-                <TableColumn prefWidth="72.79998779296875" text="Departure" />
-                <TableColumn prefWidth="81.5999755859375" text="Arival" />
-                <TableColumn prefWidth="71.199951171875" text="Type" />
-                <TableColumn prefWidth="67.99993896484375" text="Class type" />
-            <TableColumn prefWidth="75.0" text="Free Seats" />
+                <TableColumn fx:id="col_departureDate" prefWidth="92.7999267578125" text="Departure Date" />
+                <TableColumn fx:id="col_hourOfDeparture" prefWidth="92.7999267578125" text="Hour" />
+                <TableColumn fx:id="col_departure" prefWidth="78.4000244140625" text="Departure" />
+                <TableColumn fx:id="col_arrival" prefWidth="59.199951171875" text="Arrival" />
+                <TableColumn fx:id="col_tripType" prefWidth="46.400054931640625" text="Type" />
+                <TableColumn fx:id="col_availableTickets" prefWidth="93.5999755859375" text="Available tickets" />
+                <TableColumn fx:id="col_transportType" prefWidth="67.20001220703125" text="Trans. type" />
+                <TableColumn fx:id="col_price" prefWidth="45.59991455078125" text="Price $" />
+                <TableColumn fx:id="col_duration" prefWidth="97.5999755859375" text="Duration (min.)" />
+                <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
             </columns>
         </TableView>
         <TextField layoutX="266.0" layoutY="54.0" promptText="Departure station" />
         <DatePicker layoutX="425.0" layoutY="54.0" prefHeight="18.0" prefWidth="149.0" promptText="Date" />
         <Button layoutX="521.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
+        
+        
+        <Button fx:id="loadAttachmentRoutes" onAction="#loadFields" layoutX="411.0" layoutY="470.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Load attachment stations" textFill="WHITE" />
+        <Button fx:id="sellTicket" onAction="#sellTicket" layoutX="661.0" layoutY="470.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Sell ticket" textFill="WHITE" />
+        
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="265.2" layoutY="525.4" prefHeight="18.0" prefWidth="101.0" text="Departure station" textAlignment="CENTER" textFill="WHITE" />
+        <ChoiceBox fx:id="departureChoiceBox" layoutX="369.0" layoutY="525.4" prefWidth="150.0" />
+        
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="265.2" layoutY="555.4" prefHeight="18.0" prefWidth="101.0" text="Arrival station" textAlignment="CENTER" textFill="WHITE" />
+        <ChoiceBox fx:id="arrivalChoiceBox" layoutX="369.0" layoutY="555.4" prefWidth="150.0" />
+        
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="265.2" layoutY="585.4" prefHeight="18.0" prefWidth="101.0" text="Quantity" textAlignment="CENTER" textFill="WHITE" />
+        <ChoiceBox fx:id="quantityChoiceBox" layoutX="369.0" layoutY="585.4" prefWidth="150.0" />
+        
+        <RadioButton fx:id="customerIsGuest" onAction="#radioButtonOnClick" layoutX="729.2" layoutY="523.4" mnemonicParsing="false" text="Guest user" textFill="WHITE">
+               <font>
+                  <Font name="Tahoma" size="12.0" />
+               </font>
+               <toggleGroup>
+                  <ToggleGroup fx:id="userRadioButton" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="customerIsRegistered" onAction="#radioButtonOnClick" layoutX="825.2" layoutY="523.4" mnemonicParsing="false" text="Registered user" textFill="WHITE" toggleGroup="$userRadioButton">
+               <font>
+                  <Font name="Tahoma" size="12.0" />
+               </font>
+            </RadioButton>
+        
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="685.2" layoutY="555.4" prefHeight="18.0" prefWidth="101.0" text="User" textAlignment="CENTER" textFill="WHITE" />
+        <ChoiceBox fx:id="userChoiceBox" layoutX="769.0" layoutY="555.4" prefWidth="150.0" />
+        
+         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="685.2" layoutY="585.4" prefHeight="18.0" prefWidth="101.0" text="Full name" textAlignment="CENTER" textFill="WHITE" />
+        <TextField fx:id="userFullNameTextField" layoutX="769.2" layoutY="585.4" promptText="Full name" />
+        
+        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="515.2" layoutY="635.4" prefHeight="18.0" prefWidth="101.0" text="" textAlignment="CENTER" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="6.0" prefWidth="446.0" style="-fx-background-color: #34495E;" />
     </children>
 </AnchorPane>

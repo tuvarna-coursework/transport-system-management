@@ -100,24 +100,24 @@ public class UserScheduleController implements Initializable {
 					}
 				});
 
-		/*
-		 * scheduleCompanyName.setCellValueFactory( new
-		 * Callback<TableColumn.CellDataFeatures<Trip, String>,
-		 * ObservableValue<String>>() {
-		 * 
-		 * @Override public ObservableValue<String>
-		 * call(TableColumn.CellDataFeatures<Trip, String> param) {
-		 * 
-		 * int tripId = param.getValue().getTripId();
-		 * 
-		 * UserService userService = new UserService();
-		 * 
-		 * if (userService.getUserByTripId(tripId).isPresent()) { return new
-		 * SimpleStringProperty(userService.getUserByTripId(tripId).get().
-		 * getUserFullName()); }
-		 * 
-		 * return new SimpleStringProperty(" - "); } });
-		 */
+		scheduleCompanyName.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+
+						int tripId = param.getValue().getTripId();
+
+						UserService userService = new UserService();
+
+						if (userService.getUserByTripId(tripId).isPresent()) {
+							return new SimpleStringProperty(
+									userService.getUserByTripId(tripId).get().getUserFullName());
+						}
+
+						return new SimpleStringProperty(" - ");
+					}
+				});
 
 		scheduleTripType.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {

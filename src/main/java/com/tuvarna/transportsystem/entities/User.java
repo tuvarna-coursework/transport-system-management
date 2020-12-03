@@ -223,4 +223,32 @@ public class User {
 		/* The salt used contains 4096 iterations (2^12) */
 		this.userPassword = BCrypt.hashpw(userPassword, BCrypt.gensalt(12));
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + userId;
+		result = prime * result + ((userLoginName == null) ? 0 : userLoginName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (userId != other.userId)
+			return false;
+		if (userLoginName == null) {
+			if (other.userLoginName != null)
+				return false;
+		} else if (!userLoginName.equals(other.userLoginName))
+			return false;
+		return true;
+	}
 }

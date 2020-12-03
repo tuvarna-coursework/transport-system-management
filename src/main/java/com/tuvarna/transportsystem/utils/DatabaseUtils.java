@@ -1,5 +1,8 @@
 package com.tuvarna.transportsystem.utils;
 
+import java.io.IOException;
+import java.util.Random;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,6 +23,9 @@ import com.tuvarna.transportsystem.services.TripTypeService;
 import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.services.UserTypeService;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class DatabaseUtils {
 	public static Session globalSession;
@@ -213,6 +219,61 @@ public class DatabaseUtils {
 		} catch (Exception e) {
 			System.out.println("Please run DatabaseUtils.populateAuxiliaryTables() before calling this function.");
 		}
+	}
+	
+	public static String generateUserName(String input) {
+		StringBuilder sb = new StringBuilder();
+
+		/*
+		 * Simple algorithm to generate username based on fullname: Usernames will be in
+		 * the format: 4 letters _ 3 digits If it is 4 or less characters it will take
+		 * all letters and if not it will take every other character until there are 4
+		 * characters.
+		 * 
+		 * Then append 3 random digits
+		 */
+		if (input.trim().length() > 4) {
+			for (int i = 0; i < input.trim().length(); i++) {
+				if (i == 4) {
+					break;
+				}
+
+				if (i % 2 == 0 && input.charAt(i) != ' ') {
+					sb.append(input.toUpperCase().charAt(i));
+				}
+			}
+		} else {
+			sb.append(input.toUpperCase());
+		}
+
+		sb.append("_");
+
+		Random random = new Random();
+
+		for (int i = 0; i < 3; i++) {
+			sb.append(random.nextInt(9));
+		}
+
+		return sb.toString();
+	}
+
+	
+	
+	public static String generatePassword() {
+		StringBuilder sb = new StringBuilder();
+		String randomString = "abcABCdItRrGmnNoOzZeEqWw_-()%$#@!^*=+";
+
+		Random random = new Random();
+
+		for (int i = 0; i < 9; i++) {
+			if (i % 2 == 0) {
+				sb.append(random.nextInt(9));
+			} else {
+				sb.append(randomString.charAt(random.nextInt(randomString.length())));
+			}
+		}
+
+		return sb.toString();
 	}
 
 	@Deprecated

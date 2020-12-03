@@ -17,11 +17,12 @@ import javafx.stage.Stage;
 public class App extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/UserPanel.fxml"));
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/CompanyAddTripPanel.fxml"));
 		stage.setTitle("Transport Company");
 
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		stage.setResizable(false);
 
 		// primaryStage.setScene(new Scene(root, 380, 500));
 		stage.show();
