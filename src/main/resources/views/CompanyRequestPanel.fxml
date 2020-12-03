@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -34,24 +33,29 @@
                 </Button>
             </children>
         </AnchorPane>
-        <TextField layoutX="292.0" layoutY="370.0" promptText="Request id" />
-        <Button layoutX="451.0" layoutY="370.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Accept" textFill="WHITE" />
+        <Button layoutX="434.0" layoutY="396.0" mnemonicParsing="false" onAction="#acceptRequest" prefHeight="27.0" prefWidth="83.0" style="-fx-background-color: #34495E; -fx-background-radius: 30; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Accept" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="5.0" prefWidth="562.0" style="-fx-background-color: #34495E;" />
-        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="441.0" layoutY="51.0" prefHeight="27.0" prefWidth="218.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Request for new tickets" textFill="WHITE">
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="415.0" layoutY="50.0" prefHeight="27.0" prefWidth="218.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Request for new tickets" textFill="WHITE">
             <font>
                 <Font name="Tahoma" size="17.0" />
             </font>
         </Label>
-      <Button layoutX="514.0" layoutY="370.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Denial" textFill="WHITE" />
-      <TableView layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="530.0">
+      <Button layoutX="530.0" layoutY="396.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="83.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Denial" textFill="WHITE" />
+      <TableView fx:id="requestCompanyTable" layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="530.0">
         <columns>
-          <TableColumn prefWidth="66.39996337890625" text="Request id" />
-          <TableColumn prefWidth="88.00006103515625" text="Departure" />
-            <TableColumn prefWidth="88.79998779296875" text="Arrival" />
-            <TableColumn prefWidth="86.4000244140625" text="Date" />
-            <TableColumn prefWidth="69.5999755859375" text="Time" />
-            <TableColumn prefWidth="129.5999755859375" text="Requested tickets" />
+          <TableColumn fx:id="requestId_col" prefWidth="58.4000244140625" resizable="false" text="#Request" />
+          <TableColumn fx:id="departure_col" prefWidth="70.39996337890625" resizable="false" text="Departure" />
+            <TableColumn fx:id="arrival_col" prefWidth="68.00006103515625" resizable="false" text="Arrival" />
+            <TableColumn fx:id="time_col" prefWidth="39.20001220703125" resizable="false" text="Time" />
+            <TableColumn fx:id="capacity_col" prefWidth="77.5999755859375" resizable="false" text="Bus Capacity" />
+            <TableColumn fx:id="available_col" prefWidth="98.4000244140625" resizable="false" text="Available tickets" />
+            <TableColumn fx:id="requested_col" prefWidth="115.199951171875" resizable="false" text="Requested tickets" />
         </columns>
       </TableView>
+      <Label fx:id="informationLabel" alignment="CENTER" layoutX="361.0" layoutY="360.0" prefHeight="20.0" prefWidth="311.0" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
