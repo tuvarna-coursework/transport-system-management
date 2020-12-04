@@ -39,10 +39,17 @@ public class RequestDAO implements GenericDAOInterface<Request> {
 		}
 	}
 	
-	
 	public void updateStatus(Request request, String newStatus) {
 		request.setStatus(newStatus);
 		executeInsideTransaction(entityManager -> entityManager.merge(request));
+	}
+	
+	public void deleteByTripId(int tripId) {
+		this.getAll().forEach(r -> {
+			if(r.getTrip().getTripId() == tripId) {
+				executeInsideTransaction(entityManager -> entityManager.remove(r));
+			};
+		});
 	}
 
 	@Override

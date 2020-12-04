@@ -47,6 +47,10 @@ public class UserService implements CrudService<User> {
 		userDAO.removeTrip(user, trip);
 	}
 	
+	public void removeTicket(User user, Ticket ticket) {
+		userDAO.removeTicket(user, ticket);
+	}
+	
 	public void removeCashierFromTransportCompany(User company, User cashier) {
 		userDAO.removeCashierFromCompany(company, cashier);
 	}

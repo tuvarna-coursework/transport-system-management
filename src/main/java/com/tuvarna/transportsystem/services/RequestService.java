@@ -16,6 +16,10 @@ public class RequestService implements CrudService<Request> {
 	public void updateStatus(Request request, String newStatus) {
 		requestDAO.updateStatus(request, newStatus);
 	}
+	
+	public void deleteByTripId(int tripId) {
+		requestDAO.deleteByTripId(tripId);
+	}
 
 	@Override
 	public Optional<Request> getById(int id) {

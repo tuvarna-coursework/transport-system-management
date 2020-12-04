@@ -49,9 +49,11 @@
                 <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
             </columns>
         </TableView>
-        <TextField layoutX="401.0" layoutY="90.0" promptText="Departure station" />
-        <DatePicker layoutX="560.0" layoutY="90.0" prefHeight="18.0" prefWidth="149.0" promptText="Date" />
-        <Button layoutX="735.0" layoutY="89.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
+     
+        
+         <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="411.0" layoutY="90.0" prefHeight="18.0" prefWidth="331.0" text="" textAlignment="CENTER" textFill="WHITE" />
+        <Button fx:id="btnCancel" onAction="#cancelOnClick" layoutX="735.0" layoutY="89.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Cancel trip" textFill="WHITE" />
+        
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="3.0" prefWidth="675.0" style="-fx-background-color: #34495E;" />
         <Button layoutX="462.0" layoutY="26.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="262.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="SCHEDULE" textFill="WHITE">
             <font>

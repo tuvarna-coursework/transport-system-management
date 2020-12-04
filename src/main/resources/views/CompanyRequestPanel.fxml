@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="795.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.CompanyRequestController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="491.0" prefWidth="845.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.CompanyRequestController">
     <children>
         <AnchorPane layoutY="-1.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
             <children>
@@ -41,7 +41,7 @@
             </font>
         </Label>
       <Button layoutX="530.0" layoutY="396.0" onAction="#rejectRequest" mnemonicParsing="false" prefHeight="27.0" prefWidth="83.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Reject" textFill="WHITE" />
-      <TableView fx:id="requestCompanyTable" layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="530.0">
+      <TableView fx:id="requestCompanyTable" layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="590.0">
         <columns>
           <TableColumn fx:id="requestId_col" prefWidth="58.4000244140625" resizable="false" text="#Request" />
           <TableColumn fx:id="departure_col" prefWidth="70.39996337890625" resizable="false" text="Departure" />
@@ -50,7 +50,7 @@
             <TableColumn fx:id="capacity_col" prefWidth="77.5999755859375" resizable="false" text="Bus Capacity" />
             <TableColumn fx:id="available_col" prefWidth="88.4000244140625" resizable="false" text="Available tickets" />
             <TableColumn fx:id="requested_col" prefWidth="88.199951171875" resizable="false" text="Requested tickets" />
-            <TableColumn fx:id="status_col" prefWidth="45.199951171875" resizable="false" text="Status" />
+            <TableColumn fx:id="status_col" prefWidth="80.199951171875" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label fx:id="informationLabel" alignment="CENTER" layoutX="361.0" layoutY="360.0" prefHeight="20.0" prefWidth="311.0" textFill="WHITE">

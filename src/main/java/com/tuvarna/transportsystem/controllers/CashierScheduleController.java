@@ -346,7 +346,7 @@ public class CashierScheduleController implements Initializable {
 			DatabaseUtils.currentUser.getUserProfile()
 					.setUserProfileRating(DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
 		}
-
+		
 		informationLabel.setText("You sold a ticket.");
 	}
 

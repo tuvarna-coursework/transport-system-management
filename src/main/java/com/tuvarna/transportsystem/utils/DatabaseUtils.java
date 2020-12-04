@@ -209,7 +209,7 @@ public class DatabaseUtils {
 		RoleService roleService = new RoleService();
 		UserTypeService userTypeService = new UserTypeService();
 		UserService userService = new UserService();
-		currentUser = userService.getById(1).get();
+		currentUser = userService.getById(4).get();
 
 		try {
 			ROLE_ADMIN = roleService.getByName("Admin").get();

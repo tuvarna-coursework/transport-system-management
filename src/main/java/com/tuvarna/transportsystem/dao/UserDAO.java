@@ -107,16 +107,16 @@ public class UserDAO implements GenericDAOInterface<User> {
 	}
 
 	public void removeTrip(User user, Trip trip) {
-		if (user.getRoles().contains(trip)) {
-			user.getRoles().remove(trip);
+		if (user.getTrips().contains(trip)) {
+			user.getTrips().remove(trip);
 		}
 
 		executeInsideTransaction(entityManager -> entityManager.merge(user));
 	}
 
 	public void removeTicket(User user, Ticket ticket) {
-		if (user.getRoles().contains(ticket)) {
-			user.getRoles().remove(ticket);
+		if (user.getTickets().contains(ticket)) {
+			user.getTickets().remove(ticket);
 		}
 
 		executeInsideTransaction(entityManager -> entityManager.merge(user));

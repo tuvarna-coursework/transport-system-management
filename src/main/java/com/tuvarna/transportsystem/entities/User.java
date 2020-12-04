@@ -48,11 +48,7 @@ public class User {
 	@Column(name = "user_password")
 	private String userPassword;
 
-	@OneToOne(orphanRemoval = true, cascade = CascadeType.REMOVE) /*
-																	 * Any profile that is no longer associated with
-																	 * user will be deleted (since a userprofile is
-																	 * unique for 1 user only
-																	 */
+	@OneToOne(orphanRemoval = true)
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
 
@@ -90,7 +86,7 @@ public class User {
 	 * This has been converted to a ManyToMany relation since the user will have
 	 * multiple tickets and a ticket will belong to multiple people.
 	 */
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany
 	@JoinTable(name = "\"UsersTicket\"", schema = "\"TransportSystem\"", joinColumns = {
 			@JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "ticket_id") })
 	private List<Ticket> tickets = new ArrayList<>(); // this is like an instance of the UserTicket table

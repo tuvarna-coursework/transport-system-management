@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/sample.fxml"));
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/CompanySchedulePanel.fxml"));
 		stage.setTitle("Transport Company");
 
 		Scene scene = new Scene(root);
