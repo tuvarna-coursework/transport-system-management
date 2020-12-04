@@ -1,7 +1,9 @@
 package com.tuvarna.transportsystem.controllers;
 
+import com.tuvarna.transportsystem.entities.Request;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.RequestService;
 import com.tuvarna.transportsystem.services.TicketService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
@@ -37,7 +39,7 @@ public class UserMyTicketController implements Initializable {
 	@FXML
 	private TextField ticketIDTextField;
 	@FXML
-	private TableView<Trip> myTicketTableView;
+	private TableView<Ticket> myTicketTableView;
 	@FXML
 	private Label informationLabel;
 
@@ -45,75 +47,76 @@ public class UserMyTicketController implements Initializable {
 	private TableColumn<Ticket, Integer> ticketIdCol;
 
 	@FXML
-	private TableColumn<Trip, String> ticketDateCol;
+	private TableColumn<Ticket, String> ticketDateCol;
 
 	@FXML
-	private TableColumn<Trip, String> ticketHourCol;
+	private TableColumn<Ticket, String> ticketHourCol;
 
 	@FXML
-	private TableColumn<Trip, String> ticketDepartureCol;
+	private TableColumn<Ticket, String> ticketDepartureCol;
 
 	@FXML
-	private TableColumn<Trip, String> ticketArrivalCol;
+	private TableColumn<Ticket, String> ticketArrivalCol;
 
 	@FXML
-	private TableColumn<Trip, Integer> ticketDurationCol;
+	private TableColumn<Ticket, String> ticketDurationCol;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		ticketDateCol.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
-
+		ticketDateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-					
-						
-						return new SimpleStringProperty(param.getValue().getTripDepartureDate().toString());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureDate().toString());
 					}
 				});
 
-		ticketHourCol.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
-
+		ticketDurationCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripDepartureHour());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
 					}
 				});
 
 		ticketDepartureCol.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getRoute()
-								.getRouteDepartureLocation().getLocationName().toString());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteDepartureLocation().getLocationName());
 					}
 				});
 		
 		ticketArrivalCol.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getRoute()
-								.getRouteArrivalLocation().getLocationName().toString());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteArrivalLocation().getLocationName());
 					}
 				});
-		
-		
-		ticketDurationCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
+
+		ticketHourCol.setCellValueFactory(new PropertyValueFactory<Ticket, String>("ticketPurchaseDate"));
 		ticketIdCol.setCellValueFactory(new PropertyValueFactory<Ticket, Integer>("ticketId"));
-		
-		list.removeAll(list);
+		/*list.removeAll(list);
 		List<Trip> trips = new ArrayList<>();
 		DatabaseUtils.currentUser.getTickets().forEach(t -> trips.add(t.getTrip()));
-		list.addAll(trips);
+		list.addAll(trips);*/
 		
-		myTicketTableView.getItems().addAll(list);
+		myTicketTableView.setItems(getTickets());
 		
 	}
+	public ObservableList<Ticket> getTickets() {
+		ObservableList<Ticket> ticketsList = FXCollections.observableArrayList();
+		TicketService ticketService = new TicketService();
 
+		List<Ticket> eList = ticketService.getAll();
+		for (Ticket ent : eList) {
+			//if statement not working to filter only user's personal tickets.
+			//if(DatabaseUtils.currentUser.getTickets().contains(ent))
+				ticketsList.add(ent);
+		}
+		return ticketsList;
+	}
 	public void logOut(javafx.event.ActionEvent event) throws IOException {
 		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);

@@ -1,5 +1,8 @@
 package com.tuvarna.transportsystem.controllers;
 
+import com.tuvarna.transportsystem.entities.Ticket;
+import com.tuvarna.transportsystem.services.TicketService;
+import com.tuvarna.transportsystem.services.TripService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -100,24 +103,24 @@ public class UserScheduleController implements Initializable {
 					}
 				});
 
-		scheduleCompanyName.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-
-						int tripId = param.getValue().getTripId();
-
-						UserService userService = new UserService();
-
-						if (userService.getUserByTripId(tripId).isPresent()) {
-							return new SimpleStringProperty(
-									userService.getUserByTripId(tripId).get().getUserFullName());
-						}
-
-						return new SimpleStringProperty(" - ");
-					}
-				});
+		/*
+		 * scheduleCompanyName.setCellValueFactory( new
+		 * Callback<TableColumn.CellDataFeatures<Trip, String>,
+		 * ObservableValue<String>>() {
+		 * 
+		 * @Override public ObservableValue<String>
+		 * call(TableColumn.CellDataFeatures<Trip, String> param) {
+		 * 
+		 * int tripId = param.getValue().getTripId();
+		 * 
+		 * UserService userService = new UserService();
+		 * 
+		 * if (userService.getUserByTripId(tripId).isPresent()) { return new
+		 * SimpleStringProperty(userService.getUserByTripId(tripId).get().
+		 * getUserFullName()); }
+		 * 
+		 * return new SimpleStringProperty(" - "); } });
+		 */
 
 		scheduleTripType.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
@@ -152,12 +155,22 @@ public class UserScheduleController implements Initializable {
 		scheduleDurationCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
 		schedulePriceCol.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
 
-		list.removeAll(list);
+		/*list.removeAll(list);
 		List<Trip> trips = new ArrayList<>();
 		DatabaseUtils.currentUser.getTickets().forEach(t -> trips.add(t.getTrip()));
-		list.addAll(trips);
+		list.addAll(trips);*/
 
-		scheduleTable.getItems().addAll(list);
+		scheduleTable.setItems(getTickets());
+	}
+	public ObservableList<Trip> getTickets() {
+		ObservableList<Trip> tripsList = FXCollections.observableArrayList();
+		TripService tripService = new TripService();
+
+		List<Trip> eList = tripService.getAll();
+		for (Trip ent : eList) {
+			tripsList.add(ent);
+		}
+		return tripsList;
 	}
 
 	public void goToMyTicket(javafx.event.ActionEvent event) throws IOException {
