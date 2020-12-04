@@ -29,129 +29,185 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class CompanyRequestController implements Initializable {
-    @FXML
-    private TableView<Request> requestCompanyTable;
-    @FXML
-    private TableColumn <Request,Integer> requestId_col;
-    @FXML
-    private TableColumn<Request,String> departure_col;
-    @FXML
-    private TableColumn<Request,String> arrival_col;
-    @FXML
-    private TableColumn<Request,String> time_col;
-    @FXML
-    private TableColumn<Request,String> capacity_col;
-    @FXML
-    private TableColumn<Request,String> available_col;
-    @FXML
-    private  TableColumn<Request,Integer>requested_col;
-    @FXML
-    private Label informationLabel;
+	@FXML
+	private TableView<Request> requestCompanyTable;
+	@FXML
+	private TableColumn<Request, Integer> requestId_col;
+	@FXML
+	private TableColumn<Request, String> departure_col;
+	@FXML
+	private TableColumn<Request, String> arrival_col;
+	@FXML
+	private TableColumn<Request, String> time_col;
+	@FXML
+	private TableColumn<Request, String> capacity_col;
+	@FXML
+	private TableColumn<Request, String> available_col;
+	@FXML
+	private TableColumn<Request, Integer> requested_col;
+	@FXML
+	private TableColumn<Request, String> status_col;
+	@FXML
+	private Label informationLabel;
 
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		departure_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(
+								param.getValue().getTrip().getRoute().getRouteDepartureLocation().getLocationName());
+					}
+				});
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        departure_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
+		arrival_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
-                return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteDepartureLocation().getLocationName());
-            }
-        });
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(
+								param.getValue().getTrip().getRoute().getRouteArrivalLocation().getLocationName());
+					}
+				});
+		time_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
-        arrival_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
+					}
+				});
+		capacity_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
-                return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteArrivalLocation().getLocationName());
-            }
-        });
-        time_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripCapacity()));
+					}
+				});
+		available_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
-                return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
-            }
-        });
-        capacity_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(
+								String.valueOf(param.getValue().getTrip().getTripTicketAvailability()));
+					}
+				});
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
-                return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripCapacity()));
-            }
-        });
-        available_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+		status_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
-                return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripTicketAvailability()));
-            }
-        });
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+						return new SimpleStringProperty(String.valueOf(param.getValue().getStatus()));
+					}
+				});
 
-        requested_col.setCellValueFactory(new PropertyValueFactory<Request, Integer>("ticketsQuantity"));
-        requestId_col.setCellValueFactory(new PropertyValueFactory<Request,Integer>("requestId"));
-        requestCompanyTable.setItems(getRequests());
-    }
+		requested_col.setCellValueFactory(new PropertyValueFactory<Request, Integer>("ticketsQuantity"));
+		requestId_col.setCellValueFactory(new PropertyValueFactory<Request, Integer>("requestId"));
+		requestCompanyTable.setItems(getRequests());
+	}
 
-    public ObservableList<Request> getRequests(){
-        ObservableList<Request> requestsList= FXCollections.observableArrayList();
-        RequestService requestService = new RequestService();
+	public ObservableList<Request> getRequests() {
+		ObservableList<Request> requestsList = FXCollections.observableArrayList();
+		RequestService requestService = new RequestService();
 
-        List<Request> eList = requestService.getAll();
-        for (Request ent : eList) {
-            requestsList.add(ent);
-        }
-        return requestsList;
+		List<Request> eList = requestService.getAll();
+		for (Request ent : eList) {
+			requestsList.add(ent);
+		}
+		return requestsList;
 
-    }
+	}
 
-    public void goToScheduleCompany(javafx.event.ActionEvent event) throws IOException {
-        Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanySchedulePanel.fxml"));
-        Scene adminScene = new Scene(userPanel);
+	public void goToScheduleCompany(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanySchedulePanel.fxml"));
+		Scene adminScene = new Scene(userPanel);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(adminScene);
-        window.show();
-    }
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
+	}
 
-    public void goToAddTrip(javafx.event.ActionEvent event) throws IOException {
-        Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
-        Scene adminScene = new Scene(userPanel);
+	public void goToAddTrip(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
+		Scene adminScene = new Scene(userPanel);
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(adminScene);
-        window.show();
-    }
-    public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
-        Parent userPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
-        Scene adminScene = new Scene(userPanel);
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
+	}
 
-        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(adminScene);
-        window.show();
+	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Scene adminScene = new Scene(userPanel);
 
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(adminScene);
+		window.show();
 
-    }
-    public void acceptRequest(javafx.event.ActionEvent event)throws IOException{
-        Request request= requestCompanyTable.getSelectionModel().getSelectedItem();
-        if(request == null){
-            informationLabel.setText("Please select request from table!");
-            return;
-        }
-        int tickets=request.getTrip().getTripTicketAvailability();
-        int requestedTickets=request.getTicketsQuantity();
-        int newTickets=tickets+requestedTickets;
-        Trip trip = request.getTrip();
-        TripService tripService = new TripService();
-        tripService.updateTripTicketAvailability(trip,newTickets);
-        RequestService requestService = new RequestService();
-        requestService.deleteById(request.getRequestId());
-        //refresh table
-        requestCompanyTable.setItems(getRequests());
-        informationLabel.setText("Request was accepted!");
+	}
 
+	public void acceptRequest(javafx.event.ActionEvent event) throws IOException {
+		Request request = requestCompanyTable.getSelectionModel().getSelectedItem();
 
+		if (request == null) {
+			informationLabel.setText("Please select request from table!");
+			return;
+		}
+		
+		if (request.getStatus().equals("REJECTED")) {
+			informationLabel.setText("Cannot accept a previously rejected request.");
+			return;
+		}
+		
+		if (request.getStatus().equals("ACCEPTED")) {
+			informationLabel.setText("Request already accepted.");
+			return;
+		}
 
-    }
+		int tickets = request.getTrip().getTripTicketAvailability();
+		int requestedTickets = request.getTicketsQuantity();
+		int newTickets = tickets + requestedTickets;
+
+		Trip trip = request.getTrip();
+		TripService tripService = new TripService();
+		tripService.updateTripTicketAvailability(trip, newTickets);
+
+		RequestService requestService = new RequestService();
+		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSACCEPTED);
+
+		// refresh table
+		requestCompanyTable.setItems(getRequests());
+		informationLabel.setText("Request was accepted!");
+	}
+
+	public void rejectRequest(javafx.event.ActionEvent event) throws IOException {
+		Request request = requestCompanyTable.getSelectionModel().getSelectedItem();
+
+		if (request == null) {
+			informationLabel.setText("Please select request from table!");
+			return;
+		}
+		
+		if (request.getStatus().equals("ACCEPTED")) {
+			informationLabel.setText("Cannot reject a previously accepted request.");
+			return;
+		}
+		
+		if (request.getStatus().equals("REJECTED")) {
+			informationLabel.setText("Request already rejected.");
+			return;
+		}
+
+		RequestService requestService = new RequestService();
+		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSREJECTED);
+
+		// refresh table
+		requestCompanyTable.setItems(getRequests());
+		informationLabel.setText("Request was rejected!");
+	}
 }

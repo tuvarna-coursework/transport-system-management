@@ -124,6 +124,7 @@ CREATE TABLE "TransportSystem"."Request" (
 	request_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	ticket_quantity integer NOT NULL,
 	request_trip_id integer NOT NULL,
+	request_status varchar(50) NOT NULL,
 	CONSTRAINT "Request_pk" PRIMARY KEY (request_id)
 );
 
@@ -137,7 +138,7 @@ CREATE TABLE "TransportSystem"."Route" (
 );
 
 CREATE TABLE "TransportSystem"."RouteAttachment" (
-	route_attachment_id integer NOT NULL,
+	route_attachment_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	route_id integer NOT NULL,
 	location_id integer NOT NULL,
 	hour_of_arrival varchar(50) NOT NULL,

@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 public class RegisterController implements Initializable {
 
@@ -39,6 +41,9 @@ public class RegisterController implements Initializable {
 	private TextField usernameTextField;
 	@FXML
 	private PasswordField passwordTextField;
+	
+	@FXML
+	private Label informationLabel;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -57,11 +62,26 @@ public class RegisterController implements Initializable {
 	}
 
 	public void registerButton(javafx.event.ActionEvent event) throws IOException {
-
 		String fullname = fullnameTextField.getText();
 		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
 		String userlocation = locationChoiceBox.getValue();
+		
+		
+		if(fullname.trim().length() > 40 || fullname.trim().length() < 5) {
+			informationLabel.setText("Invalid fullname. Name must be between 5 and 40 characters.");
+			return;
+		}
+		
+		if ((!Pattern.matches("^\\w+$", username)) || username.length() < 4 || username.length() > 20) {
+			informationLabel.setText("Invalid username. No spaces, special characters. Length: 4 - 20 characters.");
+			return;
+		}
+		
+		if (password.length() < 5 || password.length() > 20) {
+			informationLabel.setText("Invalid password. Length: 5 - 20 characters.");
+			return;
+		}
 
 		LocationService locationService = new LocationService();
 
@@ -69,6 +89,7 @@ public class RegisterController implements Initializable {
 			System.out.println("ERROR: Location not found in database");
 			return;
 		}
+		
 		Location location = locationService.getByName(userlocation).get();
 
 		UserProfile profile = new UserProfile(0.0, 0.0);

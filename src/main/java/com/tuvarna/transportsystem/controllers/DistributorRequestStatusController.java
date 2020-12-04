@@ -1,7 +1,10 @@
 package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.Request;
+import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.services.RequestService;
+import com.tuvarna.transportsystem.services.UserService;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -47,6 +50,27 @@ public class DistributorRequestStatusController implements Initializable {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
                 return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripCapacity()));
+            }
+        });
+        
+        company_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+            	UserService userService = new UserService();
+            	
+            	int tripId = param.getValue().getTrip().getTripId();
+            	User user = userService.getUserByTripId(tripId).get();
+            	
+                return new SimpleStringProperty(String.valueOf(user.getUserFullName()));
+            }
+        });
+        
+        status_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Request,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Request, String> param) {
+                return new SimpleStringProperty(String.valueOf(param.getValue().getStatus()));
             }
         });
 

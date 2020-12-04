@@ -2,8 +2,10 @@ package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.Request;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.services.RequestService;
 import com.tuvarna.transportsystem.services.TripService;
+import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -64,6 +66,19 @@ public class DistributorRequestController implements Initializable {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
                 return new SimpleStringProperty(param.getValue().getRoute().getRouteArrivalLocation().getLocationName());
+            }
+        });
+        
+        company_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Trip,String>, ObservableValue<String>>(){
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+            	UserService userService = new UserService();
+            	int tripId = param.getValue().getTripId();
+            	
+            	User user = userService.getUserByTripId(tripId).get();
+            	
+                return new SimpleStringProperty(user.getUserFullName());
             }
         });
         hour_col.setCellValueFactory(new PropertyValueFactory<Trip,String>("tripDepartureHour"));
@@ -143,7 +158,7 @@ public class DistributorRequestController implements Initializable {
         }
 
         RequestService requestService = new RequestService();
-        Request request= new Request(required,trip);
+        Request request= new Request(required, trip, DatabaseUtils.REQUEST_STATUSPENDING);
         requestService.save(request);
         informationLabel.setText("You send a request for " + requiredTicketsTextField.getText() + " tickets for trip #"+trip.getTripId());
     }

@@ -40,6 +40,10 @@ public class DatabaseUtils {
 	public static UserType USERTYPE_USER;
 	public static UserType USERTYPE_ADMIN;
 	public static UserType USERTYPE_COMPANY;
+	
+	public static String REQUEST_STATUSPENDING = "PENDING";
+	public static String REQUEST_STATUSREJECTED = "REJECTED";
+	public static String REQUEST_STATUSACCEPTED = "ACCEPTED";
 
 	public static void init() {
 		globalSession = createSession();

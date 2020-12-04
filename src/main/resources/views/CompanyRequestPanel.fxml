@@ -40,7 +40,7 @@
                 <Font name="Tahoma" size="17.0" />
             </font>
         </Label>
-      <Button layoutX="530.0" layoutY="396.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="83.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Denial" textFill="WHITE" />
+      <Button layoutX="530.0" layoutY="396.0" onAction="#rejectRequest" mnemonicParsing="false" prefHeight="27.0" prefWidth="83.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Reject" textFill="WHITE" />
       <TableView fx:id="requestCompanyTable" layoutX="261.0" layoutY="140.0" prefHeight="210.0" prefWidth="530.0">
         <columns>
           <TableColumn fx:id="requestId_col" prefWidth="58.4000244140625" resizable="false" text="#Request" />
@@ -48,8 +48,9 @@
             <TableColumn fx:id="arrival_col" prefWidth="68.00006103515625" resizable="false" text="Arrival" />
             <TableColumn fx:id="time_col" prefWidth="39.20001220703125" resizable="false" text="Time" />
             <TableColumn fx:id="capacity_col" prefWidth="77.5999755859375" resizable="false" text="Bus Capacity" />
-            <TableColumn fx:id="available_col" prefWidth="98.4000244140625" resizable="false" text="Available tickets" />
-            <TableColumn fx:id="requested_col" prefWidth="115.199951171875" resizable="false" text="Requested tickets" />
+            <TableColumn fx:id="available_col" prefWidth="88.4000244140625" resizable="false" text="Available tickets" />
+            <TableColumn fx:id="requested_col" prefWidth="88.199951171875" resizable="false" text="Requested tickets" />
+            <TableColumn fx:id="status_col" prefWidth="45.199951171875" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label fx:id="informationLabel" alignment="CENTER" layoutX="361.0" layoutY="360.0" prefHeight="20.0" prefWidth="311.0" textFill="WHITE">

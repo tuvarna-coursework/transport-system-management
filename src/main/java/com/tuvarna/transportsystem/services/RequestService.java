@@ -12,6 +12,10 @@ public class RequestService implements CrudService<Request> {
 	public RequestService() {
 		this.requestDAO = new RequestDAO();
 	}
+	
+	public void updateStatus(Request request, String newStatus) {
+		requestDAO.updateStatus(request, newStatus);
+	}
 
 	@Override
 	public Optional<Request> getById(int id) {

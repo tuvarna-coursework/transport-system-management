@@ -59,5 +59,6 @@
       <Label alignment="CENTER" layoutX="286.0" layoutY="144.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Company" textFill="WHITE" />
       <AnchorPane layoutX="236.0" layoutY="75.0" prefHeight="6.0" prefWidth="413.0" style="-fx-background-color: #34495E;" />
       <ComboBox fx:id="companyComboBox" layoutX="265.0" layoutY="165.0" prefWidth="150.0" />
+      <Button alignment="CENTER" layoutX="435.0" layoutY="164.0" mnemonicParsing="false" onAction="#refresh" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Refresh" textFill="WHITE" />
     </children>
 </AnchorPane>

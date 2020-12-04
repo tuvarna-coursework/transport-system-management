@@ -28,11 +28,16 @@ public class Request {
 	@JoinColumn(name = "request_trip_id")
 	private Trip trip;
 	
+	@Column(name = "request_status")
+	private String status;
+	
+	
 	public Request() {}
 
-	public Request(int ticketsQuantity, Trip trip) {
+	public Request(int ticketsQuantity, Trip trip, String status) {
 		this.ticketsQuantity = ticketsQuantity;
 		this.trip = trip;
+		this.status = status;
 	}
 
 	public int getRequestId() {
@@ -57,5 +62,13 @@ public class Request {
 
 	public void setTrip(Trip trip) {
 		this.trip = trip;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	} 
 }

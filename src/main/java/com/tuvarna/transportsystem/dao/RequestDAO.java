@@ -38,6 +38,12 @@ public class RequestDAO implements GenericDAOInterface<Request> {
 			throw e;
 		}
 	}
+	
+	
+	public void updateStatus(Request request, String newStatus) {
+		request.setStatus(newStatus);
+		executeInsideTransaction(entityManager -> entityManager.merge(request));
+	}
 
 	@Override
 	public Optional<Request> getById(int id) {
