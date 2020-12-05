@@ -39,6 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -389,33 +390,32 @@ public class CashierScheduleController implements Initializable {
 		}
 	}
 
-	public void goToSell(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/CashierPanel.fxml"));
-		Scene scheduleScene = new Scene(schedulePanel);
-
-		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		window.setScene(scheduleScene);
-		window.show();
-
-	}
-
-	public void goToScheduleCashier(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/CashierSchedulePanel.fxml"));
-		Scene scheduleScene = new Scene(schedulePanel);
-
-		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		window.setScene(scheduleScene);
-		window.show();
-
-	}
 
 	public void goToSoldTickets(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getResource("CashierSoldPanel.fxml"));
+		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/CashierSoldPanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(scheduleScene);
 		window.show();
 
+	}
+	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
+		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Scene scheduleScene = new Scene(schedulePanel);
+
+		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		window.setScene(scheduleScene);
+		window.show();
+
+	}
+	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CashierNotificationsPanel.fxml"));
+		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 }

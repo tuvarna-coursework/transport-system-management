@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -171,5 +172,14 @@ public class DistributorRequestController implements Initializable {
         stage.setTitle("Transport Company");
         stage.showAndWait();
 
+    }
+    public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorNotificationsPanel.fxml"));
+        AnchorPane root = (AnchorPane) userPanel.load();
+        Scene adminScene = new Scene(root);
+        stage.setScene(adminScene);
+        stage.setTitle("Transport Company");
+        stage.showAndWait();
     }
 }

@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -134,6 +135,15 @@ public class DistributorScheduleController implements Initializable {
 			tripList.add(ent);
 		}
 		return tripList;
+	}
+	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorNotificationsPanel.fxml"));
+		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {

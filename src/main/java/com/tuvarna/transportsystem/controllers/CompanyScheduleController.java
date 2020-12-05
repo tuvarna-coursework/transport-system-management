@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import javafx.util.Callback;
@@ -172,6 +173,15 @@ public class CompanyScheduleController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+	}
+	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyNotificationsPanel.fxml"));
+		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 
 	public void cancelOnClick(javafx.event.ActionEvent event) throws IOException {

@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -120,6 +121,7 @@ public class DistributorAddCashierController implements Initializable {
 		return userList;
 	}
 
+
 	public void loadLocation() {
 		list.removeAll(list);
 		String city_01 = "Varna";
@@ -146,6 +148,15 @@ public class DistributorAddCashierController implements Initializable {
 		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
 				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		locationChoiceBox.getItems().addAll(list);
+	}
+	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorNotificationsPanel.fxml"));
+		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {

@@ -26,6 +26,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -193,6 +194,15 @@ public class CompanyAddController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+	}
+	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyNotificationsPanel.fxml"));
+		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {
