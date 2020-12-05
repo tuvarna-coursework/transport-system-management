@@ -9,50 +9,50 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="883.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.UserScheduleController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="499.0" prefWidth="925.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.UserScheduleController">
     <children>
         <AnchorPane layoutY="-1.0" prefHeight="504.0" prefWidth="218.0" style="-fx-background-color: #34495E;">
             <children>
                 <Button layoutX="11.0" layoutY="148.0" mnemonicParsing="false" onAction="#goToBuyTicket" prefHeight="42.0" prefWidth="194.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Buy ticket" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font></Button>
                 <Label alignment="CENTER" contentDisplay="CENTER" layoutX="59.0" layoutY="84.0" prefHeight="18.0" prefWidth="101.0" text="USERNAME" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="11.0" layoutY="200.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="194.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#logOut" prefHeight="42.0" prefWidth="193.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
             <Button layoutX="11.0" layoutY="252.0" mnemonicParsing="false" onAction="#goToMyTicket" prefHeight="42.0" prefWidth="194.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="My Ticket" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
             </children>
         </AnchorPane>
-      <TableView fx:id="scheduleTable" layoutX="221.0" layoutY="146.0" prefHeight="332.0" prefWidth="660.0" style="-fx-border-color: #34495E;">
+      <TableView fx:id="scheduleTable" layoutX="221.0" layoutY="146.0" prefHeight="334.0" prefWidth="700.0" style="-fx-border-color: #34495E;">
         <columns>
-          <TableColumn fx:id="scheduleDate" prefWidth="64.0" text="Date" />
-           <TableColumn fx:id="scheduleHourOfDeparture" prefWidth="44.0" text="Time" />
-          <TableColumn fx:id="scheduleDepartureSt" prefWidth="94.39996337890625" text="Departure St." />
-            <TableColumn fx:id="scheduleArrivalSt" prefWidth="86.4000244140625" text="Arrival St." />
-            <TableColumn fx:id="scheduleCompanyName" prefWidth="79.20001220703125" text="Company" />
-            <TableColumn fx:id="scheduleTripType" prefWidth="72.79998779296875" text="Trip Type" />
-            <TableColumn fx:id="scheduleBusType" prefWidth="71.2000732421875" text="Bus Type" />
-            <TableColumn fx:id="schedulePriceCol" prefWidth="71.199951171875" text="Price $" />
-            <TableColumn fx:id="scheduleDurationCol" prefWidth="113.5999755859375" text="Duration(min)" />
+          <TableColumn fx:id="scheduleDate" prefWidth="57.59999084472656" resizable="false" text="Date" />
+           <TableColumn fx:id="scheduleHourOfDeparture" prefWidth="50.4000244140625" resizable="false" text="Time" />
+          <TableColumn fx:id="scheduleDepartureSt" prefWidth="94.39996337890625" resizable="false" text="Departure St." />
+            <TableColumn fx:id="scheduleArrivalSt" prefWidth="86.4000244140625" resizable="false" text="Arrival St." />
+            <TableColumn fx:id="scheduleCompanyName" prefWidth="79.20001220703125" resizable="false" text="Company" />
+            <TableColumn fx:id="scheduleTripType" prefWidth="72.79998779296875" resizable="false" text="Trip Type" />
+            <TableColumn fx:id="scheduleBusType" prefWidth="71.2000732421875" resizable="false" text="Bus Type" />
+            <TableColumn fx:id="schedulePriceCol" prefWidth="71.199951171875" resizable="false" text="Price $" />
+            <TableColumn fx:id="scheduleDurationCol" prefWidth="113.5999755859375" resizable="false" text="Duration(min)" />
         </columns>
       </TableView>
       <TextField layoutX="396.0" layoutY="87.0" promptText="Departure station" />
       <DatePicker layoutX="555.0" layoutY="87.0" prefHeight="18.0" prefWidth="149.0" promptText="Date" />
       <Button layoutX="729.0" layoutY="86.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
       <AnchorPane layoutX="191.0" layoutY="123.0" prefHeight="6.0" prefWidth="748.0" style="-fx-background-color: #34495E;" />
-      <Button layoutX="403.0" layoutY="14.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="295.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="SCHEDULE" textFill="WHITE">
+      <Button alignment="CENTER" layoutX="403.0" layoutY="14.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="295.0" style="-fx-background-color: #34495E; -fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-radius: 30;" text="SCHEDULE" textFill="WHITE">
          <font>
             <Font name="System Bold" size="28.0" />
          </font>

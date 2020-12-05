@@ -12,37 +12,42 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="630.0" style="-fx-background-color: #3498DB;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tuvarna.transportsystem.controllers.DistributorAddCashierController">
     <children>
-        <AnchorPane layoutY="-1.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
+        <AnchorPane layoutX="-4.0" layoutY="-5.0" prefHeight="503.0" prefWidth="259.0" style="-fx-background-color: #34495E;">
             <children>
                 <Button layoutX="14.0" layoutY="139.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add cashier" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font></Button>
-                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="DISTRIBUTOR" textAlignment="CENTER" textFill="WHITE" />
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="80.0" prefHeight="18.0" prefWidth="101.0" text="DISTRIBUTOR" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="14.0" layoutY="189.0" mnemonicParsing="false" onAction="#goToSchedule" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#goToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#goToRequest" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Make request" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
             <Label fx:id="informationLabel" layoutX="10.0" layoutY="313.0" prefHeight="6.0" prefWidth="234.0" textFill="WHITE" />
+            <Button layoutX="48.0" layoutY="299.0" mnemonicParsing="false" onAction="#goToNotifications" prefHeight="27.0" prefWidth="166.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="View notifications" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Tahoma Bold" size="12.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
         <TableView fx:id="cashierTable" layoutX="266.0" layoutY="226.0" prefHeight="226.0" prefWidth="349.0">
             <columns>
-                <TableColumn fx:id="cashierId" prefWidth="83.20001220703125" text="Cashier №" />
-                <TableColumn fx:id="cashierFullName" prefWidth="70.39996337890625" text="Fullname" />
-            <TableColumn fx:id="cashierCompany" prefWidth="87.199951171875" text="Company" />
-            <TableColumn fx:id="cashierLocation" prefWidth="105.60009765625" text="Chashier location" />
+                <TableColumn fx:id="cashierId" prefWidth="83.20001220703125" resizable="false" text="Cashier №" />
+                <TableColumn fx:id="cashierFullName" prefWidth="70.39996337890625" resizable="false" text="Fullname" />
+            <TableColumn fx:id="cashierCompany" prefWidth="87.199951171875" resizable="false" text="Company" />
+            <TableColumn fx:id="cashierLocation" prefWidth="105.60009765625" resizable="false" text="Chashier location" />
             </columns>
         </TableView>
         <TextField fx:id="fullnameTextField" layoutX="266.0" layoutY="113.0" promptText="Fullname" />
@@ -51,7 +56,7 @@
       <ChoiceBox fx:id="locationChoiceBox" layoutX="425.0" layoutY="113.0" prefWidth="150.0" />
       <Label alignment="CENTER" layoutX="449.0" layoutY="89.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Location" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="288.0" layoutY="89.0" prefHeight="18.0" prefWidth="102.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Fullname" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="360.0" layoutY="24.0" prefHeight="42.0" prefWidth="178.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="CREATE CASHIER" textFill="WHITE">
+      <Label alignment="CENTER" layoutX="360.0" layoutY="24.0" prefHeight="42.0" prefWidth="178.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF; -fx-background-color: #34495E;" text="CREATE CASHIER" textFill="WHITE">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>

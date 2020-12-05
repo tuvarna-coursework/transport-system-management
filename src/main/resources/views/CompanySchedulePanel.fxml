@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -15,47 +13,52 @@
             <children>
                 <Button layoutX="14.0" layoutY="145.0" mnemonicParsing="false" onAction="#goToAddTrip" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="New trip" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font></Button>
                 <Label alignment="CENTER" contentDisplay="CENTER" layoutX="82.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="COMPANY" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="14.0" layoutY="196.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="14.0" layoutY="247.0" mnemonicParsing="false" onAction="#goToRequest" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Request" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
+            <Button layoutX="50.0" layoutY="305.0" mnemonicParsing="false" onAction="#goToNotifications" prefHeight="27.0" prefWidth="154.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="View notifications" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Tahoma Bold" size="12.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
         <TableView fx:id="companyScheduleTable" layoutX="262.0" layoutY="139.0" prefHeight="316.0" prefWidth="666.0">
             <columns>
-                <TableColumn fx:id="col_departureDate" prefWidth="92.7999267578125" text="Departure Date" />
-                <TableColumn fx:id="col_hourOfDeparture" prefWidth="92.7999267578125" text="Hour" />
-                <TableColumn fx:id="col_departure" prefWidth="78.4000244140625" text="Departure" />
-                <TableColumn fx:id="col_arrival" prefWidth="59.199951171875" text="Arival" />
-                <TableColumn fx:id="col_tripType" prefWidth="46.400054931640625" text="Type" />
-                <TableColumn fx:id="col_availableTickets" prefWidth="93.5999755859375" text="Available tickets" />
-                <TableColumn fx:id="col_transportType" prefWidth="67.20001220703125" text="Trans. type" />
-                <TableColumn fx:id="col_price" prefWidth="45.59991455078125" text="Price $" />
-                <TableColumn fx:id="col_duration" prefWidth="97.5999755859375" text="Duration (min.)" />
-                <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
+                <TableColumn fx:id="col_departureDate" prefWidth="92.7999267578125" resizable="false" text="Departure Date" />
+                <TableColumn fx:id="col_hourOfDeparture" prefWidth="49.60003662109375" resizable="false" text="Hour" />
+                <TableColumn fx:id="col_departure" prefWidth="82.4000244140625" resizable="false" text="Departure" />
+                <TableColumn fx:id="col_arrival" prefWidth="70.40005493164062" resizable="false" text="Arival" />
+                <TableColumn fx:id="col_tripType" prefWidth="48.79998779296875" resizable="false" text="Type" />
+                <TableColumn fx:id="col_availableTickets" prefWidth="92.7999267578125" resizable="false" text="Available tickets" />
+                <TableColumn fx:id="col_transportType" prefWidth="68.0" resizable="false" text="Trans. type" />
+                <TableColumn fx:id="col_price" prefWidth="48.7999267578125" resizable="false" text="Price $" />
+                <TableColumn fx:id="col_duration" prefWidth="107.2000732421875" resizable="false" text="Duration (min.)" />
+                <TableColumn fx:id="col_capacity" prefWidth="103.9998779296875" text="Bus Capacity" />
             </columns>
         </TableView>
      
         
          <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="411.0" layoutY="90.0" prefHeight="18.0" prefWidth="331.0" text="" textAlignment="CENTER" textFill="WHITE" />
-        <Button fx:id="btnCancel" onAction="#cancelOnClick" layoutX="735.0" layoutY="89.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Cancel trip" textFill="WHITE" />
+        <Button fx:id="btnCancel" layoutX="843.0" layoutY="94.0" mnemonicParsing="false" onAction="#cancelOnClick" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Cancel trip" textFill="WHITE" />
         
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="3.0" prefWidth="675.0" style="-fx-background-color: #34495E;" />
-        <Button layoutX="462.0" layoutY="26.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="262.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="SCHEDULE" textFill="WHITE">
+        <Button alignment="CENTER" layoutX="476.0" layoutY="28.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #34495E; -fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-radius: 30;" text="SCHEDULE" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="23.0" />
             </font>

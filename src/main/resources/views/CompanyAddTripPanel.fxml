@@ -16,25 +16,30 @@
             <children>
                 <Button layoutX="14.0" layoutY="139.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="New trip" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font></Button>
-                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="73.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="COMPANY" textAlignment="CENTER" textFill="WHITE" />
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="COMPANY" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="14.0" layoutY="189.0" mnemonicParsing="false" onAction="#goToScheduleCompany" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#goToRequest" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Request" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
             <Label fx:id="informationLabel" alignment="CENTER" layoutX="10.0" layoutY="307.0" prefHeight="18.0" prefWidth="241.0" textFill="WHITE" />
+            <Button layoutX="62.0" layoutY="302.0" mnemonicParsing="false" onAction="#goToNotifications" prefHeight="27.0" prefWidth="129.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="View Notifications" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Tahoma Bold" size="12.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
         <Button layoutX="584.0" layoutY="429.0" mnemonicParsing="false" onAction="#addTrip" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Add" textFill="WHITE">
@@ -42,7 +47,10 @@
             <Font size="20.0" />
          </font></Button>
         <AnchorPane layoutX="244.0" layoutY="72.0" prefHeight="7.0" prefWidth="513.0" style="-fx-background-color: #34495E;" />
-        <Button layoutX="385.0" layoutY="22.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="190.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="CREATE NEW TRIP" textFill="WHITE" />
+        <Button layoutX="385.0" layoutY="22.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="190.0" style="-fx-background-color: #34495E; -fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-radius: 30;" text="CREATE NEW TRIP" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font></Button>
       <DatePicker fx:id="departureDatePicker" layoutX="302.0" layoutY="396.0" prefHeight="26.0" prefWidth="149.0" promptText="Departure date" />
       <RadioButton fx:id="radioTypeExpress" layoutX="304.0" layoutY="106.0" mnemonicParsing="false" text="Express" textFill="WHITE">
          <font>
