@@ -128,6 +128,16 @@ CREATE TABLE "TransportSystem"."Request" (
 	CONSTRAINT "Request_pk" PRIMARY KEY (request_id)
 );
 
+-- object: "TransportSystem"."Notification" | type: TABLE --
+-- DROP TABLE IF EXISTS "TransportSystem"."Notification" CASCADE;
+CREATE TABLE "TransportSystem"."Notification" (
+	notification_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ,
+	sender_id integer NOT NULL,
+	receiver_id integer NOT NULL,
+	notification_message TEXT NOT NULL,
+	CONSTRAINT "Notification_pk" PRIMARY KEY (notification_id)
+);
+
 -- object: "TransportSystem"."Request" | type: TABLE --
 -- DROP TABLE IF EXISTS "TransportSystem"."Request" CASCADE;
 CREATE TABLE "TransportSystem"."Route" (
@@ -282,6 +292,18 @@ ON DELETE NO ACTION ON UPDATE CASCADE;
 ALTER TABLE "TransportSystem"."TripCashier" ADD CONSTRAINT cashier_id FOREIGN KEY (cashier_id)
 REFERENCES "TransportSystem"."Users" (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- object: sender_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."Notification" DROP CONSTRAINT IF EXISTS sender_id CASCADE;
+ALTER TABLE "TransportSystem"."Notification" ADD CONSTRAINT sender_id FOREIGN KEY (sender_id)
+REFERENCES "TransportSystem"."Users"(user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- object: receiver_id | type: CONSTRAINT --
+-- ALTER TABLE "TransportSystem"."Notification" DROP CONSTRAINT IF EXISTS receiver_id CASCADE;
+ALTER TABLE "TransportSystem"."Notification" ADD CONSTRAINT receiver_id FOREIGN KEY (receiver_id)
+REFERENCES "TransportSystem"."Users"(user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- object: trip_type_id | type: CONSTRAINT --
 -- ALTER TABLE "TransportSystem"."Trip" DROP CONSTRAINT IF EXISTS trip_type_id CASCADE;

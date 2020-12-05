@@ -12,6 +12,10 @@ public class UserProfileService implements CrudService<UserProfile> {
 	public UserProfileService() {
 		this.userProfileDAO = new UserProfileDAO();
 	}
+	
+	public void increaseRating(UserProfile profile, double rating) {
+		userProfileDAO.increaseRating(profile, rating);
+	}
 
 	public List<UserProfile> getByRating(double rating) {
 		return userProfileDAO.getByRating(rating);

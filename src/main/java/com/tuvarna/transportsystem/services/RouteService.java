@@ -18,6 +18,9 @@ public class RouteService implements CrudService<Route> {
 		return routeDAO.getAttachmentLocationsInRouteById(routeId);
 	}
 	
+	public Optional<Route> getRouteByEndPointLocations(String departure, String arrival){
+		return routeDAO.getRouteByEndPointLocations(departure, arrival);
+	}
 	
 	public String getArrivalHourAtAttachmentLocation(int routeId, int locationId) {
 		return routeDAO.getArrivalHourAtAttachmentLocation(routeId, locationId);

@@ -182,6 +182,11 @@ public class DistributorAddCashierController implements Initializable {
 		if (!fullnameTextField.getText().isEmpty()) {
 			String fullname = fullnameTextField.getText().trim();
 			UserService userService = new UserService();
+			
+			if (fullname.length() < 4 || fullname.length() > 30) {
+				informationLabel.setText("Invalid fullname. Length: 4 - 20");
+				return;
+			}
 
 			if (locationChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
 				informationLabel.setText("Please select a location!");
@@ -235,5 +240,4 @@ public class DistributorAddCashierController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 	}
-
 }

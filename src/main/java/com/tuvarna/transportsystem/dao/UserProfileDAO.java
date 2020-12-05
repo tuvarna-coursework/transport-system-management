@@ -38,6 +38,11 @@ public class UserProfileDAO implements GenericDAOInterface<UserProfile> {
 			throw e;
 		}
 	}
+	
+	public void increaseRating(UserProfile profile, double rating) {
+		profile.setUserProfileRating(profile.getUserProfileRating() + rating);
+		executeInsideTransaction(entityManager -> entityManager.merge(profile));
+	}
 
 	/* Below are additional queries for this entity only */
 	public List<UserProfile> getByRating(double rating) {

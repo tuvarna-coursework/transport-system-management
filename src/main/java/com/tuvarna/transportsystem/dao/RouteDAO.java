@@ -43,22 +43,33 @@ public class RouteDAO implements GenericDAOInterface<Route> {
 			throw e;
 		}
 	}
-	
-	public List<Location> getAttachmentLocationsInRouteById(int routeId){
+
+	public List<Location> getAttachmentLocationsInRouteById(int routeId) {
 		List<RouteAttachment> attachments = entityManager.createQuery("FROM RouteAttachment WHERE route_id = :id")
 				.setParameter("id", routeId).getResultList();
-		
+
 		List<Location> locations = new ArrayList<>();
-		
+
 		attachments.forEach(a -> locations.add(a.getLocation()));
 		return locations;
 	}
-	
+
+	public Optional<Route> getRouteByEndPointLocations(String departure, String arrival) {
+		return Optional.ofNullable((Route) entityManager
+				.createQuery(
+						"SELECT r FROM Route r, Location l, Location l2 WHERE (r.routeDepartureLocation = l.locationId"
+								+ "AND l.locationName = :departure) AND"
+								+ " (r.routeArrivalLocation = l2.locationId AND l2.locationName = :arrival)")
+				.setParameter("departure", departure).setParameter("arrival", arrival).getResultList().stream()
+				.findFirst().orElse(null));
+	}
+
 	public String getArrivalHourAtAttachmentLocation(int routeId, int locationId) {
-		Optional<RouteAttachment> attachment = Optional.ofNullable((RouteAttachment) entityManager.createQuery("FROM RouteAttachment WHERE route_id = :routeId AND location_id = :locationId")
-				.setParameter("routeId", routeId)
-				.setParameter("locationId", locationId).getResultList().stream().findFirst().orElse(null));
-		
+		Optional<RouteAttachment> attachment = Optional.ofNullable((RouteAttachment) entityManager
+				.createQuery("FROM RouteAttachment WHERE route_id = :routeId AND location_id = :locationId")
+				.setParameter("routeId", routeId).setParameter("locationId", locationId).getResultList().stream()
+				.findFirst().orElse(null));
+
 		if (attachment.isPresent()) {
 			return attachment.get().getHourOfArrival();
 		} else {
@@ -68,19 +79,17 @@ public class RouteDAO implements GenericDAOInterface<Route> {
 
 	public void addAttachmentLocation(Route route, Location location, String hourOfArrival) {
 		RouteAttachment routeAttachment = new RouteAttachment(route, location, hourOfArrival);
-		
+
 		executeInsideTransaction(entityManager -> entityManager.persist(routeAttachment));
 	}
 
 	/*
-	public void removeAttachmentLocation(Route route, Location location) {
-		if (route.getAttachmentLocations().contains(location)) {
-			route.getAttachmentLocations().remove(location);
-		}
-
-		executeInsideTransaction(entityManager -> entityManager.merge(route));
-	}
-	*/
+	 * public void removeAttachmentLocation(Route route, Location location) { if
+	 * (route.getAttachmentLocations().contains(location)) {
+	 * route.getAttachmentLocations().remove(location); }
+	 * 
+	 * executeInsideTransaction(entityManager -> entityManager.merge(route)); }
+	 */
 
 	@SuppressWarnings("unchecked")
 	@Override

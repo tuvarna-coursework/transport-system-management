@@ -16,10 +16,6 @@
     <children>
         <AnchorPane layoutY="-1.0" prefHeight="689.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
             <children>
-                <Button layoutX="14.0" layoutY="145.0" mnemonicParsing="false" onAction="#goToSell" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Sell tickets" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
-                    <font>
-                        <Font name="Tahoma" size="12.0" />
-                    </font></Button>
                 <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="CASHIER" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="14.0" layoutY="196.0" mnemonicParsing="false" onAction="#goToScheduleCashier" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
@@ -52,13 +48,7 @@
                 <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
             </columns>
         </TableView>
-        <TextField layoutX="266.0" layoutY="54.0" promptText="Departure station" />
-        <DatePicker layoutX="425.0" layoutY="54.0" prefHeight="18.0" prefWidth="149.0" promptText="Date" />
-        <Button layoutX="521.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
-        
-        
-        <Button fx:id="loadAttachmentRoutes" onAction="#loadFields" layoutX="411.0" layoutY="470.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Load attachment stations" textFill="WHITE" />
-        <Button fx:id="sellTicket" onAction="#sellTicket" layoutX="661.0" layoutY="470.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Sell ticket" textFill="WHITE" />
+        <Button fx:id="sellTicket" onAction="#sellTicket" layoutX="541.0" layoutY="470.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Sell ticket" textFill="WHITE" />
         
         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="265.2" layoutY="525.4" prefHeight="18.0" prefWidth="101.0" text="Departure station" textAlignment="CENTER" textFill="WHITE" />
         <ChoiceBox fx:id="departureChoiceBox" layoutX="369.0" layoutY="525.4" prefWidth="150.0" />
@@ -89,7 +79,7 @@
          <Label alignment="CENTER" contentDisplay="CENTER" layoutX="685.2" layoutY="585.4" prefHeight="18.0" prefWidth="101.0" text="Full name" textAlignment="CENTER" textFill="WHITE" />
         <TextField fx:id="userFullNameTextField" layoutX="769.2" layoutY="585.4" promptText="Full name" />
         
-        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="515.2" layoutY="635.4" prefHeight="18.0" prefWidth="101.0" text="" textAlignment="CENTER" textFill="WHITE" />
+        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="415.2" layoutY="635.4" prefHeight="18.0" prefWidth="301.0" text="" textAlignment="CENTER" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="6.0" prefWidth="446.0" style="-fx-background-color: #34495E;" />
     </children>
 </AnchorPane>

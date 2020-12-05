@@ -51,6 +51,12 @@ public class User {
 	@OneToOne(orphanRemoval = true)
 	@JoinColumn(name = "userprofile_id", referencedColumnName = "userprofile_id")
 	private UserProfile userProfile;
+	
+	@OneToMany(mappedBy = "sender")
+	private Notification notificationSender;
+	
+	@OneToMany(mappedBy = "receiver")
+	private Notification notificationReceiver;
 
 	/*
 	 * Even though one user has one type it makes sense that this is a OneToOne

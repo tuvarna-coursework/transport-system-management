@@ -354,10 +354,7 @@ public class CompanyAddController implements Initializable {
 		RouteService routeService = new RouteService();
 		Route route = new Route(locationDeparture, locationArrival);
 
-		if (!routeService.getAll().contains(route)) {
-			routeService.save(route);
-		}
-
+		routeService.save(route);
 		globalRoute = route;
 
 		try {

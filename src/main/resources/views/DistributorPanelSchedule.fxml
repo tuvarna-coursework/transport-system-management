@@ -50,8 +50,7 @@
                 <TableColumn fx:id="col_capacity" prefWidth="84.7999267578125" text="Bus Capacity" />
             </columns>
         </TableView>
-       <Button fx:id="viewAttachmentLocationsButton" onAction="#showAttachmentLocations" layoutX="301.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="View attachment locations" textFill="WHITE" />
-        <Button layoutX="521.0" layoutY="87.0" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Search" textFill="WHITE" />
+  
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="7.0" prefWidth="362.0" style="-fx-background-color: #34495E;" />
     </children>
 </AnchorPane>

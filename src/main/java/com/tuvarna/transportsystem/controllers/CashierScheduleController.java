@@ -276,6 +276,21 @@ public class CashierScheduleController implements Initializable {
 	}
 
 	public void sellTicket(javafx.event.ActionEvent event) throws IOException {
+		if (departureChoiceBox.getValue() == null) {
+			informationLabel.setText("Please select a departure location.");
+			return;
+		}
+		
+		if (arrivalChoiceBox.getValue() == null) {
+			informationLabel.setText("Please select an arrival location.");
+			return;
+		}
+		
+		if (quantityChoiceBox.getValue() == null){
+			informationLabel.setText("Please select ticket quantity.");
+			return;
+		}
+		
 		if (!customerIsGuest.isSelected() && (!customerIsRegistered.isSelected())) {
 			informationLabel.setText("Please select if the customer is a guest or is registered.");
 			return;
@@ -343,10 +358,24 @@ public class CashierScheduleController implements Initializable {
 
 		// For every 5 purchased tickets, the user gains a rating of 0.2
 		if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
-			DatabaseUtils.currentUser.getUserProfile()
-					.setUserProfileRating(DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
+			new UserProfileService().increaseRating(DatabaseUtils.currentUser.getUserProfile(), 0.2);
 		}
-		
+
+		User company = userService.getUserByTripId(trip.getTripId()).get();
+
+		/*
+		 * Iterate through the tickets, check if the trip they belong to matches the
+		 * user id of this company's id. Basically, get all tickets sold by this
+		 * company.
+		 */
+		List<Ticket> ticketsSoldByCompany = ticketService.getAll().stream().filter(
+				t -> userService.getUserByTripId(t.getTrip().getTripId()).get().getUserId() == company.getUserId())
+				.collect(Collectors.toList());
+
+		if (ticketsSoldByCompany.size() % 5 == 0) {
+			new UserProfileService().increaseRating(company.getUserProfile(), 0.1);
+		}
+
 		informationLabel.setText("You sold a ticket.");
 	}
 

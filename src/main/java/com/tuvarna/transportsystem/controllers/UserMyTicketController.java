@@ -35,7 +35,7 @@ import java.util.ResourceBundle;
 
 public class UserMyTicketController implements Initializable {
 	ObservableList list = FXCollections.observableArrayList();
-	
+
 	@FXML
 	private TextField ticketIDTextField;
 	@FXML
@@ -63,17 +63,19 @@ public class UserMyTicketController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		ticketDateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
+		ticketDateCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
 						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureDate().toString());
 					}
 				});
 
-		ticketDurationCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
+		ticketDurationCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
-						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
+						return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripDuration()));
 					}
 				});
 
@@ -82,41 +84,54 @@ public class UserMyTicketController implements Initializable {
 
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
-						return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteDepartureLocation().getLocationName());
+						return new SimpleStringProperty(param.getValue().getDepartureLocation().getLocationName());
 					}
 				});
-		
+
 		ticketArrivalCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
-						return new SimpleStringProperty(param.getValue().getTrip().getRoute().getRouteArrivalLocation().getLocationName());
+						return new SimpleStringProperty(param.getValue().getArrivalLocation().getLocationName());
 					}
 				});
 
-		ticketHourCol.setCellValueFactory(new PropertyValueFactory<Ticket, String>("ticketPurchaseDate"));
+		ticketHourCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
+					}
+				});
+
+
 		ticketIdCol.setCellValueFactory(new PropertyValueFactory<Ticket, Integer>("ticketId"));
-		/*list.removeAll(list);
-		List<Trip> trips = new ArrayList<>();
-		DatabaseUtils.currentUser.getTickets().forEach(t -> trips.add(t.getTrip()));
-		list.addAll(trips);*/
-		
+		/*
+		 * list.removeAll(list); List<Trip> trips = new ArrayList<>();
+		 * DatabaseUtils.currentUser.getTickets().forEach(t -> trips.add(t.getTrip()));
+		 * list.addAll(trips);
+		 */
+
 		myTicketTableView.setItems(getTickets());
-		
+
 	}
+
 	public ObservableList<Ticket> getTickets() {
 		ObservableList<Ticket> ticketsList = FXCollections.observableArrayList();
 		TicketService ticketService = new TicketService();
 
 		List<Ticket> eList = ticketService.getAll();
 		for (Ticket ent : eList) {
-			//if statement not working to filter only user's personal tickets.
-			//if(DatabaseUtils.currentUser.getTickets().contains(ent))
+			// if statement not working to filter only user's personal tickets.
+			if (DatabaseUtils.currentUser.getTickets().contains(ent)) {
 				ticketsList.add(ent);
+			}
 		}
 		return ticketsList;
 	}
+
 	public void logOut(javafx.event.ActionEvent event) throws IOException {
 		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);

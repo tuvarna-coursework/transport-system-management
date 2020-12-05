@@ -26,5 +26,6 @@
 	    <mapping class="com.tuvarna.transportsystem.entities.Request"/>
 	    <mapping class="com.tuvarna.transportsystem.entities.Route"/>
 	    <mapping class="com.tuvarna.transportsystem.entities.RouteAttachment"/>
+	    <mapping class="com.tuvarna.transportsystem.entities.Notification"/>
 	</session-factory>
 </hibernate-configuration>
