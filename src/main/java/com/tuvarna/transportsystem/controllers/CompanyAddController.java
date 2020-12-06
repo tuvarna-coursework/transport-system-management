@@ -3,6 +3,8 @@ package com.tuvarna.transportsystem.controllers;
 import com.tuvarna.transportsystem.entities.*;
 import com.tuvarna.transportsystem.services.*;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import com.tuvarna.transportsystem.utils.NotificationUtils;
+
 import javafx.collections.FXCollections;
 
 import java.awt.*;
@@ -340,6 +342,9 @@ public class CompanyAddController implements Initializable {
 		 * (owner in this case) and the newly created trip
 		 */
 		new UserService().addTrip(DatabaseUtils.currentUser, newTrip);
+		
+		/* Distributor gets a notification */
+		NotificationUtils.generateNewTripNotification(newTrip);
 
 		informationLabel.setText("You added new trip!");
 

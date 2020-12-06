@@ -1,7 +1,7 @@
 package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
-
+import com.tuvarna.transportsystem.utils.NotificationUtils;
 import com.tuvarna.transportsystem.dao.TripDAO;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Ticket;
@@ -201,7 +201,7 @@ public class CompanyScheduleController implements Initializable {
 		
 		/* Couldn't make a working REMOVE cascade no matter what, that's why I need to manually cascade everything...
 		 * 1. Remove every ticket from the UsersTicket table
-		 * 2. Remove every ticket associated with the trpi
+		 * 2. Remove every ticket associated with the trip from Ticket table
 		 * 3. Remove the trip from UsersTrip (Company - trip)
 		 * 4. Remove all requests for this trip
 		 * 5. Delete the trip itself 
@@ -214,12 +214,33 @@ public class CompanyScheduleController implements Initializable {
 		
 		User company = userService.getUserByTripId(tripId).get();
 		List<Ticket> tickets = ticketService.getByTrip(tripId);
+		List<User> users = userService.getAll();
 
 		try {
-			tickets.forEach(t -> userService.removeTicket(DatabaseUtils.currentUser, t));
+			users.forEach(u -> {
+				List<Ticket> userTickets = u.getTickets();
+				
+				userTickets.forEach(t -> {
+					if (t.getTrip().getTripId() == tripId) {
+						userService.removeTicket(u, t);
+					}
+				});
+			});
+			
+			
+			tickets.forEach(t -> {
+				if (t.getTrip().getTripId() == tripId) {
+					ticketService.deleteById(t.getTicketId());
+				}
+			});
+			
 			tickets.forEach(t -> ticketService.deleteById(t.getTicketId()));
 			userService.removeTrip(company, trip);
 			requestService.deleteByTripId(tripId);
+			
+			/* Inform distributor for the cancellation before it is deleted */
+			NotificationUtils.generateCancelledTripNotification(trip);
+			
 			tripService.deleteById(tripId);	
 		} catch (Exception e) {
 			informationLabel.setText("An error occured while cancelling this trip.");

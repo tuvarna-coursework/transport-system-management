@@ -14,32 +14,37 @@
             <children>
                 <Button layoutX="14.0" layoutY="139.0" mnemonicParsing="false" onAction="#goToAddCashier" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add cashier" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font></Button>
-                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="DISTRIBUTOR" textAlignment="CENTER" textFill="WHITE" />
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="85.0" prefHeight="18.0" prefWidth="101.0" text="DISTRIBUTOR" textAlignment="CENTER" textFill="WHITE" />
                 <Button layoutX="14.0" layoutY="189.0" mnemonicParsing="false" onAction="#goToScheduleDistributor" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
-                <Button layoutX="14.0" layoutY="330.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+                <Button layoutX="12.0" layoutY="372.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
                 <Button layoutX="14.0" layoutY="239.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Make request" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                     <font>
-                        <Font name="Tahoma" size="12.0" />
+                        <Font name="Tahoma Bold" size="17.0" />
                     </font>
                 </Button>
+            <Button layoutX="48.0" layoutY="291.0" mnemonicParsing="false" onAction="#goToNotifications" prefHeight="26.0" prefWidth="166.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="View notifications" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
+               <font>
+                  <Font name="Tahoma Bold" size="12.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
         <Button layoutX="600.0" layoutY="373.0" mnemonicParsing="false" onAction="#makeRequest" prefHeight="18.0" prefWidth="94.0" style="-fx-background-color: #34495E; -fx-background-radius: 30; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Make request" textFill="WHITE" />
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="7.0" prefWidth="485.0" style="-fx-background-color: #34495E;" />
         <TextField fx:id="requiredTicketsTextField" layoutX="305.0" layoutY="374.0" promptText="Tickets required" />
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="382.0" layoutY="51.0" prefHeight="27.0" prefWidth="218.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Request for new tickets" textFill="WHITE">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="314.0" layoutY="45.0" prefHeight="42.0" prefWidth="370.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-color: #34495E; -fx-background-radius: 30;" text="REQUEST FOR TICKETS" textFill="WHITE">
          <font>
-            <Font name="Tahoma" size="17.0" />
+            <Font name="Tahoma Bold" size="26.0" />
          </font>
       </Label>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="304.0" layoutY="348.0" prefHeight="18.0" prefWidth="150.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Tickets quantity" textFill="WHITE">

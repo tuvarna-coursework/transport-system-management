@@ -15,17 +15,17 @@
          <children>
             <Button layoutX="11.0" layoutY="141.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Buy ticket" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font></Button>
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="77.0" layoutY="83.0" prefHeight="18.0" prefWidth="101.0" text="USERNAME" textAlignment="CENTER" textFill="WHITE" />
             <Button layoutX="11.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToSchedule" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Schedule" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
             <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#logOut" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
             <Label fx:id="informationLabel" alignment="CENTER" layoutX="11.0" layoutY="320.0" prefHeight="19.0" prefWidth="234.0" textFill="WHITE">
@@ -35,13 +35,13 @@
             </Label>
             <Button layoutX="11.0" layoutY="258.0" mnemonicParsing="false" onAction="#goToMyTicket" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="My tickets" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
          </children>
       </AnchorPane>
       
-      <TableView visible="false" fx:id="availableTripsTable" layoutX="259.0" layoutY="130.0" prefHeight="216.0" prefWidth="620.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #34495E;">
+      <TableView fx:id="availableTripsTable" layoutX="259.0" layoutY="130.0" prefHeight="216.0" prefWidth="620.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #34495E;" visible="false">
         <columns>
           <TableColumn fx:id="dateCol" prefWidth="55.2000732421875" text="Date" />
           <TableColumn fx:id="hourCol" prefWidth="42.4000244140625" text="Hour" />
@@ -54,9 +54,18 @@
       </TableView>
       
       <DatePicker fx:id="tripDatePicker" layoutX="346.0" layoutY="217.0" prefHeight="26.0" prefWidth="192.0" promptText="Date" />
-      <Button fx:id="searchBuyToggle" layoutX="471.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleButtonAction" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Search" textFill="WHITE" />
-      <Button fx:id="hideShowToggle" layoutX="271.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleView" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Hide search" textFill="WHITE" />
-      <Label alignment="CENTER" layoutX="346.0" layoutY="31.0" prefHeight="26.0" prefWidth="192.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Buy your ticket" textFill="WHITE" />
+      <Button fx:id="searchBuyToggle" layoutX="471.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleButtonAction" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Buy" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="hideShowToggle" layoutX="271.0" layoutY="401.0" mnemonicParsing="false" onAction="#toggleView" prefHeight="42.0" prefWidth="102.0" style="-fx-background-color: #34495E; -fx-background-radius: 30;" text="Hide search" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Label alignment="CENTER" layoutX="332.0" layoutY="24.0" prefHeight="54.0" prefWidth="219.0" style="-fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-color: #34495E; -fx-background-radius: 30;" text="BUY YOUR TICKET" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font></Label>
       <ChoiceBox fx:id="departureChoiceBox" layoutX="346.0" layoutY="125.0" prefHeight="26.0" prefWidth="192.0" />
       <ChoiceBox fx:id="arrivalChoiceBox" layoutX="346.0" layoutY="179.0" prefHeight="26.0" prefWidth="192.0" />
       <ChoiceBox fx:id="quantityChoiceBox" layoutX="346.0" layoutY="276.0" prefHeight="26.0" prefWidth="192.0" />

@@ -7,6 +7,7 @@ import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import com.tuvarna.transportsystem.utils.NotificationUtils;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/DistributorPanelSchedule.fxml"));
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("views/CompanySchedulePanel.fxml"));
 		stage.setTitle("Transport Company");
 
 		Scene scene = new Scene(root);
@@ -30,6 +31,7 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 		DatabaseUtils.init();
+		NotificationUtils.init();
 		launch(args);
 	}
 }

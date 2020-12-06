@@ -15,18 +15,18 @@
    <children>
       <AnchorPane layoutY="-2.0" prefHeight="493.0" prefWidth="256.0" style="-fx-background-color: #34495E;">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="68.0" layoutY="69.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="77.0" layoutY="69.0" prefHeight="18.0" prefWidth="101.0" text="ADMIN PANEL" textAlignment="CENTER" textFill="WHITE" />
             <Button fx:id="addButton" layoutX="11.0" layoutY="243.0" mnemonicParsing="false" onAction="#addButtonOnAction" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Add" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
             <Button layoutX="10.0" layoutY="402.0" mnemonicParsing="false" onAction="#backToLogIn" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Log out" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="17.0" />
                </font>
             </Button>
-            <TextField fx:id="nameField" layoutX="95.0" layoutY="176.0" />
+            <TextField fx:id="nameCreationField" layoutX="95.0" layoutY="176.0" />
             <Label alignment="CENTER" layoutX="10.0" layoutY="180.0" prefHeight="16.0" prefWidth="102.0" text="Name" textFill="WHITE" />
             <Label alignment="CENTER" layoutX="29.0" layoutY="135.0" prefHeight="18.0" prefWidth="42.0" text="Type" textFill="WHITE" />
             <RadioButton fx:id="company" layoutX="83.0" layoutY="142.0" mnemonicParsing="false" text="Company" textFill="WHITE">
@@ -46,26 +46,26 @@
             <Label alignment="CENTER" layoutX="36.0" layoutY="210.0" prefHeight="18.0" prefWidth="50.0" text="Location" textFill="WHITE" />
             <Button layoutX="11.0" layoutY="292.0" mnemonicParsing="false" onAction="#goToHonorarium" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30;" text="Edit user rating/honorarium" textFill="WHITE" textOverrun="CENTER_ELLIPSIS">
                <font>
-                  <Font name="Tahoma" size="12.0" />
+                  <Font name="Tahoma Bold" size="15.0" />
                </font>
             </Button>
             <Label fx:id="informationLabel" alignment="CENTER" layoutX="48.0" layoutY="350.0" prefHeight="16.0" prefWidth="149.0" textFill="WHITE" />
          </children>
       </AnchorPane>
-      <TableView fx:id="usersFoundTable" layoutX="282.0" layoutY="146.0" prefHeight="210.0" prefWidth="418.0">
+      <TableView fx:id="usersFoundTable" layoutX="282.0" layoutY="146.0" prefHeight="306.0" prefWidth="418.0">
         <columns>
-          <TableColumn fx:id="userId" prefWidth="15.2" text="Id" />
-          <TableColumn fx:id="userFullName" text="Full name" />
-          <TableColumn fx:id="userNameFound" text="User name" />
-          <TableColumn fx:id="userLocation" text="Location" />
-          <TableColumn fx:id="userType" text="User type" />
+          <TableColumn fx:id="userId" prefWidth="26.4000244140625" resizable="false" text="Id" />
+          <TableColumn fx:id="userFullName" prefWidth="91.20001220703125" resizable="false" text="Full name" />
+          <TableColumn fx:id="userNameFound" prefWidth="107.99993896484375" resizable="false" text="User name" />
+          <TableColumn fx:id="userLocation" prefWidth="81.60000610351562" resizable="false" text="Location" />
+          <TableColumn fx:id="userType" prefWidth="110.39996337890625" resizable="false" text="User type" />
         </columns>
       </TableView>
-      <AnchorPane layoutX="282.0" layoutY="126.0" prefHeight="5.0" prefWidth="418.0" style="-fx-background-color: #34495E;" />
+      <AnchorPane layoutX="249.0" layoutY="126.0" prefHeight="6.0" prefWidth="486.0" style="-fx-background-color: #34495E;" />
       <TextField fx:id="searchField" layoutX="282.0" layoutY="58.0" prefHeight="18.0" prefWidth="74.0" />
       <ChoiceBox fx:id="searchCriteriaChoiceBox" layoutX="370.0" layoutY="56.6" prefHeight="26.0" prefWidth="192.0" />
-      <Button fx:id="deleteButton" onAction="#deleteButtonOnAction" layoutX="448.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Delete" textFill="WHITE" />
-      <Button fx:id="searchButton" onAction="#searchButtonOnAction" layoutX="282.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Search" textFill="WHITE" />
+      <Button fx:id="deleteButton" layoutX="448.0" layoutY="91.0" mnemonicParsing="false" onAction="#deleteButtonOnAction" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Delete" textFill="WHITE" />
+      <Button fx:id="searchButton" layoutX="282.0" layoutY="91.0" mnemonicParsing="false" onAction="#searchButtonOnAction" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Search" textFill="WHITE" />
       <Button layoutX="366.0" layoutY="91.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="74.0" style="-fx-background-color: #3498DB; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #FFFFFF;" text="Update" textFill="WHITE" />
    </children>
 </AnchorPane>

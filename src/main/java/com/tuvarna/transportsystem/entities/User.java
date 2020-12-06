@@ -53,10 +53,10 @@ public class User {
 	private UserProfile userProfile;
 	
 	@OneToMany(mappedBy = "sender")
-	private Notification notificationSender;
+	private List<Notification> notificationSenders;
 	
 	@OneToMany(mappedBy = "receiver")
-	private Notification notificationReceiver;
+	private List<Notification> notificationReceivers;
 
 	/*
 	 * Even though one user has one type it makes sense that this is a OneToOne
