@@ -1,5 +1,7 @@
 package com.tuvarna.transportsystem.controllers;
 
+import com.tuvarna.transportsystem.entities.User;
+import com.tuvarna.transportsystem.services.UserService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -10,11 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -61,9 +59,17 @@ public class DistributorScheduleController implements Initializable {
 
 	@FXML
 	private Label informationLabel;
+	@FXML
+	private ChoiceBox<String> locationChoiceBox;
+	@FXML
+	private ComboBox<String> cashierComboBox;
+
+	ObservableList list = FXCollections.observableArrayList();
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		loadLocations();
+		cashierComboBox.setItems(getCashiers());
 		col_departure.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -124,7 +130,33 @@ public class DistributorScheduleController implements Initializable {
 		scheduleTable.setItems(getTripSchedule());
 
 	}
-
+	public void loadLocations(){
+		list.removeAll(list);
+		String city_01 = "Varna";
+		String city_02 = "Sofia";
+		String city_03 = "Shumen";
+		String city_04 = "Veliko Turnovo";
+		String city_05 = "Razgrad";
+		String city_06 = "Gabrovo";
+		String city_07 = "Plovdiv";
+		String city_08 = "Burgas";
+		String city_09 = "Stara Zagora";
+		String city_10 = "Blagoevgrad";
+		String city_11 = "Sliven";
+		String city_12 = "Pleven";
+		String city_13 = "Omurtag";
+		String city_14 = "Ruse";
+		String city_15 = "Dobrich";
+		String city_16 = "Montana";
+		String city_17 = "Vraca";
+		String city_18 = "Yambol";
+		String city_19 = "Pernik";
+		String city_20 = "Lovech";
+		String city_21 = "Turgovishte";
+		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
+		locationChoiceBox.getItems().addAll(list);
+	}
 	public ObservableList<Trip> getTripSchedule() {
 		ObservableList<Trip> tripList = FXCollections.observableArrayList();
 		TripService tripService = new TripService();
@@ -186,5 +218,32 @@ public class DistributorScheduleController implements Initializable {
 
 		/* Await .fxml and controller for the new popup */
 
+	}
+	public ObservableList<String> getCashiers() {
+		ObservableList<String> userList = FXCollections.observableArrayList();
+		UserService userService = new UserService();
+		String type = "Cashier";
+		List<User> eList = userService.getByUserType(type);
+		for (User ent : eList) {
+			userList.add(ent.getUserFullName());
+		}
+		return userList;
+	}
+	public void assignCashier(){
+		Trip trip = scheduleTable.getSelectionModel().getSelectedItem();
+		if(trip == null ) {
+			informationLabel.setText("Please select trip!");
+			return;
+		}
+
+		if(locationChoiceBox.getSelectionModel().getSelectedIndex() < 0){
+			informationLabel.setText("Please select location!");
+			return;
+		}
+		if(cashierComboBox.getSelectionModel().getSelectedIndex() < 0){
+			informationLabel.setText("Please select cashier!");
+			return;
+		}
+		// NOT FINISHED!
 	}
 }
