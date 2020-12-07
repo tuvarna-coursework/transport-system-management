@@ -209,7 +209,7 @@ public class DatabaseUtils {
 		RoleService roleService = new RoleService();
 		UserTypeService userTypeService = new UserTypeService();
 		UserService userService = new UserService();
-		currentUser = userService.getById(4).get();
+		//currentUser = userService.getById(7).get();
 
 		try {
 			ROLE_ADMIN = roleService.getByName("Admin").get();
@@ -278,53 +278,5 @@ public class DatabaseUtils {
 		}
 
 		return sb.toString();
-	}
-
-	@Deprecated
-	public static void testMappings() {
-
-		UserProfile profile = new UserProfile(5.1, 5.2);
-		new UserProfileService().save(profile);
-
-		UserType type = new UserTypeService().getById(2).get(); // prepopulated already
-		Location location = (Location) new LocationService().getByName("Varna").get();
-
-		UserService userService = new UserService();
-		String fullname = "bat gergi";
-		String username = "username";
-		String password = "parola";
-		// User user = new User(fullname, username, password, profile, type, location);
-
-		// userService.save(user);
-
-		User user = userService.getById(1).get();
-		// user.addTicket(new TicketService().getById(1));
-
-		userService.save(user);
-
-		/*
-		 * TripType tripType, Location tripDepartureLocation, Location
-		 * tripArrivalLocation, Date tripDepartureDate, Date tripArrivalDate, int
-		 * tripCapacity, TransportType tripTransportType, PurchaseRestriction
-		 * tripPurchaseRestriction, int tripTicketAvailability
-		 */
-		/*
-		 * TripType type = new TripTypeService().getById(1); Location location = new
-		 * LocationService().getById(1); Location location2 = new
-		 * LocationService().getById(2); TransportType transportType = new
-		 * TransportTypeService().getById(1); PurchaseRestriction restriction = new
-		 * PurchaseRestrictionService().getById(1);
-		 * 
-		 * Trip trip = new Trip (type, location, location2, new Date(), new Date(), 50,
-		 * transportType, restriction, 5);
-		 * 
-		 * TripService service = new TripService(); service.save(trip);
-		 * 
-		 * 
-		 * Ticket ticket = new Ticket(new Date(), trip);
-		 * 
-		 * new TicketService().save(ticket);
-		 */
-
 	}
 }

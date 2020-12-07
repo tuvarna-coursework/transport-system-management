@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.services.UserService;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 public class AdminHonorariumController implements Initializable {
 
@@ -54,6 +55,8 @@ public class AdminHonorariumController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void editOnClick(javafx.event.ActionEvent event) throws IOException {

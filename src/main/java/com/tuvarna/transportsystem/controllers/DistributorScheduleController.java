@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.RouteService;
 import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
@@ -50,7 +51,7 @@ public class DistributorScheduleController implements Initializable {
 	private TableColumn<Trip, Double> col_price;
 	@FXML
 	private TableColumn<Trip, Integer> col_duration;
-	
+
 	@FXML
 	private TableColumn<Trip, String> col_hourOfDeparture;
 
@@ -113,7 +114,7 @@ public class DistributorScheduleController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getTripTransportType().getTransportTypeName());
 					}
 				});
-		
+
 		col_hourOfDeparture.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -122,7 +123,7 @@ public class DistributorScheduleController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getTripDepartureHour());
 					}
 				});
-		
+
 		col_duration.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
 		col_price.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
 		col_availableTickets.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
@@ -130,7 +131,8 @@ public class DistributorScheduleController implements Initializable {
 		scheduleTable.setItems(getTripSchedule());
 
 	}
-	public void loadLocations(){
+
+	public void loadLocations() {
 		list.removeAll(list);
 		String city_01 = "Varna";
 		String city_02 = "Sofia";
@@ -154,9 +156,10 @@ public class DistributorScheduleController implements Initializable {
 		String city_20 = "Lovech";
 		String city_21 = "Turgovishte";
 		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		locationChoiceBox.getItems().addAll(list);
 	}
+
 	public ObservableList<Trip> getTripSchedule() {
 		ObservableList<Trip> tripList = FXCollections.observableArrayList();
 		TripService tripService = new TripService();
@@ -168,6 +171,7 @@ public class DistributorScheduleController implements Initializable {
 		}
 		return tripList;
 	}
+
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorNotificationsPanel.fxml"));
@@ -205,45 +209,91 @@ public class DistributorScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-
+		
+		DatabaseUtils.currentUser = null;
 	}
 
-	public void showAttachmentLocations(javafx.event.ActionEvent event) throws IOException {
-		Trip selectedTrip = scheduleTable.getSelectionModel().getSelectedItem();
-
-		if (selectedTrip.equals(null)) {
-			informationLabel.setText("Please select a trip.");
-			return;
-		}
-
-		/* Await .fxml and controller for the new popup */
-
-	}
 	public ObservableList<String> getCashiers() {
 		ObservableList<String> userList = FXCollections.observableArrayList();
 		UserService userService = new UserService();
 		String type = "Cashier";
 		List<User> eList = userService.getByUserType(type);
 		for (User ent : eList) {
-			userList.add(ent.getUserFullName());
+			/*
+			 * Displaying usernames and specify the user location for ease of use, if we use
+			 * the full name there may be more than 1 result
+			 */
+			userList.add(ent.getUserLoginName() + "(" + ent.getUserLocation().getLocationName() + ")");
 		}
 		return userList;
 	}
-	public void assignCashier(){
+
+	public void assignCashier() {
 		Trip trip = scheduleTable.getSelectionModel().getSelectedItem();
-		if(trip == null ) {
+		if (trip == null) {
 			informationLabel.setText("Please select trip!");
 			return;
 		}
 
-		if(locationChoiceBox.getSelectionModel().getSelectedIndex() < 0){
+		if (locationChoiceBox.getSelectionModel().getSelectedIndex() < 0) {
 			informationLabel.setText("Please select location!");
 			return;
 		}
-		if(cashierComboBox.getSelectionModel().getSelectedIndex() < 0){
+		if (cashierComboBox.getSelectionModel().getSelectedIndex() < 0) {
 			informationLabel.setText("Please select cashier!");
 			return;
 		}
-		// NOT FINISHED!
+
+		TripService tripService = new TripService();
+		RouteService routeService = new RouteService();
+
+		String selectedCashier = cashierComboBox.getSelectionModel().getSelectedItem().toString().split("\\(")[0];
+
+		User cashier = new UserService().getByName(selectedCashier).get();
+
+		/*
+		 * A cashier can only be assigned for a location which exists in the trip route
+		 * and is the location the user is registered with
+		 */
+
+		List<Location> attachments = routeService.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
+
+		boolean tripAttachmentLocationsContainsUserLocation = attachments.contains(cashier.getUserLocation());
+		boolean tripEndPointsContainsUserLocation = trip.getRoute().getRouteDepartureLocation().getLocationName()
+				.equals(cashier.getUserLocation().getLocationName())
+				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
+						.equals(cashier.getUserLocation().getLocationName());
+
+		Location locationSelected = new LocationService()
+				.getByName(locationChoiceBox.getSelectionModel().getSelectedItem()).get();
+
+		/*
+		 * Since the locations are not prepopulated with valid ones only, we check if
+		 * the selected location is a valid attachment location or a valid end point
+		 */
+
+		boolean selectedLocationIsValidAttachment = attachments.contains(locationSelected);
+		boolean selectedLocationIsValidEndPoint = trip.getRoute().getRouteDepartureLocation().getLocationName()
+				.equals(locationSelected.getLocationName())
+				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
+						.equals(locationSelected.getLocationName());
+
+		if (tripAttachmentLocationsContainsUserLocation || tripEndPointsContainsUserLocation) {
+			if (!(selectedLocationIsValidAttachment || selectedLocationIsValidEndPoint)) {
+				informationLabel.setText("Selected location is unrelated to this trip.");
+				return;
+			}
+			
+			if (trip.getCashiers().contains(cashier)) {
+				informationLabel.setText("Selected user is already assigned for this trip.");
+				return;
+			}
+
+			tripService.addCashierForTrip(trip, cashier);
+			informationLabel.setText("Assigned cashier for the selected location.");
+			return;
+		}
+
+		informationLabel.setText("Selected customer doesn't work in selected location.");
 	}
 }

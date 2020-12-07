@@ -55,11 +55,18 @@
                 <TableColumn fx:id="col_capacity" prefWidth="99.2000732421875" text="Bus Capacity" />
             </columns>
         </TableView>
-        <Button fx:id="sellTicket" layoutX="539.0" layoutY="423.0" mnemonicParsing="false" onAction="#sellTicket" prefHeight="35.0" prefWidth="123.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Sell ticket" textFill="WHITE">
+         
+        <Button fx:id="sellTicket" layoutX="532.0" layoutY="460.4" mnemonicParsing="false" onAction="#sellTicket" prefHeight="35.0" prefWidth="123.0" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Sell ticket" textFill="WHITE">
+         
          <font>
             <Font size="18.0" />
          </font></Button>
-        
+         
+         <Button fx:id="loadAttachmentRoutes" onAction="#loadFields" layoutX="552.0" layoutY="407.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Select" textFill="WHITE">
+        <font>
+            <Font size="18.0" />
+         </font></Button>
+         
         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="270.0" layoutY="410.0" prefHeight="18.0" prefWidth="101.0" text="Departure station" textAlignment="CENTER" textFill="WHITE" />
         <ChoiceBox fx:id="departureChoiceBox" layoutX="374.0" layoutY="410.0" prefWidth="150.0" />
         

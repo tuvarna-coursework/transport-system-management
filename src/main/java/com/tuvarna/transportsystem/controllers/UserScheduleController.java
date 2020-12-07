@@ -34,82 +34,69 @@ public class UserScheduleController implements Initializable {
 	ObservableList list = FXCollections.observableArrayList();
 
 	@FXML
-	private TableView<Trip> scheduleTable;
+	private TableView<Ticket> scheduleTable;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleDepartureSt;
+	private TableColumn<Ticket, String> scheduleDepartureSt;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleArrivalSt;
+	private TableColumn<Ticket, String> scheduleArrivalSt;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleCompanyName;
+	private TableColumn<Ticket, String> scheduleCompanyName;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleTripType;
+	private TableColumn<Ticket, String> scheduleTripType;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleBusType;
+	private TableColumn<Ticket, String> scheduleBusType;
 
 	@FXML
-	private TableColumn<Trip, Double> schedulePriceCol;
+	private TableColumn<Ticket, String> schedulePriceCol;
 
 	@FXML
-	private TableColumn<Trip, Integer> scheduleDurationCol;
+	private TableColumn<Ticket, String> scheduleDate;
 
 	@FXML
-	private TableColumn<Trip, String> scheduleDate;
-
-	@FXML
-	private TableColumn<Trip, String> scheduleHourOfDeparture;
+	private TableColumn<Ticket, String> scheduleHourOfDeparture;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		scheduleDate.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripDepartureDate().toString());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureDate().toString());
 					}
 				});
 		scheduleDepartureSt.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripDepartureHour());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getDepartureLocation().getLocationName());
 					}
 				});
-		scheduleDepartureSt.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
-
-					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(
-								param.getValue().getRoute().getRouteDepartureLocation().getLocationName());
-
-					}
-				});
-
+		
 		scheduleArrivalSt.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
 
 						return new SimpleStringProperty(
-								param.getValue().getRoute().getRouteArrivalLocation().getLocationName());
+								param.getValue().getArrivalLocation().getLocationName());
 					}
 				});
 
 		scheduleCompanyName.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
 
-						int tripId = param.getValue().getTripId();
+						int tripId = param.getValue().getTrip().getTripId();
 
 						UserService userService = new UserService();
 
@@ -123,37 +110,44 @@ public class UserScheduleController implements Initializable {
 				});
 
 		scheduleTripType.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripType().getTripTypeName());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripType().getTripTypeName());
 
 					}
 				});
 
 		scheduleBusType.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripTransportType().getTransportTypeName());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripTransportType().getTransportTypeName());
 
 					}
 				});
 
 		scheduleHourOfDeparture.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
-					public ObservableValue<String> call(TableColumn.CellDataFeatures<Trip, String> param) {
-						return new SimpleStringProperty(param.getValue().getTripDepartureHour());
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(param.getValue().getTrip().getTripDepartureHour());
 
 					}
 				});
+		
+		schedulePriceCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
-		scheduleDurationCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripDuration"));
-		schedulePriceCol.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
+						return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripTicketPrice()));
+
+					}
+				});
 
 		/*
 		 * list.removeAll(list); List<Trip> trips = new ArrayList<>();
@@ -164,15 +158,13 @@ public class UserScheduleController implements Initializable {
 		scheduleTable.setItems(getTickets());
 	}
 
-	public ObservableList<Trip> getTickets() {
-		ObservableList<Trip> tripsList = FXCollections.observableArrayList();
-		TripService tripService = new TripService();
-
-		List<Trip> eList = tripService.getAll();
-		for (Trip ent : eList) {
-			tripsList.add(ent);
-		}
-		return tripsList;
+	public ObservableList<Ticket> getTickets() {
+		ObservableList<Ticket> ticketsList = FXCollections.observableArrayList();
+		List<Ticket> userTickets = DatabaseUtils.currentUser.getTickets();
+		
+		userTickets.forEach(t -> ticketsList.add(t));
+		
+		return ticketsList;
 	}
 
 	public void goToMyTicket(javafx.event.ActionEvent event) throws IOException {
@@ -192,6 +184,7 @@ public class UserScheduleController implements Initializable {
 		window.setScene(ticketScene);
 		window.show();
 
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void goToBuyTicket(javafx.event.ActionEvent event) throws IOException {

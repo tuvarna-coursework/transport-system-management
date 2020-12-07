@@ -118,8 +118,10 @@ public class DistributorRequestController implements Initializable {
         Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(adminScene);
         window.show();
-
+        
+        DatabaseUtils.currentUser = null;
     }
+    
     public void goToScheduleDistributor(javafx.event.ActionEvent event) throws IOException {
         Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorPanelSchedule.fxml"));
         Scene adminScene = new Scene(userPanel);

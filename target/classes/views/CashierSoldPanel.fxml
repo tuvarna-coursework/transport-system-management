@@ -34,15 +34,15 @@
             </Button>
             </children>
         </AnchorPane>
-        <TableView layoutX="262.0" layoutY="111.0" prefHeight="278.0" prefWidth="434.0">
+        <TableView fx:id="ticketsSoldTable" layoutX="262.0" layoutY="111.0" prefHeight="278.0" prefWidth="434.0">
             <columns>
-                <TableColumn prefWidth="57.5999755859375" resizable="false" text="Ticket id" />
-                <TableColumn prefWidth="62.4000244140625" resizable="false" text="Departure" />
-                <TableColumn prefWidth="53.5999755859375" resizable="false" text="Arival" />
-                <TableColumn prefWidth="44.79998779296875" text="Type" />
-                <TableColumn prefWidth="69.5999755859375" resizable="false" text="Trans. type" />
-                <TableColumn prefWidth="67.99993896484375" resizable="false" text="Quantity" />
-            <TableColumn prefWidth="75.20001220703125" resizable="false" text="Customer" />
+                <TableColumn fx:id="ticketId" prefWidth="57.5999755859375" resizable="false" text="Ticket id" />
+                <TableColumn fx:id="ticketDeparture" prefWidth="62.4000244140625" resizable="false" text="Departure" />
+                <TableColumn fx:id="ticketArrival" prefWidth="53.5999755859375" resizable="false" text="Arrival" />
+                <TableColumn fx:id="tripType" prefWidth="44.79998779296875" text="Type" />
+                <TableColumn fx:id="transportType" prefWidth="69.5999755859375" resizable="false" text="Trans. type" />
+                
+            <TableColumn fx:id="customer" prefWidth="95.20001220703125" resizable="false" text="Customer" />
             </columns>
         </TableView>
         <AnchorPane layoutX="256.0" layoutY="93.0" prefHeight="6.0" prefWidth="446.0" style="-fx-background-color: #34495E;" />

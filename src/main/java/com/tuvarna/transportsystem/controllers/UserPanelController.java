@@ -430,6 +430,7 @@ public class UserPanelController implements Initializable {
 		window.setScene(ticketScene);
 		window.show();
 
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void toggleButtonAction(javafx.event.ActionEvent event) throws IOException, ParseException {

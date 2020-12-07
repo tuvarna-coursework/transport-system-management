@@ -332,6 +332,8 @@ public class AdminController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void goToHonorarium(javafx.event.ActionEvent event) throws IOException {

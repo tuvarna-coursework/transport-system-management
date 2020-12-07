@@ -159,6 +159,7 @@ public class CashierScheduleController implements Initializable {
 		col_availableTickets.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
 		col_capacity.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
 		cashierScheduleTable.setItems(getTripSchedule());
+
 	}
 
 	private ObservableList<Trip> getTripSchedule() {
@@ -221,8 +222,10 @@ public class CashierScheduleController implements Initializable {
 		 * cashier, so fetch everything else
 		 */
 		List<Location> departureLocation = routeService.getAttachmentLocationsInRouteById(routeId).stream().filter(
-				l -> (!l.getLocationName().equals(DatabaseUtils.currentUser.getUserLocation().getLocationName())))
+				l -> !(l.getLocationName().equals(DatabaseUtils.currentUser.getUserLocation().getLocationName())))
 				.collect(Collectors.toList());
+		
+		departureLocation.add(trip.getRoute().getRouteArrivalLocation());
 
 		ObservableList<String> locationList = FXCollections.observableArrayList();
 		departureLocation.forEach(l -> locationList.add(l.getLocationName()));
@@ -407,6 +410,8 @@ public class CashierScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(scheduleScene);
 		window.show();
+		
+		DatabaseUtils.currentUser = null;
 
 	}
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {

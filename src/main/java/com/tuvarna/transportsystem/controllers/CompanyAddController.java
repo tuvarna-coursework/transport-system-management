@@ -224,7 +224,8 @@ public class CompanyAddController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-
+		
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void addTrip() throws IOException, ParseException {

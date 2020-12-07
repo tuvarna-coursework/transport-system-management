@@ -177,6 +177,7 @@ public class DistributorAddCashierController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		DatabaseUtils.currentUser = null;
 	}
 
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
