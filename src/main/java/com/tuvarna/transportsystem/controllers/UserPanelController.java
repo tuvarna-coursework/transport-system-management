@@ -170,12 +170,12 @@ public class UserPanelController implements Initializable {
 	}
 
 	private List<Trip> getMatchingTrips() throws ParseException {
-		if (departureChoiceBox.getSelectionModel().getSelectedItem().equals(null)) {
+		if (departureChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select departure station.");
 			return null;
 		}
 
-		if (arrivalChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+		if (arrivalChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select arrival station.");
 			return null;
 		}
@@ -185,12 +185,12 @@ public class UserPanelController implements Initializable {
 			return null;
 		}
 
-		if (quantityChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+		if (quantityChoiceBox.getValue() == null) {
 			informationLabel.setText("Please select quantity.");
 			return null;
 		}
 
-		if (timeChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
+		if (timeChoiceBox.getValue() == null) {
 			informationLabel.setText("Please add time.");
 			return null;
 		}
@@ -355,22 +355,33 @@ public class UserPanelController implements Initializable {
 	public void loadTime() {
 		list.removeAll(list);
 		String time_01 = "00:00";
-		String time_02 = "03:15";
-		String time_03 = "06:30";
-		String time_04 = "08:00";
-		String time_05 = "09:15";
-		String time_06 = "11:00";
-		String time_07 = "12:30";
-		String time_08 = "14:10";
-		String time_09 = "15:00";
-		String time_10 = "17:05";
-		String time_11 = "18:30";
-		String time_12 = "19:55";
-		String time_13 = "21:00";
-		String time_14 = "22:30";
+		String time_02 = "00:30";
+		String time_03 = "02:00";
+		String time_04 = "04:30";
+		String time_05 = "06:00";
+		String time_06 = "07:30";
+		String time_07 = "08:00";
+		String time_08 = "09:30";
+		String time_09 = "10:45";
+		String time_10 = "11:30";
+		String time_11 = "12:15";
+		String time_12 = "13:30";
+		String time_13 = "14:00";
+		String time_14 = "15:30";
+		String time_15 = "17:00";
+		String time_16 = "17:30";
+		String time_17 = "18:00";
+		String time_18 = "18:15";
+		String time_19 = "19:00";
+		String time_20 = "20:30";
+		String time_21 = "21:15";
+		String time_22 = "22:05";
+		String time_23 = "22:30";
+		String time_24 = "23:30";
+		String time_25 = "23:45";
+
 		list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
-				time_12, time_13, time_14);
-		timeChoiceBox.getItems().addAll(list);
+				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22, time_23, time_24, time_25);
 	}
 
 	public void loadDepartureArrivalLocation() {
@@ -493,6 +504,10 @@ public class UserPanelController implements Initializable {
 
 	public void searchTickets(javafx.event.ActionEvent event) throws ParseException, IOException {
 		list.removeAll(list);
+		if (this.getMatchingTrips() == null) {
+			return;
+		}
+		
 		list.addAll(this.getMatchingTrips());
 
 		/* Filter all trips that match the search criteria */
@@ -515,7 +530,7 @@ public class UserPanelController implements Initializable {
 		availableTripsTable.setVisible(!isSearchHidden);
 
 		hideShowToggle.setText((isSearchHidden) ? "Hide search" : "Show search");
-		searchBuyToggle.setText((isSearchHidden) ? "Buy" : "Search");
+		searchBuyToggle.setText((isSearchHidden) ? "Search" : "Buy");
 
 		/* Expand to show the table in full view, shrink for the search */
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();

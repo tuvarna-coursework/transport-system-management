@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.tuvarna.transportsystem.dao.TransportTypeDAO;
 import com.tuvarna.transportsystem.dao.TripDAO;
+import com.tuvarna.transportsystem.dao.TripTypeDAO;
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;

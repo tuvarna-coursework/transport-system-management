@@ -7,6 +7,8 @@ import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.services.UserTypeService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
+import com.tuvarna.transportsystem.utils.NotificationUtils;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -131,7 +133,7 @@ public class LoginController implements Initializable {
 					}
 					
 					if (usertype.equals("Cashier")) {
-						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
+						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CashierSchedulePanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
 
 						Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -139,6 +141,7 @@ public class LoginController implements Initializable {
 						window.show();
 					}
 
+					NotificationUtils.init();
 				} else {
 					informationLabel.setText("INVALID USERNAME OR PASSWORD");
 				}

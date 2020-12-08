@@ -87,7 +87,6 @@ public class CompanyLoadStationsController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
 
-
 	private void loadTime() {
 		list.removeAll(list);
 		String time_01 = "00:00";
@@ -117,7 +116,8 @@ public class CompanyLoadStationsController implements Initializable {
 		String time_25 = "23:45";
 
 		list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
-				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22, time_23, time_24, time_25);
+				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22,
+				time_23, time_24, time_25);
 		timeOneChoiceBox.getItems().addAll(list);
 		timeTwoChoiceBox.getItems().addAll(list);
 		timeThreeChoiceBox.getItems().addAll(list);
@@ -132,6 +132,7 @@ public class CompanyLoadStationsController implements Initializable {
 		timeTwelveChoiceBox.getItems().addAll(list);
 
 	}
+
 	public void loadLocation() {
 		list.removeAll(list);
 		String city_01 = "Varna";
@@ -181,12 +182,16 @@ public class CompanyLoadStationsController implements Initializable {
 
 	public void makeRoute(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = (Stage) applyButton.getScene().getWindow();
+
+		int previousHour = 0;
+
 		if (stationOneChoiceBox.getValue() != null && stationOneChoiceBox.getValue().trim().length() != 0) {
 			String st1 = stationOneChoiceBox.getValue();
 			LocationService locationService = new LocationService();
 			Location locationStationOne = locationService.getByName(st1).get();
-			String timeOne=timeOneChoiceBox.getValue().trim().toString();
+			String timeOne = timeOneChoiceBox.getValue().trim().toString();
 
+			previousHour = Integer.parseInt(timeOne.split(":")[0]);
 
 			if (locationStationOne.getLocationName().equals(departure)
 					|| locationStationOne.getLocationName().equals(arrival)) {
@@ -194,13 +199,27 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationOne, timeOne);
+			/*
+			 * If a error happened for lets say 2nd station, on the next click we have a
+			 * check so that the previous station doesn't get pushed again
+			 */
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationOne)) {
+				routeService.addAttachmentLocation(route, locationStationOne, timeOne);
+			}
 		}
 		if (stationTwoChoiceBox.getValue() != null && stationTwoChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTwo = new LocationService().getByName(stationTwoChoiceBox.getValue().toString())
 					.get();
-			String timeTwo=timeTwoChoiceBox.getValue().trim().toString();
+			String timeTwo = timeTwoChoiceBox.getValue().trim().toString();
 
+			int currentHour = Integer.parseInt(timeTwo.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationTwo.getLocationName().equals(departure)
 					|| locationStationTwo.getLocationName().equals(arrival)) {
@@ -208,12 +227,28 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTwo, timeTwo);
+
+			/*
+			 * If a error happened for lets say 2nd station, on the next click we have a
+			 * check so that the previous station doesn't get pushed again
+			 */
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTwo)) {
+				routeService.addAttachmentLocation(route, locationStationTwo, timeTwo);
+			}
 		}
 		if (stationThreeChoiceBox.getValue() != null && stationThreeChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationThree = new LocationService().getByName(stationThreeChoiceBox.getValue().toString())
 					.get();
-			String timeThree=timeThreeChoiceBox.getValue().trim().toString();
+			String timeThree = timeThreeChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeThree.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationThree.getLocationName().equals(departure)
 					|| locationStationThree.getLocationName().equals(arrival)) {
@@ -221,12 +256,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationThree, timeThree);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationThree)) {
+				routeService.addAttachmentLocation(route, locationStationThree, timeThree);
+			}
 		}
 		if (stationFourChoiceBox.getValue() != null && stationFourChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationFour = new LocationService().getByName(stationFourChoiceBox.getValue().toString())
 					.get();
-			String timeFour=timeFourChoiceBox.getValue().trim().toString();
+			String timeFour = timeFourChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeFour.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationFour.getLocationName().equals(departure)
 					|| locationStationFour.getLocationName().equals(arrival)) {
@@ -234,12 +281,23 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationFour, timeFour);
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationFour)) {
+				routeService.addAttachmentLocation(route, locationStationFour, timeFour);
+			}
 		}
 		if (stationFiveChoiceBox.getValue() != null && stationFiveChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationFive = new LocationService().getByName(stationFiveChoiceBox.getValue().toString())
 					.get();
-			String timeFive=timeFiveChoiceBox.getValue().trim().toString();
+			String timeFive = timeFiveChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeFive.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationFive.getLocationName().equals(departure)
 					|| locationStationFive.getLocationName().equals(arrival)) {
@@ -247,12 +305,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationFive, timeFive);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationFive)) {
+				routeService.addAttachmentLocation(route, locationStationFive, timeFive);
+			}
 		}
 		if (stationSixChoiceBox.getValue() != null && stationSixChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationSix = new LocationService().getByName(stationSixChoiceBox.getValue().toString())
 					.get();
-			String timeSix=timeSixChoiceBox.getValue().trim().toString();
+			String timeSix = timeSixChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeSix.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationSix.getLocationName().equals(departure)
 					|| locationStationSix.getLocationName().equals(arrival)) {
@@ -260,13 +330,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationSix, timeSix);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationSix)) {
+				routeService.addAttachmentLocation(route, locationStationSix, timeSix);
+			}
 		}
 		if (stationSevenChoiceBox.getValue() != null && stationSevenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationSeven = new LocationService().getByName(stationSevenChoiceBox.getValue().toString())
 					.get();
-			String timeSeven=timeSevenChoiceBox.getValue().trim().toString();
+			String timeSeven = timeSevenChoiceBox.getValue().trim().toString();
 
+			int currentHour = Integer.parseInt(timeSeven.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationSeven.getLocationName().equals(departure)
 					|| locationStationSeven.getLocationName().equals(arrival)) {
@@ -274,12 +355,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationSeven, timeSeven);
+			
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationSeven)) {
+				routeService.addAttachmentLocation(route, locationStationSeven, timeSeven);
+			}
 		}
 		if (stationEightChoiceBox.getValue() != null && stationEightChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationEight = new LocationService().getByName(stationEightChoiceBox.getValue().toString())
 					.get();
-			String timeEight=timeEightChoiceBox.getValue().trim().toString();
+			String timeEight = timeEightChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeEight.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationEight.getLocationName().equals(departure)
 					|| locationStationEight.getLocationName().equals(arrival)) {
@@ -287,12 +380,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationEight, timeEight);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationEight)) {
+				routeService.addAttachmentLocation(route, locationStationEight, timeEight);
+			}
 		}
 		if (stationNineChoiceBox.getValue() != null && stationNineChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationNine = new LocationService().getByName(stationNineChoiceBox.getValue().toString())
 					.get();
-			String timeNine=timeNineChoiceBox.getValue().trim().toString();
+			String timeNine = timeNineChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeNine.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationNine.getLocationName().equals(departure)
 					|| locationStationNine.getLocationName().equals(arrival)) {
@@ -300,12 +405,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationNine, timeNine);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationNine)) {
+				routeService.addAttachmentLocation(route, locationStationNine, timeNine);
+			}
 		}
 		if (stationTenChoiceBox.getValue() != null && stationTenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTen = new LocationService().getByName(stationTenChoiceBox.getValue().toString())
 					.get();
-			String timeTen=timeTenChoiceBox.getValue().trim().toString();
+			String timeTen = timeTenChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeTen.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationTen.getLocationName().equals(departure)
 					|| locationStationTen.getLocationName().equals(arrival)) {
@@ -313,12 +430,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTen, timeTen);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTen)) {
+				routeService.addAttachmentLocation(route, locationStationTen, timeTen);
+			}
 		}
 		if (stationElevenChoiceBox.getValue() != null && stationElevenChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationEleven = new LocationService()
 					.getByName(stationElevenChoiceBox.getValue().toString()).get();
-			String timeEleven=timeElevenChoiceBox.getValue().trim().toString();
+			String timeEleven = timeElevenChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeEleven.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationEleven.getLocationName().equals(departure)
 					|| locationStationEleven.getLocationName().equals(arrival)) {
@@ -326,12 +455,24 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationEleven, timeEleven);
+
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationEleven)) {
+				routeService.addAttachmentLocation(route, locationStationEleven, timeEleven);
+			}
 		}
 		if (stationTwelveChoiceBox.getValue() != null && stationTwelveChoiceBox.getValue().trim().length() != 0) {
 			Location locationStationTwelve = new LocationService()
 					.getByName(stationTwelveChoiceBox.getValue().toString()).get();
-			String timeTwelve=timeTwelveChoiceBox.getValue().trim().toString();
+			String timeTwelve = timeTwelveChoiceBox.getValue().trim().toString();
+
+			int currentHour = Integer.parseInt(timeTwelve.split(":")[0]);
+
+			if (currentHour <= previousHour) {
+				informationLabel.setText("Following arrival time must be larger than the previous one.");
+				return;
+			}
+
+			previousHour = currentHour;
 
 			if (locationStationTwelve.getLocationName().equals(departure)
 					|| locationStationTwelve.getLocationName().equals(arrival)) {
@@ -339,7 +480,10 @@ public class CompanyLoadStationsController implements Initializable {
 				return;
 			}
 			RouteService routeService = new RouteService();
-			routeService.addAttachmentLocation(route, locationStationTwelve, timeTwelve);
+			
+			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTwelve)) {
+				routeService.addAttachmentLocation(route, locationStationTwelve, timeTwelve);
+			}
 		}
 		stage.close();
 

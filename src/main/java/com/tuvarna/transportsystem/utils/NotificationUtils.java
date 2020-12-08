@@ -22,12 +22,9 @@ public class NotificationUtils {
 	public static void init() {
 		timer = new Timer();
 
-		TimerTask task = new TimerTask() {
+		TimerTask generateTicketsReportTask = new TimerTask() {
 			@Override
 			public void run() {
-
-				generateUnsoldTicketsForNearTrip();
-
 				/*
 				 * Logged in user is not a transport company and no report needs to be generated
 				 */
@@ -38,11 +35,19 @@ public class NotificationUtils {
 			};
 		};
 
+		TimerTask generateUnsoldTicketsTask = new TimerTask() {
+			@Override
+			public void run() {
+				generateUnsoldTicketsForNearTrip();
+			};
+		};
+
 		/*
 		 * long value is 1 day; every day (since the start of the program) a report for
 		 * the sold tickets will be generated
 		 */
-		timer.schedule(task, new Date(), ONEDAY_IN_MILISECONDS);
+		timer.schedule(generateTicketsReportTask, new Date(), ONEDAY_IN_MILISECONDS);
+		timer.schedule(generateUnsoldTicketsTask, new Date(), ONEDAY_IN_MILISECONDS);
 	}
 
 	public static void generateNewTripNotification(Trip trip) {
@@ -65,6 +70,11 @@ public class NotificationUtils {
 	}
 
 	public static boolean generateTicketReport() {
+		/* Program starts at login screen no one logged in */
+		if (DatabaseUtils.currentUser == null) {
+			return false;
+		}
+
 		/*
 		 * Will return false if the user is not a company and TimerTask will not be
 		 * executed

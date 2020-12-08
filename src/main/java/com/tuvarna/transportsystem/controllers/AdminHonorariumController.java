@@ -115,7 +115,7 @@ public class AdminHonorariumController implements Initializable {
 
 		if (isChanged) {
 			userService.updateUserProfile(user, profile);
-			System.out.println("Changes applied successfully.");
+			informationLabel.setText("Changes applied successfully.");
 		}
 	}
 }

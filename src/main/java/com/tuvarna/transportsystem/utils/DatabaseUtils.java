@@ -1,6 +1,7 @@
 package com.tuvarna.transportsystem.utils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import org.hibernate.Session;
@@ -8,17 +9,24 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Notification;
 import com.tuvarna.transportsystem.entities.Role;
 import com.tuvarna.transportsystem.entities.Route;
+import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.TransportType;
+import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.LocationService;
+import com.tuvarna.transportsystem.services.NotificationService;
+import com.tuvarna.transportsystem.services.RequestService;
 import com.tuvarna.transportsystem.services.RoleService;
 import com.tuvarna.transportsystem.services.RouteService;
+import com.tuvarna.transportsystem.services.TicketService;
 import com.tuvarna.transportsystem.services.TransportTypeService;
+import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.services.TripTypeService;
 import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
@@ -40,14 +48,14 @@ public class DatabaseUtils {
 	public static UserType USERTYPE_USER;
 	public static UserType USERTYPE_ADMIN;
 	public static UserType USERTYPE_COMPANY;
-	
+
 	public static String REQUEST_STATUSPENDING = "PENDING";
 	public static String REQUEST_STATUSREJECTED = "REJECTED";
 	public static String REQUEST_STATUSACCEPTED = "ACCEPTED";
 
 	public static void init() {
 		globalSession = createSession();
-		//populateAuxiliaryTables();
+		// populateAuxiliaryTables();
 		initFields();
 	}
 
@@ -106,13 +114,11 @@ public class DatabaseUtils {
 		Location dobrich = new Location("Dobrich");
 		Location montana = new Location("Montana");
 		Location vraca = new Location("Vraca");
-		Location staraZagora= new Location("Stara Zagora");
-		Location yambol= new Location("Yambol");
+		Location staraZagora = new Location("Stara Zagora");
+		Location yambol = new Location("Yambol");
 		Location pernik = new Location("Pernik");
 		Location lovech = new Location("Lovech");
 		Location turgovishte = new Location("Turgovishte");
-
-
 
 		locationService.save(varna);
 		locationService.save(sofia);
@@ -124,7 +130,7 @@ public class DatabaseUtils {
 		locationService.save(shumen);
 		locationService.save(blagoevgrad);
 		locationService.save(burgas);
-		//new locations
+		// new locations
 		locationService.save(pleven);
 		locationService.save(omurtag);
 		locationService.save(ruse);
@@ -136,8 +142,6 @@ public class DatabaseUtils {
 		locationService.save(pernik);
 		locationService.save(lovech);
 		locationService.save(turgovishte);
-
-
 
 		/*
 		 * Authentication and authorisation is first and foremost distinguished between
@@ -186,7 +190,7 @@ public class DatabaseUtils {
 		Route route2 = new Route(sofia, varna);
 		Route route3 = new Route(burgas, plovdiv);
 		Route route4 = new Route(plovdiv, burgas);
-		
+
 		routeService.save(route1);
 		routeService.save(route2);
 		routeService.save(route3);
@@ -197,7 +201,6 @@ public class DatabaseUtils {
 		routeService.addAttachmentLocation(route3, sliven, "03:15");
 		routeService.addAttachmentLocation(route4, sliven, "03:15");
 
-		
 	}
 
 	/*
@@ -209,7 +212,7 @@ public class DatabaseUtils {
 		RoleService roleService = new RoleService();
 		UserTypeService userTypeService = new UserTypeService();
 		UserService userService = new UserService();
-		//currentUser = userService.getById(7).get();
+		// currentUser = userService.getById(7).get();
 
 		try {
 			ROLE_ADMIN = roleService.getByName("Admin").get();
@@ -224,7 +227,7 @@ public class DatabaseUtils {
 			System.out.println("Please run DatabaseUtils.populateAuxiliaryTables() before calling this function.");
 		}
 	}
-	
+
 	public static String generateUserName(String input) {
 		StringBuilder sb = new StringBuilder();
 
@@ -261,8 +264,6 @@ public class DatabaseUtils {
 		return sb.toString();
 	}
 
-	
-	
 	public static String generatePassword() {
 		StringBuilder sb = new StringBuilder();
 		String randomString = "abcABCdItRrGmnNoOzZeEqWw_-()%$#@!^*=+";
@@ -278,5 +279,83 @@ public class DatabaseUtils {
 		}
 
 		return sb.toString();
+	}
+
+	public static boolean cascadeUserDeletion(User user) {
+		try {
+			UserService userService = new UserService();
+			TripService tripService = new TripService();
+			UserProfileService userProfileService = new UserProfileService();
+			NotificationService notificationService = new NotificationService();
+
+			if (user.getUserType().getUserTypeName().equals("Cashier")) {
+				List<User> users = userService.getAll();
+
+				/*
+				 * Iterate through all users and see if this user is a cashier (CompanyCashier
+				 * table)
+				 */
+				users.forEach(u -> {
+					if (u.getCashiers().contains(user)) {
+						System.out.println("DEBUG: Removing user as cashier from company.");
+						userService.removeCashierFromTransportCompany(u, user);
+					}
+				});
+
+				List<Trip> trips = tripService.getAll();
+
+				/* Cashier present in TripCashier table */
+				trips.forEach(t -> {
+					if (t.getCashiers().contains(user)) {
+						System.out.println("DEBUG: Removing user as cashier from trip.");
+						tripService.removeCashierFromTrip(t, user);
+					}
+				});
+			} else if (user.getUserType().getUserTypeName().equals("Transport Company")) {
+				List<Trip> userTrips = user.getTrips();
+
+				/* Transport company owns trips (UserTrip table) */
+				for (Trip trip : userTrips) {
+					System.out.println("DEBUG: Deleting trips.");
+					userService.removeTrip(user, trip);
+				}
+			} else if (user.getUserType().getUserTypeName().equals("User")) {
+				List<Ticket> userTickets = user.getTickets();
+
+				/* End user has tickets */
+				for (Ticket ticket : userTickets) {
+					System.out.println("DEBUG: Deleting tickets.");
+					userService.removeTicket(user, ticket);
+				}
+			}
+
+			/* All users have below properties */
+			List<Role> userRoles = user.getRoles();
+			List<Notification> userNotifications = notificationService.getNotificationsForReceiverId(user.getUserId());
+			userNotifications.addAll(notificationService.getNotificationsBySenderId(user.getUserId()));
+
+			for (Role role : userRoles) {
+				System.out.println("DEBUG: Deleting roles.");
+				userService.removeRole(user, role);
+			}
+
+			/* Delete the unique user profile */
+			if (user.getUserProfile() != null) {
+				System.out.println("DEBUG: Deleting user profile.");
+				userProfileService.deleteById(user.getUserProfile().getUserProfileId());
+			}
+
+			for (Notification notification : userNotifications) {
+				System.out.println("DEBUG: Deleting notifications.");
+				notificationService.deleteById(notification.getNotificationId());
+			}
+
+			userService.deleteById(user.getUserId());
+
+			return true;
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			return false;
+		}
 	}
 }

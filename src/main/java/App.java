@@ -6,6 +6,7 @@ import com.tuvarna.transportsystem.services.LocationService;
 import com.tuvarna.transportsystem.services.TripService;
 import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
+import com.tuvarna.transportsystem.services.UserTypeService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 import com.tuvarna.transportsystem.utils.NotificationUtils;
 
@@ -31,7 +32,6 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 		DatabaseUtils.init();
-		NotificationUtils.init();
 		launch(args);
 	}
 }

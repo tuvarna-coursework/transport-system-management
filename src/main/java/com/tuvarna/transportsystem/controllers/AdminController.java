@@ -317,11 +317,13 @@ public class AdminController implements Initializable {
 
 		if (result.get() == ButtonType.OK) {
 			UserService userService = new UserService();
-			userService.deleteById(user.getUserId());
-
-			usersFoundTable.getItems().removeIf(u -> u.getUserId() == user.getUserId());
-
-			informationLabel.setText("User successfully deleted.");
+			
+			if (DatabaseUtils.cascadeUserDeletion(user)) {
+				usersFoundTable.getItems().removeIf(u -> u.getUserId() == user.getUserId());
+				informationLabel.setText("User successfully deleted.");
+			} else {
+				informationLabel.setText("An error has occured while deleting user.");
+			}		
 		}
 	}
 
