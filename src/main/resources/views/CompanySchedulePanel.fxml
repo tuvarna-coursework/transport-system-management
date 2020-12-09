@@ -54,8 +54,8 @@
         </TableView>
      
         
-         <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="411.0" layoutY="90.0" prefHeight="18.0" prefWidth="331.0" text="" textAlignment="CENTER" textFill="WHITE" />
-        <Button fx:id="btnCancel" layoutX="843.0" layoutY="94.0" mnemonicParsing="false" onAction="#cancelOnClick" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Cancel trip" textFill="WHITE" />
+         <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="391.0" layoutY="85.0" prefHeight="18.0" prefWidth="403.0" text="" textAlignment="CENTER" textFill="WHITE" />
+        <Button fx:id="btnCancel" layoutX="846.0" layoutY="54.0" mnemonicParsing="false" onAction="#cancelOnClick" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Cancel trip" textFill="WHITE" />
         
         <AnchorPane layoutX="256.0" layoutY="123.0" prefHeight="3.0" prefWidth="675.0" style="-fx-background-color: #34495E;" />
         <Button alignment="CENTER" layoutX="476.0" layoutY="28.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="234.0" style="-fx-background-color: #34495E; -fx-border-color: #FFFFFF; -fx-border-radius: 30; -fx-background-radius: 30;" text="SCHEDULE" textFill="WHITE">
@@ -63,5 +63,6 @@
                 <Font name="System Bold" size="23.0" />
             </font>
         </Button>
+      <Button layoutX="834.0" layoutY="89.0" mnemonicParsing="false" onAction="#showAttachments" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="View stations" textFill="WHITE" />
     </children>
 </AnchorPane>
