@@ -76,5 +76,10 @@
       </Label>
       <AnchorPane layoutX="252.0" layoutY="423.0" prefHeight="6.0" prefWidth="787.0" style="-fx-background-color: #34495E;" />
       <ComboBox fx:id="cashierComboBox" layoutX="764.0" layoutY="484.0" prefWidth="150.0" />
+      <Button alignment="CENTER" layoutX="914.0" layoutY="45.0" mnemonicParsing="false" onAction="#showStations" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #34495E; -fx-background-radius: 30; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Show stations" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

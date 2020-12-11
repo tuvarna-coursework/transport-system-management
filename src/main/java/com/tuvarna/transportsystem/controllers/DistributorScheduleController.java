@@ -212,6 +212,25 @@ public class DistributorScheduleController implements Initializable {
 		
 		DatabaseUtils.currentUser = null;
 	}
+	public void showStations(javafx.event.ActionEvent event) throws IOException{
+		if(scheduleTable.getSelectionModel().getSelectedItem() == null){
+			informationLabel.setText("Select trip first!");
+			return;
+		}
+		Trip tripSend = scheduleTable.getSelectionModel().getSelectedItem();
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorShowRouteAttachments.fxml"));
+		DialogPane root = (DialogPane) userPanel.load();
+		//send trip to other controller
+		DistributorShowRouteAttachmentsController controller = (DistributorShowRouteAttachmentsController) userPanel.getController();
+		controller.getTrip(tripSend);
+
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
+
+	}
 
 	public ObservableList<String> getCashiers() {
 		ObservableList<String> userList = FXCollections.observableArrayList();

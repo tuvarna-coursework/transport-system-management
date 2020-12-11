@@ -22,10 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -143,7 +140,6 @@ public class CompanyScheduleController implements Initializable {
 			}
 		}
 		return tripList;
-
 	}
 
 	public void goToAddTrip(javafx.event.ActionEvent event) throws IOException {
@@ -180,6 +176,24 @@ public class CompanyScheduleController implements Initializable {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyNotificationsPanel.fxml"));
 		AnchorPane root = (AnchorPane) userPanel.load();
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
+	}
+	public void showAttachments(javafx.event.ActionEvent event) throws IOException {
+		if(companyScheduleTable.getSelectionModel().getSelectedItem() == null){
+			informationLabel.setText("Select trip first!");
+			return;
+		}
+		Trip tripSend = companyScheduleTable.getSelectionModel().getSelectedItem();
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyShowRouteAttachments.fxml"));
+		DialogPane root = (DialogPane) userPanel.load();
+		//send trip to other controller
+		CompanyShowRouteAttachmentsController controller = (CompanyShowRouteAttachmentsController) userPanel.getController();
+		controller.getTrip(tripSend);
+
 		Scene adminScene = new Scene(root);
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
@@ -250,5 +264,8 @@ public class CompanyScheduleController implements Initializable {
 		}
 
 		informationLabel.setText("Trip has been successfully cancelled.");
+	}
+	public void showAttachments(){
+
 	}
 }

@@ -31,13 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -231,6 +225,24 @@ public class CashierScheduleController implements Initializable {
 		departureLocation.forEach(l -> locationList.add(l.getLocationName()));
 
 		return locationList;
+	}
+	public void showAttachments(javafx.event.ActionEvent event) throws IOException {
+		if(cashierScheduleTable.getSelectionModel().getSelectedItem() == null){
+			informationLabel.setText("Select trip first!");
+			return;
+		}
+		Trip tripSend = cashierScheduleTable.getSelectionModel().getSelectedItem();
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CashierShowRouteAttachments.fxml"));
+		DialogPane root = (DialogPane) userPanel.load();
+		//send trip to other controller
+		CashierShowRouteAttachmentsController controller = (CashierShowRouteAttachmentsController) userPanel.getController();
+		controller.getTrip(tripSend);
+
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
 	}
 
 	private ObservableList<String> getQuantities() {
