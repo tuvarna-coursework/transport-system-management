@@ -35,6 +35,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class CompanyScheduleController implements Initializable {
 
 	@FXML
@@ -67,8 +71,13 @@ public class CompanyScheduleController implements Initializable {
 	@FXML
 	private Label informationLabel;
 
+	private static final Logger logger = LogManager.getLogger(CompanyScheduleController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		col_departure.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -127,6 +136,8 @@ public class CompanyScheduleController implements Initializable {
 		col_capacity.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
 		companyScheduleTable.setItems(getTripSchedule());
 
+		logger.info("Loaded table structure and populated trips for this company.");
+
 	}
 
 	public ObservableList<Trip> getTripSchedule() {
@@ -149,6 +160,8 @@ public class CompanyScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+
+		logger.info("Switched to add trip tab.");
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {
@@ -159,6 +172,7 @@ public class CompanyScheduleController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Switched to request tab.");
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -168,10 +182,11 @@ public class CompanyScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-		
+
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
-	
+
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyNotificationsPanel.fxml"));
@@ -181,8 +196,9 @@ public class CompanyScheduleController implements Initializable {
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
 	}
+
 	public void showAttachments(javafx.event.ActionEvent event) throws IOException {
-		if(companyScheduleTable.getSelectionModel().getSelectedItem() == null){
+		if (companyScheduleTable.getSelectionModel().getSelectedItem() == null) {
 			informationLabel.setText("Select trip first!");
 			return;
 		}
@@ -190,14 +206,17 @@ public class CompanyScheduleController implements Initializable {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyShowRouteAttachments.fxml"));
 		DialogPane root = (DialogPane) userPanel.load();
-		//send trip to other controller
-		CompanyShowRouteAttachmentsController controller = (CompanyShowRouteAttachmentsController) userPanel.getController();
+		// send trip to other controller
+		CompanyShowRouteAttachmentsController controller = (CompanyShowRouteAttachmentsController) userPanel
+				.getController();
 		controller.getTrip(tripSend);
 
 		Scene adminScene = new Scene(root);
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+
+		logger.info("Switched to attachment locations view.");
 	}
 
 	public void cancelOnClick(javafx.event.ActionEvent event) throws IOException {
@@ -212,22 +231,22 @@ public class CompanyScheduleController implements Initializable {
 			informationLabel.setText("Cannot cancel a live trip or a completed trip.");
 			return;
 		}
-		
+
 		int tripId = trip.getTripId();
-		
-		/* Couldn't make a working REMOVE cascade no matter what, that's why I need to manually cascade everything...
-		 * 1. Remove every ticket from the UsersTicket table
-		 * 2. Remove every ticket associated with the trip from Ticket table
-		 * 3. Remove the trip from UsersTrip (Company - trip)
-		 * 4. Remove all requests for this trip
-		 * 5. Delete the trip itself 
-		 * */
+
+		/*
+		 * Couldn't make a working REMOVE cascade no matter what, that's why I need to
+		 * manually cascade everything... 1. Remove every ticket from the UsersTicket
+		 * table 2. Remove every ticket associated with the trip from Ticket table 3.
+		 * Remove the trip from UsersTrip (Company - trip) 4. Remove all requests for
+		 * this trip 5. Delete the trip itself
+		 */
 
 		TripService tripService = new TripService();
 		TicketService ticketService = new TicketService();
 		UserService userService = new UserService();
 		RequestService requestService = new RequestService();
-		
+
 		User company = userService.getUserByTripId(tripId).get();
 		List<Ticket> tickets = ticketService.getByTrip(tripId);
 		List<User> users = userService.getAll();
@@ -235,37 +254,40 @@ public class CompanyScheduleController implements Initializable {
 		try {
 			users.forEach(u -> {
 				List<Ticket> userTickets = u.getTickets();
-				
+
 				userTickets.forEach(t -> {
 					if (t.getTrip().getTripId() == tripId) {
 						userService.removeTicket(u, t);
 					}
 				});
 			});
-			
-			
+
 			tickets.forEach(t -> {
 				if (t.getTrip().getTripId() == tripId) {
 					ticketService.deleteById(t.getTicketId());
 				}
 			});
-			
+
 			tickets.forEach(t -> ticketService.deleteById(t.getTicketId()));
 			userService.removeTrip(company, trip);
 			requestService.deleteByTripId(tripId);
-			
+
+			logger.info("Trip deletion successfully cascaded");
+
 			/* Inform distributor for the cancellation before it is deleted */
 			NotificationUtils.generateCancelledTripNotification(trip);
-			
-			tripService.deleteById(tripId);	
+
+			tripService.deleteById(tripId);
+			logger.info("Trip deleted.");
 		} catch (Exception e) {
-			informationLabel.setText("An error occured while cancelling this trip.");
+			logger.error("Unable to delete trip. Most likely cascading failed at some point.");
 			return;
 		}
 
 		informationLabel.setText("Trip has been successfully cancelled.");
 	}
-	public void showAttachments(){
+
+	public void showAttachments() {
 
 	}
 }

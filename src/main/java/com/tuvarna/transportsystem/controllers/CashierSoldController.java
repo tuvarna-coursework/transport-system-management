@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
@@ -49,9 +53,14 @@ public class CashierSoldController implements Initializable {
 
 	@FXML
 	private TableColumn<Ticket, String> customer;
+	
+	private static final Logger logger = LogManager.getLogger(CashierScheduleController.class.getName());
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		ticketId.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
@@ -121,6 +130,7 @@ public class CashierSoldController implements Initializable {
 				});
 
 		ticketsSoldTable.setItems(getTicketsSold());
+		logger.info("Initialized table and loaded sold tickets information.");
 	}
 
 	private ObservableList<Ticket> getTicketsSold() {
@@ -149,6 +159,7 @@ public class CashierSoldController implements Initializable {
 		window.show();
 		
 		DatabaseUtils.currentUser = null;
+		logger.info("User successfully logged out.");
 	}
 
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
@@ -158,7 +169,8 @@ public class CashierSoldController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(scheduleScene);
 		window.show();
-
+		
+		logger.info("Schedule view loaded.");
 	}
 
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
@@ -169,6 +181,7 @@ public class CashierSoldController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Notifications view loaded.");
 	}
-
 }

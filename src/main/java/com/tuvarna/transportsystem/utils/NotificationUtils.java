@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Notification;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.services.NotificationService;
@@ -18,9 +22,12 @@ public class NotificationUtils {
 	public static Timer timer;
 
 	private static int ONEDAY_IN_MILISECONDS = 86400000;
+	private static final Logger logger = LogManager.getLogger(NotificationUtils.class.getName());
 
 	public static void init() {
 		timer = new Timer();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
 
 		TimerTask generateTicketsReportTask = new TimerTask() {
 			@Override
@@ -29,9 +36,11 @@ public class NotificationUtils {
 				 * Logged in user is not a transport company and no report needs to be generated
 				 */
 				if (!NotificationUtils.generateTicketReport()) {
+					logger.info("User not a transport company. No tickets report to be generated.");
 					return;
 				}
-				;
+				logger.info("Generating sold tickets report for transport company.");
+
 			};
 		};
 
@@ -39,6 +48,7 @@ public class NotificationUtils {
 			@Override
 			public void run() {
 				generateUnsoldTicketsForNearTrip();
+				logger.info("Generating unsold tickets notification for an upcoming trip.");
 			};
 		};
 
@@ -67,6 +77,7 @@ public class NotificationUtils {
 		notification.setMessage(sb.toString());
 
 		new NotificationService().save(notification);
+		logger.info("New trip notification generated for distributor.");
 	}
 
 	public static boolean generateTicketReport() {
@@ -99,10 +110,7 @@ public class NotificationUtils {
 			new NotificationService().save(notification);
 		}
 
-		System.out.println("DEBUG: Provided ticket report.");
-
 		return true;
-
 	}
 
 	public static void generateCancelledTripNotification(Trip trip) {
@@ -119,7 +127,16 @@ public class NotificationUtils {
 		Notification notification = new Notification(DatabaseUtils.currentUser,
 				userService.getByUserType("Distributor").get(0), sb.toString());
 
+		NotificationService notificationService = new NotificationService();
 		new NotificationService().save(notification);
+		logger.info("Generated cancelled trip notification for distributor.");
+
+		userService.getByUserType("Cashier").forEach(u -> {
+			Notification cashierNotification = new Notification(DatabaseUtils.currentUser, u, sb.toString());
+			notificationService.save(cashierNotification);
+
+			logger.info("Generated cancelled trip notification for cashier.");
+		});
 	}
 
 	public static void generateUnsoldTicketsForNearTrip() {

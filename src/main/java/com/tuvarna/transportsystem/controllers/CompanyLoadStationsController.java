@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class CompanyLoadStationsController implements Initializable {
@@ -78,9 +82,14 @@ public class CompanyLoadStationsController implements Initializable {
 	String arrival = "";
 	String departure = "";
 	Route route;
+	
+	private static final Logger logger = LogManager.getLogger(CompanyLoadStationsController.class.getName());
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		loadLocation();
 		loadTime();
 	}
@@ -205,6 +214,7 @@ public class CompanyLoadStationsController implements Initializable {
 			 */
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationOne)) {
 				routeService.addAttachmentLocation(route, locationStationOne, timeOne);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationTwoChoiceBox.getValue() != null && stationTwoChoiceBox.getValue().trim().length() != 0) {
@@ -234,6 +244,7 @@ public class CompanyLoadStationsController implements Initializable {
 			 */
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTwo)) {
 				routeService.addAttachmentLocation(route, locationStationTwo, timeTwo);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationThreeChoiceBox.getValue() != null && stationThreeChoiceBox.getValue().trim().length() != 0) {
@@ -259,6 +270,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationThree)) {
 				routeService.addAttachmentLocation(route, locationStationThree, timeThree);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationFourChoiceBox.getValue() != null && stationFourChoiceBox.getValue().trim().length() != 0) {
@@ -283,6 +295,7 @@ public class CompanyLoadStationsController implements Initializable {
 			RouteService routeService = new RouteService();
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationFour)) {
 				routeService.addAttachmentLocation(route, locationStationFour, timeFour);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationFiveChoiceBox.getValue() != null && stationFiveChoiceBox.getValue().trim().length() != 0) {
@@ -308,6 +321,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationFive)) {
 				routeService.addAttachmentLocation(route, locationStationFive, timeFive);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationSixChoiceBox.getValue() != null && stationSixChoiceBox.getValue().trim().length() != 0) {
@@ -333,6 +347,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationSix)) {
 				routeService.addAttachmentLocation(route, locationStationSix, timeSix);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationSevenChoiceBox.getValue() != null && stationSevenChoiceBox.getValue().trim().length() != 0) {
@@ -358,6 +373,7 @@ public class CompanyLoadStationsController implements Initializable {
 			
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationSeven)) {
 				routeService.addAttachmentLocation(route, locationStationSeven, timeSeven);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationEightChoiceBox.getValue() != null && stationEightChoiceBox.getValue().trim().length() != 0) {
@@ -383,6 +399,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationEight)) {
 				routeService.addAttachmentLocation(route, locationStationEight, timeEight);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationNineChoiceBox.getValue() != null && stationNineChoiceBox.getValue().trim().length() != 0) {
@@ -408,6 +425,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationNine)) {
 				routeService.addAttachmentLocation(route, locationStationNine, timeNine);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationTenChoiceBox.getValue() != null && stationTenChoiceBox.getValue().trim().length() != 0) {
@@ -433,6 +451,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTen)) {
 				routeService.addAttachmentLocation(route, locationStationTen, timeTen);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationElevenChoiceBox.getValue() != null && stationElevenChoiceBox.getValue().trim().length() != 0) {
@@ -458,6 +477,7 @@ public class CompanyLoadStationsController implements Initializable {
 
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationEleven)) {
 				routeService.addAttachmentLocation(route, locationStationEleven, timeEleven);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		if (stationTwelveChoiceBox.getValue() != null && stationTwelveChoiceBox.getValue().trim().length() != 0) {
@@ -483,10 +503,10 @@ public class CompanyLoadStationsController implements Initializable {
 			
 			if (!routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStationTwelve)) {
 				routeService.addAttachmentLocation(route, locationStationTwelve, timeTwelve);
+				logger.info("Added attachment location to this route. (Insert into RouteAttachment");
 			}
 		}
 		stage.close();
 
 	}
-
 }

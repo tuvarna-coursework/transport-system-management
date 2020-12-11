@@ -23,6 +23,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.services.LocationService;
@@ -67,8 +71,13 @@ public class DistributorScheduleController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
 
+	private static final Logger logger = LogManager.getLogger(DistributorScheduleController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		loadLocations();
 		cashierComboBox.setItems(getCashiers());
 		col_departure.setCellValueFactory(
@@ -130,6 +139,7 @@ public class DistributorScheduleController implements Initializable {
 		col_capacity.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
 		scheduleTable.setItems(getTripSchedule());
 
+		logger.info("Loaded distributor schedule.");
 	}
 
 	public void loadLocations() {
@@ -180,6 +190,8 @@ public class DistributorScheduleController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+
+		logger.info("Switched to notifications tab.");
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {
@@ -190,6 +202,7 @@ public class DistributorScheduleController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Switched to requests tab.");
 	}
 
 	public void goToAddCashier(javafx.event.ActionEvent event) throws IOException {
@@ -200,6 +213,7 @@ public class DistributorScheduleController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Switched to add cashier tab.");
 	}
 
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -209,11 +223,13 @@ public class DistributorScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-		
+
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
-	public void showStations(javafx.event.ActionEvent event) throws IOException{
-		if(scheduleTable.getSelectionModel().getSelectedItem() == null){
+
+	public void showStations(javafx.event.ActionEvent event) throws IOException {
+		if (scheduleTable.getSelectionModel().getSelectedItem() == null) {
 			informationLabel.setText("Select trip first!");
 			return;
 		}
@@ -221,15 +237,15 @@ public class DistributorScheduleController implements Initializable {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorShowRouteAttachments.fxml"));
 		DialogPane root = (DialogPane) userPanel.load();
-		//send trip to other controller
-		DistributorShowRouteAttachmentsController controller = (DistributorShowRouteAttachmentsController) userPanel.getController();
+		// send trip to other controller
+		DistributorShowRouteAttachmentsController controller = (DistributorShowRouteAttachmentsController) userPanel
+				.getController();
 		controller.getTrip(tripSend);
 
 		Scene adminScene = new Scene(root);
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
-
 	}
 
 	public ObservableList<String> getCashiers() {
@@ -302,7 +318,7 @@ public class DistributorScheduleController implements Initializable {
 				informationLabel.setText("Selected location is unrelated to this trip.");
 				return;
 			}
-			
+
 			if (trip.getCashiers().contains(cashier)) {
 				informationLabel.setText("Selected user is already assigned for this trip.");
 				return;
@@ -310,6 +326,8 @@ public class DistributorScheduleController implements Initializable {
 
 			tripService.addCashierForTrip(trip, cashier);
 			informationLabel.setText("Assigned cashier for the selected location.");
+			logger.info(
+					"Cashier is eligible to be a cashier for this trip. Added in TripsCashier table and assigned for the trip.");
 			return;
 		}
 

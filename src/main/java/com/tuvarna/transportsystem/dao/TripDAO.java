@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
@@ -18,9 +22,12 @@ import com.tuvarna.transportsystem.utils.DatabaseUtils;
 @SuppressWarnings("unchecked")
 public class TripDAO implements GenericDAOInterface<Trip> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(TripDAO.class.getName());
 
 	public TripDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and TripDAO initialized.");
 	}
 
 	/*
@@ -38,8 +45,10 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}
@@ -102,12 +111,12 @@ public class TripDAO implements GenericDAOInterface<Trip> {
 		return entityManager.createQuery("FROM Trip WHERE trip_hour_of_departure = :hour").setParameter("hour", hour)
 				.getResultList();
 	}
-	
+
 	public void addCashierForTrip(Trip trip, User cashier) {
 		trip.getCashiers().add(cashier);
 		executeInsideTransaction(entityManager -> entityManager.merge(trip));
 	}
-	
+
 	public void removeCashierFromTrip(Trip trip, User cashier) {
 		trip.getCashiers().remove(cashier);
 		executeInsideTransaction(entityManager -> entityManager.merge(trip));

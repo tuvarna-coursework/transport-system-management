@@ -7,6 +7,10 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.entities.TripType;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
@@ -14,9 +18,12 @@ import com.tuvarna.transportsystem.utils.DatabaseUtils;
 @SuppressWarnings("unchecked")
 public class TripTypeDAO implements GenericDAOInterface<TripType> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(TripTypeDAO.class.getName());
 
 	public TripTypeDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and TripTypeDAO initialized.");
 	}
 
 	/*
@@ -34,8 +41,10 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}
@@ -44,21 +53,13 @@ public class TripTypeDAO implements GenericDAOInterface<TripType> {
 	@Override
 	public Optional<TripType> getById(int id) {
 		return Optional.ofNullable((TripType) entityManager.createQuery("FROM TripType WHERE triptype_id = :id")
-				.setParameter("id", id)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+				.setParameter("id", id).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
 	public Optional<TripType> getByName(String name) {
 		return Optional.ofNullable((TripType) entityManager.createQuery("FROM TripType WHERE triptype_name = :name")
-				.setParameter("name", name)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+				.setParameter("name", name).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override

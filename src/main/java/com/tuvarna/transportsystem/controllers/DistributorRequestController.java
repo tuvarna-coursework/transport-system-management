@@ -29,6 +29,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class DistributorRequestController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
@@ -51,8 +55,13 @@ public class DistributorRequestController implements Initializable {
 	@FXML
 	private Label informationLabel;
 
+	private static final Logger logger = LogManager.getLogger(DistributorRequestController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		departure_col.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -89,6 +98,7 @@ public class DistributorRequestController implements Initializable {
 		capacity_col.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
 		tickets_col.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
 		requestTable.setItems(getTrips());
+		logger.info("Loaded live trips to send requests for.");
 
 	}
 
@@ -111,6 +121,7 @@ public class DistributorRequestController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Switched to add cashier tab.");
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -122,6 +133,7 @@ public class DistributorRequestController implements Initializable {
 		window.show();
 
 		DatabaseUtils.currentUser = null;
+		logger.info("User successfully logged out.");
 	}
 
 	public void goToScheduleDistributor(javafx.event.ActionEvent event) throws IOException {
@@ -132,6 +144,7 @@ public class DistributorRequestController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Switched to schedule tab.");
 	}
 
 	public void makeRequest() {
@@ -166,6 +179,8 @@ public class DistributorRequestController implements Initializable {
 		requestService.save(request);
 		informationLabel.setText("You send a request for " + requiredTicketsTextField.getText() + " tickets for trip #"
 				+ trip.getTripId());
+
+		logger.info("Request passed all constraints checks and was successfully created.");
 	}
 
 	public void showRequest(javafx.event.ActionEvent event) throws IOException {
@@ -177,6 +192,7 @@ public class DistributorRequestController implements Initializable {
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
 
+		logger.info("Showing requests.");
 	}
 
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
@@ -187,5 +203,7 @@ public class DistributorRequestController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+
+		logger.info("Switched to notifications tab.");
 	}
 }

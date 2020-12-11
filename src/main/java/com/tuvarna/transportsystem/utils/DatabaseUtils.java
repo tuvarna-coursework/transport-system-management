@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -53,21 +56,30 @@ public class DatabaseUtils {
 	public static String REQUEST_STATUSREJECTED = "REJECTED";
 	public static String REQUEST_STATUSACCEPTED = "ACCEPTED";
 
+	private static final Logger logger = LogManager.getLogger(DatabaseUtils.class.getName());
+
 	public static void init() {
 		globalSession = createSession();
 		// populateAuxiliaryTables();
 		initFields();
+
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		logger.info("Succesfully initlialized Session.");
+		logger.info("Succesfully loaded hardcoded DatabaseUtils UserTypes, Roles, Strings.");
 	}
 
 	public static SessionFactory createSessionFactory() {
 		SessionFactory factory;
 		try {
 			factory = new Configuration().configure().buildSessionFactory();
+			logger.info("Configuring connection. Creating SessionFactory.");
 		} catch (Throwable ex) {
 			System.err.println("Failed to initialize sessionFactory." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
 
+		logger.info("SessionFactory successfully created.");
 		return factory;
 	}
 
@@ -75,11 +87,13 @@ public class DatabaseUtils {
 		Session session;
 		try {
 			session = DatabaseUtils.createSessionFactory().openSession();
+			logger.info("Creating session.");
 		} catch (Exception e) {
-			System.err.println("Failed to initialize Session " + e);
+			logger.error("Failed to create session.");
 			throw new ExceptionInInitializerError(e);
 		}
 
+		logger.trace("Session successfully created.");
 		return session;
 	}
 
@@ -201,6 +215,7 @@ public class DatabaseUtils {
 		routeService.addAttachmentLocation(route3, sliven, "03:15");
 		routeService.addAttachmentLocation(route4, sliven, "03:15");
 
+		logger.info("Prepopulated RouteAttachment table (hardcoded values).");
 	}
 
 	/*
@@ -223,8 +238,10 @@ public class DatabaseUtils {
 			USERTYPE_USER = userTypeService.getByName("User").get();
 			USERTYPE_ADMIN = userTypeService.getByName("Admin").get();
 			USERTYPE_COMPANY = userTypeService.getByName("Transport Company").get();
+
+			logger.info("Loaded UserTypes and Roles for DatabaseUtils static fields.");
 		} catch (Exception e) {
-			System.out.println("Please run DatabaseUtils.populateAuxiliaryTables() before calling this function.");
+			logger.error("Please run DatabaseUtils.populateAuxiliaryTables() before calling this function.");
 		}
 	}
 
@@ -261,6 +278,7 @@ public class DatabaseUtils {
 			sb.append(random.nextInt(9));
 		}
 
+		logger.info("Username successfully generated.");
 		return sb.toString();
 	}
 
@@ -278,6 +296,7 @@ public class DatabaseUtils {
 			}
 		}
 
+		logger.info("Password successfully generated.");
 		return sb.toString();
 	}
 
@@ -288,6 +307,8 @@ public class DatabaseUtils {
 			UserProfileService userProfileService = new UserProfileService();
 			NotificationService notificationService = new NotificationService();
 
+			logger.debug("User deletion begun.");
+
 			if (user.getUserType().getUserTypeName().equals("Cashier")) {
 				List<User> users = userService.getAll();
 
@@ -297,7 +318,7 @@ public class DatabaseUtils {
 				 */
 				users.forEach(u -> {
 					if (u.getCashiers().contains(user)) {
-						System.out.println("DEBUG: Removing user as cashier from company.");
+						logger.debug("Removing user as cashier from company.");
 						userService.removeCashierFromTransportCompany(u, user);
 					}
 				});
@@ -307,7 +328,7 @@ public class DatabaseUtils {
 				/* Cashier present in TripCashier table */
 				trips.forEach(t -> {
 					if (t.getCashiers().contains(user)) {
-						System.out.println("DEBUG: Removing user as cashier from trip.");
+						logger.debug("Removing user as cashier from trip.");
 						tripService.removeCashierFromTrip(t, user);
 					}
 				});
@@ -316,7 +337,7 @@ public class DatabaseUtils {
 
 				/* Transport company owns trips (UserTrip table) */
 				for (Trip trip : userTrips) {
-					System.out.println("DEBUG: Deleting trips.");
+					logger.debug("Deleting trips.");
 					userService.removeTrip(user, trip);
 				}
 			} else if (user.getUserType().getUserTypeName().equals("User")) {
@@ -324,7 +345,7 @@ public class DatabaseUtils {
 
 				/* End user has tickets */
 				for (Ticket ticket : userTickets) {
-					System.out.println("DEBUG: Deleting tickets.");
+					logger.debug("Deleting tickets.");
 					userService.removeTicket(user, ticket);
 				}
 			}
@@ -335,18 +356,18 @@ public class DatabaseUtils {
 			userNotifications.addAll(notificationService.getNotificationsBySenderId(user.getUserId()));
 
 			for (Role role : userRoles) {
-				System.out.println("DEBUG: Deleting roles.");
+				logger.debug("Deleting roles.");
 				userService.removeRole(user, role);
 			}
 
 			/* Delete the unique user profile */
 			if (user.getUserProfile() != null) {
-				System.out.println("DEBUG: Deleting user profile.");
+				logger.debug("Deleting user profile.");
 				userProfileService.deleteById(user.getUserProfile().getUserProfileId());
 			}
 
 			for (Notification notification : userNotifications) {
-				System.out.println("DEBUG: Deleting notifications.");
+				logger.debug("Deleting notifications.");
 				notificationService.deleteById(notification.getNotificationId());
 			}
 
@@ -354,7 +375,7 @@ public class DatabaseUtils {
 
 			return true;
 		} catch (Exception e) {
-			System.out.println(e.toString());
+			logger.error("User deletion failed.");
 			return false;
 		}
 	}

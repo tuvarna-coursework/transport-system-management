@@ -7,15 +7,23 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+import com.tuvarna.transportsystem.controllers.AdminController;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
 public class LocationDAO implements GenericDAOInterface<Location> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(LocationDAO.class.getName());
 
 	public LocationDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and LocationDAO initialized.");
 	}
 
 	/*
@@ -33,8 +41,10 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}
@@ -43,21 +53,13 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 	public Optional<Location> getById(int id) {
 		/* .getSingleResult throws exception if value is null, we need it returnable */
 		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_id = :id")
-				.setParameter("id", id)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+				.setParameter("id", id).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
 	public Optional<Location> getByName(String name) {
 		return Optional.ofNullable((Location) entityManager.createQuery("FROM Location WHERE location_name = :name")
-				.setParameter("name", name)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+				.setParameter("name", name).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 		if (!this.getById(id).isPresent()) {
 			return;
 		}
-		
+
 		Location location = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(location));
 	}
@@ -92,7 +94,7 @@ public class LocationDAO implements GenericDAOInterface<Location> {
 		if (!this.getByName(name).isPresent()) {
 			return;
 		}
-		
+
 		Location location = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(location));
 	}

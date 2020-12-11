@@ -7,6 +7,10 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Notification;
 import com.tuvarna.transportsystem.entities.Request;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
@@ -14,9 +18,12 @@ import com.tuvarna.transportsystem.utils.DatabaseUtils;
 @SuppressWarnings("unchecked")
 public class NotificationDAO implements GenericDAOInterface<Notification> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(NotificationDAO.class.getName());
 
 	public NotificationDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and NotificationDAO initialized.");
 	}
 
 	/*
@@ -34,31 +41,30 @@ public class NotificationDAO implements GenericDAOInterface<Notification> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}
-	
-	public List<Notification> getNotificationsBySenderId(int userId){
-		return entityManager.createQuery("FROM Notification WHERE sender_id = :id")
-				.setParameter("id", userId).getResultList();
-		
+
+	public List<Notification> getNotificationsBySenderId(int userId) {
+		return entityManager.createQuery("FROM Notification WHERE sender_id = :id").setParameter("id", userId)
+				.getResultList();
+
 	}
-	
-	public List<Notification> getNotificationsForReceiverId(int userId){
-		return entityManager.createQuery("FROM Notification WHERE receiver_id = :id")
-				.setParameter("id", userId).getResultList();
+
+	public List<Notification> getNotificationsForReceiverId(int userId) {
+		return entityManager.createQuery("FROM Notification WHERE receiver_id = :id").setParameter("id", userId)
+				.getResultList();
 	}
 
 	@Override
 	public Optional<Notification> getById(int id) {
-		return Optional.ofNullable((Notification) entityManager.createQuery("FROM Notification WHERE notification_id = :id")
-				.setParameter("id", id)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+		return Optional
+				.ofNullable((Notification) entityManager.createQuery("FROM Notification WHERE notification_id = :id")
+						.setParameter("id", id).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override

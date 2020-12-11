@@ -19,6 +19,10 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -42,9 +46,12 @@ public class LoginController implements Initializable {
 	@FXML
 	private PasswordField passwordTextField;
 
+	private static final Logger logger = LogManager.getLogger(LoginController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
 	}
 
 	public void Change(javafx.event.ActionEvent event) throws IOException {
@@ -55,6 +62,7 @@ public class LoginController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Register panel loaded.");
 	}
 
 	public void ChangeToSuccessLogin(javafx.event.ActionEvent event) throws IOException {
@@ -65,6 +73,7 @@ public class LoginController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("User successfully logged in.");
 	}
 
 	public void loginButtonOnAction(javafx.event.ActionEvent event) throws IOException {
@@ -84,7 +93,7 @@ public class LoginController implements Initializable {
 
 				/* Case handled by try-catch block */
 				User checkUser = userService.getByName(username).get();
-			
+
 				String name = checkUser.getUserLoginName();
 				String pass = checkUser.getUserPassword();
 				UserType type = checkUser.getUserType();
@@ -92,7 +101,7 @@ public class LoginController implements Initializable {
 
 				if (username.equals(name) && BCrypt.checkpw(password, pass)) {
 					informationLabel.setText("CORRECT");
-					
+
 					/* Login successful, remember the logged in user */
 					DatabaseUtils.currentUser = checkUser;
 
@@ -104,7 +113,7 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					
+
 					if (usertype.equals("User")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
@@ -113,7 +122,7 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					
+
 					if (usertype.equals("Transport Company")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CompanyAddTripPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
@@ -122,7 +131,7 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					
+
 					if (usertype.equals("Distributor")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
@@ -131,7 +140,7 @@ public class LoginController implements Initializable {
 						window.setScene(adminScene);
 						window.show();
 					}
-					
+
 					if (usertype.equals("Cashier")) {
 						Parent userPanel = FXMLLoader.load(getClass().getResource("/views/CashierSchedulePanel.fxml"));
 						Scene adminScene = new Scene(userPanel);
@@ -141,39 +150,18 @@ public class LoginController implements Initializable {
 						window.show();
 					}
 
+					logger.info("User succesfully logged in.");
 					NotificationUtils.init();
 				} else {
 					informationLabel.setText("INVALID USERNAME OR PASSWORD");
 				}
 
 			} catch (Exception e) {
-				informationLabel.setText("INVALID USERNAME OR PASSWORD");
-
+				logger.error("Login failed.");
 			}
 
 		} else {
 			informationLabel.setText("Please enter username and password!");
 		}
 	}
-
-	/*
-	 * public void validateLogin() throws IOException { String username =
-	 * usernameTextField.getText(); String password = passwordTextField.getText();
-	 * UserService userService = new UserService(); User checkUserName=
-	 * userService.getByLoginName(username); User checkPassword=
-	 * userService.getByLoginName(username);
-	 * 
-	 * 
-	 * 
-	 * String name=checkUserName.getUserLoginName(); String
-	 * pass=checkPassword.getUserPassword();
-	 * 
-	 * if (username.equals(name)&&password.equals(pass)) {
-	 * informationLabel.setText("CORRECT"); ChangeToSuccessLogin();
-	 * 
-	 * } else { informationLabel.setText("INVALID"); }
-	 * 
-	 * }
-	 */
-
 }

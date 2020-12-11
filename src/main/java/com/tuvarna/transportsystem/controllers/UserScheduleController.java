@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.services.UserService;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
@@ -60,8 +64,13 @@ public class UserScheduleController implements Initializable {
 	@FXML
 	private TableColumn<Ticket, String> scheduleHourOfDeparture;
 
+	private static final Logger logger = LogManager.getLogger(UserScheduleController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		scheduleDate.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
@@ -78,15 +87,14 @@ public class UserScheduleController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getDepartureLocation().getLocationName());
 					}
 				});
-		
+
 		scheduleArrivalSt.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
 
-						return new SimpleStringProperty(
-								param.getValue().getArrivalLocation().getLocationName());
+						return new SimpleStringProperty(param.getValue().getArrivalLocation().getLocationName());
 					}
 				});
 
@@ -124,7 +132,8 @@ public class UserScheduleController implements Initializable {
 
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
-						return new SimpleStringProperty(param.getValue().getTrip().getTripTransportType().getTransportTypeName());
+						return new SimpleStringProperty(
+								param.getValue().getTrip().getTripTransportType().getTransportTypeName());
 
 					}
 				});
@@ -138,42 +147,29 @@ public class UserScheduleController implements Initializable {
 
 					}
 				});
-		
+
 		schedulePriceCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Ticket, String>, ObservableValue<String>>() {
 
 					@Override
 					public ObservableValue<String> call(TableColumn.CellDataFeatures<Ticket, String> param) {
-						return new SimpleStringProperty(String.valueOf(param.getValue().getTrip().getTripTicketPrice()));
+						return new SimpleStringProperty(
+								String.valueOf(param.getValue().getTrip().getTripTicketPrice()));
 
 					}
 				});
 
-		/*
-		 * list.removeAll(list); List<Trip> trips = new ArrayList<>();
-		 * DatabaseUtils.currentUser.getTickets().forEach(t -> trips.add(t.getTrip()));
-		 * list.addAll(trips);
-		 */
-
 		scheduleTable.setItems(getTickets());
+		logger.info("Loaded user schedule and populated with the trips they have tickets for.");
 	}
 
 	public ObservableList<Ticket> getTickets() {
 		ObservableList<Ticket> ticketsList = FXCollections.observableArrayList();
 		List<Ticket> userTickets = DatabaseUtils.currentUser.getTickets();
-		
+
 		userTickets.forEach(t -> ticketsList.add(t));
-		
+
 		return ticketsList;
-	}
-
-	public void goToMyTicket(javafx.event.ActionEvent event) throws IOException {
-		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/UserMyTicketPanel.fxml"));
-		Scene ticketScene = new Scene(ticketPanel);
-
-		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		window.setScene(ticketScene);
-		window.show();
 	}
 
 	public void logOut(javafx.event.ActionEvent event) throws IOException {
@@ -185,6 +181,7 @@ public class UserScheduleController implements Initializable {
 		window.show();
 
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
 
 	public void goToBuyTicket(javafx.event.ActionEvent event) throws IOException {
@@ -194,5 +191,6 @@ public class UserScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(ticketScene);
 		window.show();
+		logger.info("Switched to buy tickets tab.");
 	}
 }

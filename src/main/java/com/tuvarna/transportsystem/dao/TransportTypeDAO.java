@@ -7,15 +7,22 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
 public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(TransportTypeDAO.class.getName());
 
 	public TransportTypeDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and TransportTypeDAO initialized.");
 	}
 
 	/*
@@ -33,8 +40,10 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}
@@ -42,22 +51,16 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Optional<TransportType> getById(int id) {
-		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_id = :id")
-				.setParameter("id", id)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+		return Optional.ofNullable(
+				(TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_id = :id")
+						.setParameter("id", id).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
 	public Optional<TransportType> getByName(String name) {
-		return Optional.ofNullable((TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
-				.setParameter("name", name)
-				.getResultList()
-				.stream()
-				.findFirst()
-				.orElse(null));
+		return Optional.ofNullable(
+				(TransportType) entityManager.createQuery("FROM TransportType WHERE transport_type_name = :name")
+						.setParameter("name", name).getResultList().stream().findFirst().orElse(null));
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 		if (!this.getById(id).isPresent()) {
 			return;
 		}
-		
+
 		TransportType type = this.getById(id).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}
@@ -92,7 +95,7 @@ public class TransportTypeDAO implements GenericDAOInterface<TransportType> {
 		if (!this.getByName(name).isPresent()) {
 			return;
 		}
-		
+
 		TransportType type = this.getByName(name).get();
 		executeInsideTransaction(entityManager -> entityManager.remove(type));
 	}

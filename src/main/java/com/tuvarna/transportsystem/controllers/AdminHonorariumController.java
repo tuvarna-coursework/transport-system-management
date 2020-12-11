@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
 import com.tuvarna.transportsystem.services.UserService;
@@ -29,13 +33,16 @@ public class AdminHonorariumController implements Initializable {
 
 	@FXML
 	private TextField userRatingTextField;
-	
+
 	@FXML
 	private Label informationLabel;
 
+	private static final Logger logger = LogManager.getLogger(AdminHonorariumController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
 	}
 
 	public void goBack(javafx.event.ActionEvent event) throws IOException {
@@ -46,6 +53,7 @@ public class AdminHonorariumController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Returned to admin panel.");
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -55,8 +63,9 @@ public class AdminHonorariumController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-		
+
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged off.");
 	}
 
 	public void editOnClick(javafx.event.ActionEvent event) throws IOException {
@@ -116,6 +125,7 @@ public class AdminHonorariumController implements Initializable {
 		if (isChanged) {
 			userService.updateUserProfile(user, profile);
 			informationLabel.setText("Changes applied successfully.");
+			logger.info("Admin edited user successfully.");
 		}
 	}
 }

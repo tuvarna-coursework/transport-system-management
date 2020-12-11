@@ -31,6 +31,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
@@ -101,8 +105,13 @@ public class UserPanelController implements Initializable {
 	@FXML
 	private TableColumn<Trip, Double> priceCol;
 
+	private static final Logger logger = LogManager.getLogger(UserPanelController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		loadquantity();
 		loadTime();
 		loadDepartureArrivalLocation();
@@ -167,6 +176,7 @@ public class UserPanelController implements Initializable {
 		priceCol.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
 		ticketsLeftCol.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
 
+		logger.info("Loaded user panel.");
 	}
 
 	private List<Trip> getMatchingTrips() throws ParseException {
@@ -330,6 +340,7 @@ public class UserPanelController implements Initializable {
 				}
 			}
 		}
+		logger.info("Returning a list of trips that match the search criteria of the customer.");
 		return filteredTrips;
 	}
 
@@ -381,7 +392,8 @@ public class UserPanelController implements Initializable {
 		String time_25 = "23:45";
 
 		list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
-				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22, time_23, time_24, time_25);
+				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22,
+				time_23, time_24, time_25);
 	}
 
 	public void loadDepartureArrivalLocation() {
@@ -422,15 +434,8 @@ public class UserPanelController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(scheduleScene);
 		window.show();
-	}
 
-	public void goToMyTicket(javafx.event.ActionEvent event) throws IOException {
-		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/UserMyTicketPanel.fxml"));
-		Scene ticketScene = new Scene(ticketPanel);
-
-		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		window.setScene(ticketScene);
-		window.show();
+		logger.info("Switched to schedule tab.");
 	}
 
 	public void logOut(javafx.event.ActionEvent event) throws IOException {
@@ -442,6 +447,7 @@ public class UserPanelController implements Initializable {
 		window.show();
 
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
 
 	public void toggleButtonAction(javafx.event.ActionEvent event) throws IOException, ParseException {
@@ -463,9 +469,6 @@ public class UserPanelController implements Initializable {
 
 			TripService tripService = new TripService();
 			int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem());
-
-			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
-
 			LocationService locationService = new LocationService();
 
 			if (!locationService.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).isPresent()) {
@@ -478,6 +481,9 @@ public class UserPanelController implements Initializable {
 				return;
 			}
 
+			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
+			logger.info("Updated trip ticket availability after purchase.");
+
 			Location departureLocation = locationService
 					.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).get();
 			Location arrivalLocation = locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem())
@@ -486,14 +492,17 @@ public class UserPanelController implements Initializable {
 			TicketService ticketService = new TicketService();
 			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
 			ticketService.save(ticket);
+			logger.info("Ticket created and persisted to database.");
 
 			UserService userService = new UserService();
 			userService.addTicket(DatabaseUtils.currentUser, ticket);
+			logger.info("Inserted into UsersTicket table.");
 
 			// For every 5 purchased tickets, the user gains a rating of 0.2
 			if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
 				DatabaseUtils.currentUser.getUserProfile()
 						.setUserProfileRating(DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
+				logger.info("Customer gained a rating of 0.2");
 			}
 
 			informationLabel.setText("You bought a ticket.");
@@ -507,12 +516,13 @@ public class UserPanelController implements Initializable {
 		if (this.getMatchingTrips() == null) {
 			return;
 		}
-		
+
 		list.addAll(this.getMatchingTrips());
 
 		/* Filter all trips that match the search criteria */
 		toggleView(event);
 		availableTripsTable.setItems(list);
+		logger.info("Search results returned.");
 	}
 
 	public void toggleView(javafx.event.ActionEvent event) throws IOException, ParseException {

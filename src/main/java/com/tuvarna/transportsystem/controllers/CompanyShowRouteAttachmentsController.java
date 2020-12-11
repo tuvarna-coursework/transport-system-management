@@ -25,56 +25,73 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class CompanyShowRouteAttachmentsController implements Initializable {
-    @FXML
-    private Label informationLabel;
-    @FXML
-    private TableView<RouteAttachment> tripTableView;
-    @FXML
-    private TableColumn<RouteAttachment,String> station_col;
-    @FXML
-    private TableColumn<RouteAttachment,String> hour_col;
-    @FXML
-    private Button closeButton;
-    Trip globalTrip;
-    int routeID=0;
+	@FXML
+	private Label informationLabel;
+	@FXML
+	private TableView<RouteAttachment> tripTableView;
+	@FXML
+	private TableColumn<RouteAttachment, String> station_col;
+	@FXML
+	private TableColumn<RouteAttachment, String> hour_col;
+	@FXML
+	private Button closeButton;
+	Trip globalTrip;
+	int routeID = 0;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        station_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RouteAttachment, String>, ObservableValue<String>>() {
+	private static final Logger logger = LogManager.getLogger(CompanyShowRouteAttachmentsController.class.getName());
 
-                    @Override
-                    public ObservableValue<String> call(TableColumn.CellDataFeatures<RouteAttachment, String> param) {
-                        return new SimpleStringProperty(param.getValue().getLocation().getLocationName());
-                    }
-                });
-        hour_col.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<RouteAttachment, String>, ObservableValue<String>>() {
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
+		station_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<RouteAttachment, String>, ObservableValue<String>>() {
 
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<RouteAttachment, String> param) {
-                return new SimpleStringProperty(param.getValue().getHourOfArrival());
-            }
-        });
-    }
-    public void getTrip(Trip trip){
-        globalTrip=trip;
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<RouteAttachment, String> param) {
+						return new SimpleStringProperty(param.getValue().getLocation().getLocationName());
+					}
+				});
+		hour_col.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<RouteAttachment, String>, ObservableValue<String>>() {
 
-    }
-    public void view(){
-        tripTableView.setItems(showAttachments());
-        informationLabel.setText("Stations between " + globalTrip.getRoute().getRouteDepartureLocation().getLocationName() + " and " + globalTrip.getRoute().getRouteArrivalLocation().getLocationName() + "!");
+					@Override
+					public ObservableValue<String> call(TableColumn.CellDataFeatures<RouteAttachment, String> param) {
+						return new SimpleStringProperty(param.getValue().getHourOfArrival());
+					}
+				});
+	}
 
-    }
-    public void close(){
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
-    }
-    public ObservableList<RouteAttachment> showAttachments() {
-        ObservableList<RouteAttachment> tripList = FXCollections.observableArrayList();
-        List<RouteAttachment> eList = globalTrip.getRoute().getAttachmentLocations();
-        for (RouteAttachment ent : eList) {
-                tripList.add(ent);
-        }
-        return tripList;
-    }
+	public void getTrip(Trip trip) {
+		globalTrip = trip;
+	}
+
+	public void view() {
+		tripTableView.setItems(showAttachments());
+		informationLabel
+				.setText("Stations between " + globalTrip.getRoute().getRouteDepartureLocation().getLocationName()
+						+ " and " + globalTrip.getRoute().getRouteArrivalLocation().getLocationName() + "!");
+		
+		logger.info("Loaded route attachment locations.");
+	}
+
+	public void close() {
+		Stage stage = (Stage) closeButton.getScene().getWindow();
+		stage.close();
+	}
+
+	public ObservableList<RouteAttachment> showAttachments() {
+		ObservableList<RouteAttachment> tripList = FXCollections.observableArrayList();
+		List<RouteAttachment> eList = globalTrip.getRoute().getAttachmentLocations();
+		for (RouteAttachment ent : eList) {
+			tripList.add(ent);
+		}
+		return tripList;
+	}
 }

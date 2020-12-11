@@ -33,6 +33,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class DistributorAddCashierController implements Initializable {
 
 	@FXML
@@ -61,10 +65,16 @@ public class DistributorAddCashierController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
 
+	private static final Logger logger = LogManager.getLogger(DistributorAddCashierController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		loadLocation();
 		companyComboBox.setItems(getCompanies());
+		logger.info("Available companies loaded.");
 
 		cashierFullName.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
@@ -75,7 +85,6 @@ public class DistributorAddCashierController implements Initializable {
 					}
 				});
 
-		
 		cashierCompany.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
 
@@ -96,10 +105,11 @@ public class DistributorAddCashierController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getUserLocation().getLocationName());
 					}
 				});
-		
-		cashierId.setCellValueFactory(new PropertyValueFactory<User,Integer>("userId"));
-		
+
+		cashierId.setCellValueFactory(new PropertyValueFactory<User, Integer>("userId"));
+
 		cashierTable.setItems(this.getCashiers());
+		logger.info("Loaded cashiers and created table.");
 	}
 
 	public ObservableList<User> getCashiers() {
@@ -120,7 +130,6 @@ public class DistributorAddCashierController implements Initializable {
 		}
 		return userList;
 	}
-
 
 	public void loadLocation() {
 		list.removeAll(list);
@@ -149,6 +158,7 @@ public class DistributorAddCashierController implements Initializable {
 				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		locationChoiceBox.getItems().addAll(list);
 	}
+
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorNotificationsPanel.fxml"));
@@ -157,6 +167,8 @@ public class DistributorAddCashierController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Notifications tab opened.");
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {
@@ -167,6 +179,7 @@ public class DistributorAddCashierController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Requests tab opened.");
 	}
 
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -178,6 +191,7 @@ public class DistributorAddCashierController implements Initializable {
 		window.show();
 
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
 
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
@@ -187,14 +201,15 @@ public class DistributorAddCashierController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-
+		
+		logger.info("Schedule tab selected.");
 	}
 
 	public void createCashier(javafx.event.ActionEvent event) throws IOException {
 		if (!fullnameTextField.getText().isEmpty()) {
 			String fullname = fullnameTextField.getText().trim();
 			UserService userService = new UserService();
-			
+
 			if (fullname.length() < 4 || fullname.length() > 30) {
 				informationLabel.setText("Invalid fullname. Length: 4 - 20");
 				return;
@@ -228,6 +243,7 @@ public class DistributorAddCashierController implements Initializable {
 			userService.save(cashier);
 			userService.addRole(cashier, DatabaseUtils.ROLE_USER);
 			userService.addCashierToTransportCompany(company, cashier);
+			logger.info("User successfully created. Assigned role 'user' and inserted into CompanyCashier table.");
 
 			StringBuilder outputString = new StringBuilder();
 			outputString.append(" Username: ").append(username).append("\n Password: ").append(password);
@@ -242,8 +258,8 @@ public class DistributorAddCashierController implements Initializable {
 		} else {
 			informationLabel.setText("Enter cashier full name!");
 		}
-
 	}
+
 	public void refresh(javafx.event.ActionEvent event) throws IOException {
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/DistributorAddPanel.fxml"));
 		Scene adminScene = new Scene(userPanel);
@@ -251,5 +267,7 @@ public class DistributorAddCashierController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		logger.info("Page refreshed.");
 	}
 }

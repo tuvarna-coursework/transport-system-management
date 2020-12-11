@@ -30,6 +30,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class RegisterController implements Initializable {
 
 	ObservableList list = FXCollections.observableArrayList();
@@ -41,14 +45,18 @@ public class RegisterController implements Initializable {
 	private TextField usernameTextField;
 	@FXML
 	private PasswordField passwordTextField;
-	
+
 	@FXML
 	private Label informationLabel;
 
+	private static final Logger logger = LogManager.getLogger(RegisterController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		loadLocation();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
 
+		loadLocation();
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -59,6 +67,7 @@ public class RegisterController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("User returned to login screen.");
 	}
 
 	public void registerButton(javafx.event.ActionEvent event) throws IOException {
@@ -66,18 +75,17 @@ public class RegisterController implements Initializable {
 		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
 		String userlocation = locationChoiceBox.getValue();
-		
-		
-		if(fullname.trim().length() > 40 || fullname.trim().length() < 5) {
+
+		if (fullname.trim().length() > 40 || fullname.trim().length() < 5) {
 			informationLabel.setText("Invalid fullname. Name must be between 5 and 40 characters.");
 			return;
 		}
-		
+
 		if ((!Pattern.matches("^\\w+$", username)) || username.length() < 4 || username.length() > 20) {
 			informationLabel.setText("Invalid username. No spaces, special characters. Length: 4 - 20 characters.");
 			return;
 		}
-		
+
 		if (password.length() < 5 || password.length() > 20) {
 			informationLabel.setText("Invalid password. Length: 5 - 20 characters.");
 			return;
@@ -86,10 +94,10 @@ public class RegisterController implements Initializable {
 		LocationService locationService = new LocationService();
 
 		if (!locationService.getByName(userlocation).isPresent()) {
-			System.out.println("ERROR: Location not found in database");
+			logger.error("Location not present in database.");
 			return;
 		}
-		
+
 		Location location = locationService.getByName(userlocation).get();
 
 		UserProfile profile = new UserProfile(0.0, 0.0);
@@ -98,8 +106,10 @@ public class RegisterController implements Initializable {
 		UserService userService = new UserService();
 		User user = new User(fullname, username, password, profile, type, location);
 		userService.save(user);
+		logger.info("Successfully persisted user to database.");
 
 		userService.addRole(user, DatabaseUtils.ROLE_USER);
+		logger.info("Assigned role user.");
 
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 		Scene adminScene = new Scene(userPanel);
@@ -108,6 +118,7 @@ public class RegisterController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("Registration successful, login successful.");
 	}
 
 	public void loadLocation() {
@@ -134,8 +145,7 @@ public class RegisterController implements Initializable {
 		String city_20 = "Lovech";
 		String city_21 = "Turgovishte";
 		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20,city_21);
+				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
 		locationChoiceBox.getItems().addAll(list);
 	}
-
 }

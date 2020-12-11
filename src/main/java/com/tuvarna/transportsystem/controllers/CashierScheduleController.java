@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Ticket;
 import com.tuvarna.transportsystem.entities.Trip;
@@ -93,9 +97,14 @@ public class CashierScheduleController implements Initializable {
 	private Label informationLabel;
 
 	boolean isInitialized = false;
+	
+	private static final Logger logger = LogManager.getLogger(CashierScheduleController.class.getName());
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		col_departure.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -153,7 +162,8 @@ public class CashierScheduleController implements Initializable {
 		col_availableTickets.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
 		col_capacity.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
 		cashierScheduleTable.setItems(getTripSchedule());
-
+		
+		logger.info("Configured table view and populated trips.");
 	}
 
 	private ObservableList<Trip> getTripSchedule() {
@@ -243,6 +253,8 @@ public class CashierScheduleController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Displaying attachment locations for selected trip.");
 	}
 
 	private ObservableList<String> getQuantities() {
@@ -289,6 +301,7 @@ public class CashierScheduleController implements Initializable {
 		quantityChoiceBox.getItems().addAll(this.getQuantities());
 
 		userChoiceBox.getItems().addAll(this.getUsers());
+		logger.info("Loaded locations and potential customers for selected trip.");
 	}
 
 	public void sellTicket(javafx.event.ActionEvent event) throws IOException {
@@ -324,7 +337,7 @@ public class CashierScheduleController implements Initializable {
 			String userName = userChoiceBox.getSelectionModel().getSelectedItem();
 
 			if (!userService.getByName(userName).isPresent()) {
-				System.out.println("USER NOT FOUND IN DATABASE");
+				logger.error("User not found in database.");
 				return;
 			}
 
@@ -346,12 +359,14 @@ public class CashierScheduleController implements Initializable {
 			UserProfileService userProfileService = new UserProfileService();
 			UserProfile userProfile = new UserProfile();
 			userProfileService.save(userProfile);
-
+			
 			Location userLocation = new LocationService()
 					.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).get();
 
 			user = new User(fullName, DatabaseUtils.generateUserName(fullName), DatabaseUtils.generatePassword(),
 					userProfile, DatabaseUtils.USERTYPE_USER, userLocation);
+			
+			logger.info("Guest user successfully created.");
 		}
 
 		Trip trip = cashierScheduleTable.getSelectionModel().getSelectedItem();
@@ -365,16 +380,20 @@ public class CashierScheduleController implements Initializable {
 
 		TripService tripService = new TripService();
 		tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
+		logger.info("Updated tickets availability for trip.");
 
 		TicketService ticketService = new TicketService();
 		Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
 		ticketService.save(ticket);
+		logger.info("Ticket succesfully created.");
 
 		userService.addTicket(user, ticket);
+		logger.info("Inserted into UsersTicket table.");
 
 		// For every 5 purchased tickets, the user gains a rating of 0.2
 		if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
 			new UserProfileService().increaseRating(DatabaseUtils.currentUser.getUserProfile(), 0.2);
+			logger.info("Cashier rating increased by 0.2");
 		}
 
 		User company = userService.getUserByTripId(trip.getTripId()).get();
@@ -390,6 +409,7 @@ public class CashierScheduleController implements Initializable {
 
 		if (ticketsSoldByCompany.size() % 5 == 0) {
 			new UserProfileService().increaseRating(company.getUserProfile(), 0.1);
+			logger.info("Company rating increased by 0.1");
 		}
 
 		informationLabel.setText("You sold a ticket.");
@@ -414,7 +434,9 @@ public class CashierScheduleController implements Initializable {
 		window.setScene(scheduleScene);
 		window.show();
 
+		logger.info("Loaded 'sold tickets' view.");
 	}
+	
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
@@ -424,6 +446,7 @@ public class CashierScheduleController implements Initializable {
 		window.show();
 		
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged off.");
 
 	}
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
@@ -434,5 +457,7 @@ public class CashierScheduleController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Loaded notifications view.");
 	}
 }

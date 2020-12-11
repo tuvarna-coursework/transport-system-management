@@ -23,6 +23,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
@@ -38,6 +42,8 @@ import javafx.util.Callback;
 public class AdminController implements Initializable {
 	ObservableList locationList = FXCollections.observableArrayList();
 	ObservableList searchCriteriaList = FXCollections.observableArrayList();
+	
+	private static final Logger logger = LogManager.getLogger(AdminController.class.getName());
 
 	@FXML
 	private RadioButton distributor;
@@ -92,6 +98,9 @@ public class AdminController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		loadLocation();
 		loadSearchCriteria();
 
@@ -133,6 +142,8 @@ public class AdminController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getUserType().getUserTypeName());
 					}
 				});
+		
+		logger.info("Loaded table, locations and search criteria.");
 	}
 
 	public void loadLocation() {
@@ -201,7 +212,7 @@ public class AdminController implements Initializable {
 			String locationName = companyLocationChoiceBox.getSelectionModel().getSelectedItem().toString();
 
 			if (!locationService.getByName(locationName).isPresent()) {
-				System.out.println("ERROR: Location not present in database.");
+				logger.error("Location not present in database.");
 				return;
 			}
 
@@ -229,6 +240,7 @@ public class AdminController implements Initializable {
 			alert.setContentText(outputString.toString());
 
 			alert.showAndWait();
+			logger.info("Successfully created user and persisted to database.");
 		} else {
 			informationLabel.setText("Please provide a fullname for the user you wish to create.");
 		}
@@ -297,6 +309,8 @@ public class AdminController implements Initializable {
 
 			usersFoundTable.setItems(userList);
 		}
+		
+		logger.info("Search results returned.");
 	}
 
 	public void deleteButtonOnAction(javafx.event.ActionEvent event) throws IOException {
@@ -336,6 +350,7 @@ public class AdminController implements Initializable {
 		window.show();
 		
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged off.");
 	}
 
 	public void goToHonorarium(javafx.event.ActionEvent event) throws IOException {
@@ -346,6 +361,6 @@ public class AdminController implements Initializable {
 		window.setScene(adminScene);
 		window.show();
 
+		logger.info("User profile (rating, honorarium) view loaded.");
 	}
-
 }

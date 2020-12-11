@@ -7,15 +7,22 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Request;
 import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 @SuppressWarnings("unchecked")
 public class RequestDAO implements GenericDAOInterface<Request> {
 	private EntityManager entityManager;
+	private static final Logger logger = LogManager.getLogger(RequestDAO.class.getName());
 
 	public RequestDAO() {
 		entityManager = DatabaseUtils.globalSession.getEntityManagerFactory().createEntityManager();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured and RequestDAO initialized.");
 	}
 
 	/*
@@ -33,8 +40,10 @@ public class RequestDAO implements GenericDAOInterface<Request> {
 			tx.begin();
 			action.accept(entityManager);
 			tx.commit();
+			logger.info("Transaction successfully executed.");
 		} catch (RuntimeException e) {
 			tx.rollback();
+			logger.error("Transaction failed. Rollback occured.");
 			throw e;
 		}
 	}

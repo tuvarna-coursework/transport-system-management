@@ -16,6 +16,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.tuvarna.transportsystem.entities.Notification;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.services.NotificationService;
@@ -36,8 +40,13 @@ public class DistributorNotificationsController implements Initializable {
 	@FXML
 	private Label informationLabel;
 
+	private static final Logger logger = LogManager.getLogger(DistributorNotificationsController.class.getName());
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+
 		notificationId_col.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Notification, String>, ObservableValue<String>>() {
 
@@ -46,7 +55,7 @@ public class DistributorNotificationsController implements Initializable {
 						return new SimpleStringProperty(String.valueOf(param.getValue().getNotificationId()));
 					}
 				});
-		
+
 		company_col.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Notification, String>, ObservableValue<String>>() {
 
@@ -55,7 +64,7 @@ public class DistributorNotificationsController implements Initializable {
 						return new SimpleStringProperty(param.getValue().getSender().getUserFullName());
 					}
 				});
-		
+
 		message_col.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Notification, String>, ObservableValue<String>>() {
 
@@ -64,16 +73,17 @@ public class DistributorNotificationsController implements Initializable {
 						return new SimpleStringProperty(String.valueOf(param.getValue().getMessage()));
 					}
 				});
-		
+
 		notificationTableView.setItems(this.getNotifications());
-		
+		logger.info("Loaded notifications for this distributor.");
 	}
-	
+
 	public ObservableList<Notification> getNotifications() {
 		ObservableList<Notification> notificationList = FXCollections.observableArrayList();
 		NotificationService notificationService = new NotificationService();
 
-		List<Notification> notifications = notificationService.getNotificationsForReceiverId(DatabaseUtils.currentUser.getUserId());
+		List<Notification> notifications = notificationService
+				.getNotificationsForReceiverId(DatabaseUtils.currentUser.getUserId());
 		notificationList.addAll(notifications);
 		return notificationList;
 
@@ -83,5 +93,4 @@ public class DistributorNotificationsController implements Initializable {
 		informationLabel.setText("Select notification!");
 
 	}
-
 }

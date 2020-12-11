@@ -40,6 +40,11 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import javax.persistence.criteria.CriteriaBuilder;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Statement;
@@ -109,14 +114,21 @@ public class CompanyAddController implements Initializable {
 	private ChoiceBox<String> arrivalChoiceBox;
 
 	Route globalRoute;
+	
+	private static final Logger logger = LogManager.getLogger(CompanyAddController.class.getName());
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		// loadRoutes();
 		loadTime();
 		loadRestrictionQuantity();
 		// loadAttachmentLocations();
 		loadLocation();
+		
+		logger.info("Loaded times, purchase restrictions, locations.");
 	}
 
 	public void loadLocation() {
@@ -208,6 +220,8 @@ public class CompanyAddController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		logger.info("Schedule view loaded.");
 	}
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = new Stage();
@@ -217,6 +231,8 @@ public class CompanyAddController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Notifications view loaded.");
 	}
 
 	public void goToRequest(javafx.event.ActionEvent event) throws IOException {
@@ -226,7 +242,8 @@ public class CompanyAddController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-
+		
+		logger.info("Requests view loaded.");
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -238,6 +255,7 @@ public class CompanyAddController implements Initializable {
 		window.show();
 		
 		DatabaseUtils.currentUser = null;
+		logger.info("User logged out.");
 	}
 
 	public void addTrip() throws IOException, ParseException {
@@ -349,18 +367,19 @@ public class CompanyAddController implements Initializable {
 				transportTypeClass, ticketsPerPerson, ticketsAvailability, price, duration, departureTime);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
+		logger.info("Constraint validation passed, persisting new trip to database.");
 
 		/*
 		 * In the UserTrip table a new entry will be added with the logged in user
 		 * (owner in this case) and the newly created trip
 		 */
 		new UserService().addTrip(DatabaseUtils.currentUser, newTrip);
+		logger.info("Inserting to UsersTrip table (Associating transport company to this trip.");
 		
 		/* Distributor gets a notification */
 		NotificationUtils.generateNewTripNotification(newTrip);
 
 		informationLabel.setText("You added new trip!");
-
 	}
 
 	public void addStations(javafx.event.ActionEvent event) throws IOException {
@@ -383,6 +402,7 @@ public class CompanyAddController implements Initializable {
 		Route route = new Route(locationDeparture, locationArrival);
 
 		routeService.save(route);
+		logger.info("New route successfully created.");
 		globalRoute = route;
 
 		try {

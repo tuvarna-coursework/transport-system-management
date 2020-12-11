@@ -62,7 +62,7 @@
             <Font size="18.0" />
          </font></Button>
          
-         <Button fx:id="loadAttachmentRoutes" onAction="#loadFields" layoutX="552.0" layoutY="407.4" mnemonicParsing="false" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Select" textFill="WHITE">
+         <Button fx:id="loadAttachmentRoutes" layoutX="552.0" layoutY="407.4" mnemonicParsing="false" onAction="#loadFields" style="-fx-background-color: #3498DB; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="Select" textFill="WHITE">
         <font>
             <Font size="18.0" />
          </font></Button>
@@ -106,5 +106,6 @@
             <Font name="System Bold" size="40.0" />
          </font>
       </Label>
+      <Button layoutX="842.0" layoutY="32.0" mnemonicParsing="false" onAction="#showAttachments" prefHeight="34.0" prefWidth="90.0" style="-fx-background-color: #34495E; -fx-background-radius: 30; -fx-border-color: #FFFFFF; -fx-border-radius: 30;" text="View Stations" textFill="WHITE" />
     </children>
 </AnchorPane>

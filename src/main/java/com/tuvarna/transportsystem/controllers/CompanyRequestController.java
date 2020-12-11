@@ -29,6 +29,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 public class CompanyRequestController implements Initializable {
 	@FXML
 	private TableView<Request> requestCompanyTable;
@@ -50,9 +54,15 @@ public class CompanyRequestController implements Initializable {
 	private TableColumn<Request, String> status_col;
 	@FXML
 	private Label informationLabel;
+	
+	
+	private static final Logger logger = LogManager.getLogger(CompanyRequestController.class.getName());
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
+		logger.info("Log4J successfully configured.");
+		
 		departure_col.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Request, String>, ObservableValue<String>>() {
 
@@ -110,6 +120,8 @@ public class CompanyRequestController implements Initializable {
 		requested_col.setCellValueFactory(new PropertyValueFactory<Request, Integer>("ticketsQuantity"));
 		requestId_col.setCellValueFactory(new PropertyValueFactory<Request, Integer>("requestId"));
 		requestCompanyTable.setItems(getRequests());
+		
+		logger.info("Successfully loaded table structure and populated available requests.");
 	}
 
 	public ObservableList<Request> getRequests() {
@@ -131,6 +143,8 @@ public class CompanyRequestController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		logger.info("Switched to schedule tab.");
 	}
 
 	public void goToAddTrip(javafx.event.ActionEvent event) throws IOException {
@@ -140,6 +154,8 @@ public class CompanyRequestController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
+		
+		logger.info("Switched to add trip tab.");
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -151,6 +167,7 @@ public class CompanyRequestController implements Initializable {
 		window.show();
 		
 		DatabaseUtils.currentUser = null;
+		logger.info("User successfully logged out.");
 	}
 	
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
@@ -161,6 +178,8 @@ public class CompanyRequestController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
+		
+		logger.info("Switched to notifications tab.");
 	}
 
 	public void acceptRequest(javafx.event.ActionEvent event) throws IOException {
@@ -188,9 +207,11 @@ public class CompanyRequestController implements Initializable {
 		Trip trip = request.getTrip();
 		TripService tripService = new TripService();
 		tripService.updateTripTicketAvailability(trip, newTickets);
+		logger.info("Request accepted: updating tickets availability for the trip.");
 
 		RequestService requestService = new RequestService();
 		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSACCEPTED);
+		logger.info("Request was accepted.");
 
 		// refresh table
 		requestCompanyTable.setItems(getRequests());
@@ -217,9 +238,11 @@ public class CompanyRequestController implements Initializable {
 
 		RequestService requestService = new RequestService();
 		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSREJECTED);
+		logger.info("Request status updated: REJECTED");
 
 		// refresh table
 		requestCompanyTable.setItems(getRequests());
 		informationLabel.setText("Request was rejected!");
+		logger.info("Table refreshed. Request rejected.");
 	}
 }
