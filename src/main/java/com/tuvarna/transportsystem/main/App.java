@@ -1,3 +1,4 @@
+package com.tuvarna.transportsystem.main;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.User;
 import com.tuvarna.transportsystem.entities.UserProfile;
