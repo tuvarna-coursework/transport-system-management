@@ -173,7 +173,7 @@ public class UserScheduleController implements Initializable {
 	}
 
 	public void logOut(javafx.event.ActionEvent event) throws IOException {
-		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Parent ticketPanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene ticketScene = new Scene(ticketPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();

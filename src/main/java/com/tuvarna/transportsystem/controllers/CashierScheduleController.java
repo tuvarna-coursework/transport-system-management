@@ -344,7 +344,7 @@ public class CashierScheduleController implements Initializable {
 			user = userService.getByName(userName).get();
 
 		} else if (customerIsGuest.isSelected()) {
-			if (userFullNameTextField.getText().equals(null)) {
+			if (userFullNameTextField.getText().isEmpty()) {
 				informationLabel.setText("Please enter the name of the customer.");
 				return;
 			}
@@ -438,7 +438,7 @@ public class CashierScheduleController implements Initializable {
 	}
 	
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();

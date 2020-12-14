@@ -247,7 +247,7 @@ public class CompanyAddController implements Initializable {
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
-		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene adminScene = new Scene(userPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -304,6 +304,21 @@ public class CompanyAddController implements Initializable {
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
 			informationLabel.setText("Invalid interval!");
+			return;
+		}
+		
+		if (departureChoiceBox.getValue() == null) {
+			informationLabel.setText("Invalid departure location!");
+			return;
+		}
+		
+		if (arrivalChoiceBox.getValue() == null) {
+			informationLabel.setText("Invalid arrival location!");
+			return;
+		}
+		
+		if (departureChoiceBox.getValue().equals(arrivalChoiceBox.getValue())) {
+			informationLabel.setText("Departure and arrival locations cannot match.");
 			return;
 		}
 

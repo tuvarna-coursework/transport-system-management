@@ -151,7 +151,7 @@ public class CashierSoldController implements Initializable {
 	}
 
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
-		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();

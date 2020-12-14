@@ -125,7 +125,7 @@ public class DistributorRequestController implements Initializable {
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
-		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene adminScene = new Scene(userPanel);
 
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
