@@ -394,6 +394,8 @@ public class UserPanelController implements Initializable {
 		list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
 				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22,
 				time_23, time_24, time_25);
+		
+		timeChoiceBox.getItems().addAll(list);
 	}
 
 	public void loadDepartureArrivalLocation() {

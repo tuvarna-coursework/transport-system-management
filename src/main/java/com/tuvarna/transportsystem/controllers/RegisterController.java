@@ -50,6 +50,7 @@ public class RegisterController implements Initializable {
 	private Label informationLabel;
 
 	private static final Logger logger = LogManager.getLogger(RegisterController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -57,6 +58,7 @@ public class RegisterController implements Initializable {
 		logger.info("Log4J successfully configured.");
 
 		loadLocation();
+		userService = new UserService();
 	}
 
 	public void backToLogIn(javafx.event.ActionEvent event) throws IOException {
@@ -71,47 +73,20 @@ public class RegisterController implements Initializable {
 	}
 
 	public void registerButton(javafx.event.ActionEvent event) throws IOException {
-		String fullname = fullnameTextField.getText();
-		String username = usernameTextField.getText();
-		String password = passwordTextField.getText();
-		String userlocation = locationChoiceBox.getValue();
+		String constraintValidationResult = userService.validateRegistration(fullnameTextField.getText(),
+				usernameTextField.getText(), passwordTextField.getText(),
+				locationChoiceBox.getSelectionModel().getSelectedItem());
 
-		if (fullname.trim().length() > 40 || fullname.trim().length() < 5) {
-			informationLabel.setText("Invalid fullname. Name must be between 5 and 40 characters.");
+		String result = userService.processRegistration(constraintValidationResult, fullnameTextField.getText(),
+				usernameTextField.getText(), passwordTextField.getText(),
+				locationChoiceBox.getSelectionModel().getSelectedItem());
+
+		// if the result is not the user panel view then there is a constraint failure
+		// and it needs to be delievered to the user
+		if (!result.equals("/views/UserPanel.fxml")) {
+			informationLabel.setText(result);
 			return;
 		}
-
-		if ((!Pattern.matches("^\\w+$", username)) || username.length() < 4 || username.length() > 20) {
-			informationLabel.setText("Invalid username. No spaces, special characters. Length: 4 - 20 characters.");
-			return;
-		}
-
-		if (password.length() < 5 || password.length() > 20) {
-			informationLabel.setText("Invalid password. Length: 5 - 20 characters.");
-			return;
-		}
-
-		LocationService locationService = new LocationService();
-
-		if (!locationService.getByName(userlocation).isPresent()) {
-			logger.error("Location not present in database.");
-			return;
-		}
-
-		Location location = locationService.getByName(userlocation).get();
-
-		UserProfile profile = new UserProfile(0.0, 0.0);
-		new UserProfileService().save(profile);
-		UserType type = DatabaseUtils.USERTYPE_USER;
-		UserService userService = new UserService();
-		User user = new User(fullname, username, password, profile, type, location);
-		userService.save(user);
-		logger.info("Successfully persisted user to database.");
-
-		userService.addRole(user, DatabaseUtils.ROLE_USER);
-		logger.info("Assigned role user.");
-		
-		DatabaseUtils.currentUser = user;
 
 		Parent userPanel = FXMLLoader.load(getClass().getResource("/views/UserPanel.fxml"));
 		Scene adminScene = new Scene(userPanel);
