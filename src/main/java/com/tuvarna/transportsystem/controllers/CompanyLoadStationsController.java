@@ -9,10 +9,10 @@ import com.tuvarna.transportsystem.services.UserService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,11 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class CompanyLoadStationsController implements Initializable {
 
@@ -96,8 +100,22 @@ public class CompanyLoadStationsController implements Initializable {
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
-		loadLocation();
 		loadTime();
+		/*
+		Loading all choice boxes with locations from database.
+		 */
+		stationOneChoiceBox.setItems(getLocation());
+		stationTwoChoiceBox.setItems(getLocation());
+		stationThreeChoiceBox.setItems(getLocation());
+		stationFourChoiceBox.setItems(getLocation());
+		stationFiveChoiceBox.setItems(getLocation());
+		stationSixChoiceBox.setItems(getLocation());
+		stationSevenChoiceBox.setItems(getLocation());
+		stationEightChoiceBox.setItems(getLocation());
+		stationNineChoiceBox.setItems(getLocation());
+		stationTenChoiceBox.setItems(getLocation());
+		stationElevenChoiceBox.setItems(getLocation());
+		stationTwelveChoiceBox.setItems(getLocation());
 	}
 
 	ObservableList list = FXCollections.observableArrayList();
@@ -148,45 +166,18 @@ public class CompanyLoadStationsController implements Initializable {
 
 	}
 
-	public void loadLocation() {
-		list.removeAll(list);
-		String city_01 = "Varna";
-		String city_02 = "Sofia";
-		String city_03 = "Shumen";
-		String city_04 = "Veliko Turnovo";
-		String city_05 = "Razgrad";
-		String city_06 = "Gabrovo";
-		String city_07 = "Plovdiv";
-		String city_08 = "Burgas";
-		String city_09 = "Stara Zagora";
-		String city_10 = "Blagoevgrad";
-		String city_11 = "Sliven";
-		String city_12 = "Pleven";
-		String city_13 = "Omurtag";
-		String city_14 = "Ruse";
-		String city_15 = "Dobrich";
-		String city_16 = "Montana";
-		String city_17 = "Vraca";
-		String city_18 = "Yambol";
-		String city_19 = "Pernik";
-		String city_20 = "Lovech";
-		String city_21 = "Turgovishte";
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
-		stationOneChoiceBox.getItems().addAll(list);
-		stationTwoChoiceBox.getItems().addAll(list);
-		stationThreeChoiceBox.getItems().addAll(list);
-		stationFourChoiceBox.getItems().addAll(list);
-		stationFiveChoiceBox.getItems().addAll(list);
-		stationSixChoiceBox.getItems().addAll(list);
-		stationSevenChoiceBox.getItems().addAll(list);
-		stationEightChoiceBox.getItems().addAll(list);
-		stationNineChoiceBox.getItems().addAll(list);
-		stationTenChoiceBox.getItems().addAll(list);
-		stationElevenChoiceBox.getItems().addAll(list);
-		stationTwelveChoiceBox.getItems().addAll(list);
+	private ObservableList<String> getLocation() {
+		ObservableList<String> locationList = FXCollections.observableArrayList();
+		LocationService locationService = new LocationService();
+		/*
+		 * Loading locations from data base.
+		 */
+		List<Location> eList = locationService.getAll();
+		for (Location ent : eList) {
+			locationList.add(ent.getLocationName());
+		}
+		return locationList;
 	}
-
 	public void getRouteLocations(String arrivalLoc, String departureLoc, Route routeCreated) {
 		arrival = arrivalLoc;
 		departure = departureLoc;
