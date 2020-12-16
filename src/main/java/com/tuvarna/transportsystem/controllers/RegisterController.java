@@ -1,16 +1,8 @@
 package com.tuvarna.transportsystem.controllers;
 
 import com.tuvarna.transportsystem.entities.Location;
-import com.tuvarna.transportsystem.entities.User;
-import com.tuvarna.transportsystem.entities.UserProfile;
-import com.tuvarna.transportsystem.entities.UserType;
 import com.tuvarna.transportsystem.services.LocationService;
-import com.tuvarna.transportsystem.services.UserProfileService;
 import com.tuvarna.transportsystem.services.UserService;
-import com.tuvarna.transportsystem.services.UserTypeService;
-import com.tuvarna.transportsystem.utils.DatabaseUtils;
-
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,15 +16,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class RegisterController implements Initializable {
 
@@ -57,7 +48,7 @@ public class RegisterController implements Initializable {
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
-		loadLocation();
+		locationChoiceBox.setItems(getLocation());
 		userService = new UserService();
 	}
 
@@ -98,31 +89,17 @@ public class RegisterController implements Initializable {
 		logger.info("Registration successful, login successful.");
 	}
 
-	public void loadLocation() {
-		list.removeAll(list);
-		String city_01 = "Varna";
-		String city_02 = "Sofia";
-		String city_03 = "Shumen";
-		String city_04 = "Veliko Turnovo";
-		String city_05 = "Razgrad";
-		String city_06 = "Gabrovo";
-		String city_07 = "Plovdiv";
-		String city_08 = "Burgas";
-		String city_09 = "Stara Zagora";
-		String city_10 = "Blagoevgrad";
-		String city_11 = "Sliven";
-		String city_12 = "Pleven";
-		String city_13 = "Omurtag";
-		String city_14 = "Ruse";
-		String city_15 = "Dobrich";
-		String city_16 = "Montana";
-		String city_17 = "Vraca";
-		String city_18 = "Yambol";
-		String city_19 = "Pernik";
-		String city_20 = "Lovech";
-		String city_21 = "Turgovishte";
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
-		locationChoiceBox.getItems().addAll(list);
+	private ObservableList<String> getLocation() {
+		ObservableList<String> locationList = FXCollections.observableArrayList();
+		LocationService locationService = new LocationService();
+		/*
+		 * Loading locations from data base.
+		 */
+		List<Location> eList = locationService.getAll();
+		for (Location ent : eList) {
+			locationList.add(ent.getLocationName());
+
+		}
+		return locationList;
 	}
 }

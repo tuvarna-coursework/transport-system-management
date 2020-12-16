@@ -1,5 +1,10 @@
 package com.tuvarna.transportsystem.controllers;
 
+import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Ticket;
+import com.tuvarna.transportsystem.entities.Trip;
+import com.tuvarna.transportsystem.services.*;
+import com.tuvarna.transportsystem.utils.DatabaseUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -10,16 +15,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,20 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
-import com.tuvarna.transportsystem.entities.Location;
-import com.tuvarna.transportsystem.entities.Ticket;
-import com.tuvarna.transportsystem.entities.Trip;
-import com.tuvarna.transportsystem.services.LocationService;
-import com.tuvarna.transportsystem.services.RouteService;
-import com.tuvarna.transportsystem.services.TicketService;
-import com.tuvarna.transportsystem.services.TripService;
-import com.tuvarna.transportsystem.services.UserService;
-import com.tuvarna.transportsystem.utils.DatabaseUtils;
 
 public class UserPanelController implements Initializable {
 	ObservableList list = FXCollections.observableArrayList();
@@ -114,7 +102,8 @@ public class UserPanelController implements Initializable {
 
 		loadquantity();
 		loadTime();
-		loadDepartureArrivalLocation();
+		departureChoiceBox.setItems(getLocation());
+		arrivalChoiceBox.setItems(getLocation());
 
 		dateCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
@@ -398,37 +387,19 @@ public class UserPanelController implements Initializable {
 		timeChoiceBox.getItems().addAll(list);
 	}
 
-	public void loadDepartureArrivalLocation() {
-		list.removeAll(list);
-		String city_01 = "Varna";
-		String city_02 = "Sofia";
-		String city_03 = "Shumen";
-		String city_04 = "Veliko Turnovo";
-		String city_05 = "Razgrad";
-		String city_06 = "Gabrovo";
-		String city_07 = "Plovdiv";
-		String city_08 = "Burgas";
-		String city_09 = "Stara Zagora";
-		String city_10 = "Blagoevgrad";
-		String city_11 = "Sliven";
-		String city_12 = "Pleven";
-		String city_13 = "Omurtag";
-		String city_14 = "Ruse";
-		String city_15 = "Dobrich";
-		String city_16 = "Montana";
-		String city_17 = "Vraca";
-		String city_18 = "Yambol";
-		String city_19 = "Pernik";
-		String city_20 = "Lovech";
-		String city_21 = "Turgovishte";
+	private ObservableList<String> getLocation() {
+		ObservableList<String> locationList = FXCollections.observableArrayList();
+		LocationService locationService = new LocationService();
+		/*
+		 * Loading locations from data base.
+		 */
+		List<Location> eList = locationService.getAll();
+		for (Location ent : eList) {
+			locationList.add(ent.getLocationName());
 
-		list.addAll(city_01, city_02, city_03, city_04, city_05, city_06, city_07, city_08, city_09, city_10, city_11,
-				city_12, city_13, city_14, city_15, city_16, city_17, city_18, city_19, city_20, city_21);
-		departureChoiceBox.getItems().addAll(list);
-		arrivalChoiceBox.getItems().addAll(list);
-
+		}
+		return locationList;
 	}
-
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/SchedulePanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
