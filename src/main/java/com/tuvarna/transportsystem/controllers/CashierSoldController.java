@@ -134,20 +134,7 @@ public class CashierSoldController implements Initializable {
 	}
 
 	private ObservableList<Ticket> getTicketsSold() {
-		ObservableList<Ticket> ticketList = FXCollections.observableArrayList();
-
-		TicketService ticketService = new TicketService();
-
-		List<Ticket> allTickets = ticketService.getAll();
-
-		for (Ticket ticket : allTickets) {
-			if (ticket.getTrip().getCashiers().contains(DatabaseUtils.currentUser)) {
-				ticketList.add(ticket);
-			}
-		}
-
-		return ticketList;
-
+		return new UserService().cashierGetTicketsSold(DatabaseUtils.currentUser);
 	}
 
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {

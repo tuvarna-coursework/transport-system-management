@@ -97,14 +97,16 @@ public class CashierScheduleController implements Initializable {
 	private Label informationLabel;
 
 	boolean isInitialized = false;
-	
+
 	private static final Logger logger = LogManager.getLogger(CashierScheduleController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
-		
+
 		col_departure.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Trip, String>, ObservableValue<String>>() {
 
@@ -161,83 +163,37 @@ public class CashierScheduleController implements Initializable {
 		col_price.setCellValueFactory(new PropertyValueFactory<Trip, Double>("tripTicketPrice"));
 		col_availableTickets.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripTicketAvailability"));
 		col_capacity.setCellValueFactory(new PropertyValueFactory<Trip, Integer>("tripCapacity"));
-		cashierScheduleTable.setItems(getTripSchedule());
-		
+		cashierScheduleTable.setItems(userService.getScheduleForCashier(DatabaseUtils.currentUser));
+
 		logger.info("Configured table view and populated trips.");
 	}
 
-	private ObservableList<Trip> getTripSchedule() {
-		ObservableList<Trip> tripList = FXCollections.observableArrayList();
-		TripService tripService = new TripService();
+	private void loadDepartureLocations() {
+		ObservableList<String> locations = userService.getDepLocationsForCashierBySelectedRow(DatabaseUtils.currentUser,
+				cashierScheduleTable.getSelectionModel().getSelectedItem());
 
-		/*
-		 * Cashier accesses trips if they are the cashier assigned for it (exists in
-		 * TripCashier table)
-		 */
-		List<Trip> eList = tripService.getAll();
-		for (Trip ent : eList) {
-			if (ent.getCashiers().contains(DatabaseUtils.currentUser)) {
-				tripList.add(ent);
-			}
-		}
-		return tripList;
-
-	}
-
-	private ObservableList<String> getDepartureLocations() {
-
-		if (cashierScheduleTable.getSelectionModel().getSelectedItem().equals(null)) {
-			informationLabel.setText("No route selected.");
-			return null;
+		if (locations.get(0).equals("No route selected.")) {
+			informationLabel.setText(locations.get(0));
+			return;
 		}
 
-		Trip trip = cashierScheduleTable.getSelectionModel().getSelectedItem();
-		int routeId = trip.getRoute().getRouteId();
-
-		RouteService routeService = new RouteService();
-
-		/*
-		 * A cashier can sell a ticket departuring from the location they work in.
-		 * That's why we filter it. Most likely it will return 1 result
-		 */
-
-		/*
-		 * DEBUG, correct code is below List<Location> departureLocation =
-		 * routeService.getAttachmentLocationsInRouteById(routeId);
-		 */
-		List<Location> departureLocation = routeService.getAttachmentLocationsInRouteById(routeId).stream()
-				.filter(l -> l.getLocationName().equals(DatabaseUtils.currentUser.getUserLocation().getLocationName()))
-				.collect(Collectors.toList());
-
-		ObservableList<String> locationList = FXCollections.observableArrayList();
-		departureLocation.forEach(l -> locationList.add(l.getLocationName()));
-
-		return locationList;
+		departureChoiceBox.getItems().addAll(locations);
 	}
 
-	private ObservableList<String> getArrivalLocations() {
-		Trip trip = cashierScheduleTable.getSelectionModel().getSelectedItem();
-		int routeId = trip.getRoute().getRouteId();
+	private void loadArrivalLocations() {
+		ObservableList<String> locations = userService.getArrLocationsForCashierBySelectedRow(DatabaseUtils.currentUser,
+				cashierScheduleTable.getSelectionModel().getSelectedItem());
 
-		RouteService routeService = new RouteService();
+		if (locations.get(0).equals("No route selected.")) {
+			informationLabel.setText(locations.get(0));
+			return;
+		}
 
-		/*
-		 * The arrival location cannot be the same as the current location of the
-		 * cashier, so fetch everything else
-		 */
-		List<Location> departureLocation = routeService.getAttachmentLocationsInRouteById(routeId).stream().filter(
-				l -> !(l.getLocationName().equals(DatabaseUtils.currentUser.getUserLocation().getLocationName())))
-				.collect(Collectors.toList());
-		
-		departureLocation.add(trip.getRoute().getRouteArrivalLocation());
-
-		ObservableList<String> locationList = FXCollections.observableArrayList();
-		departureLocation.forEach(l -> locationList.add(l.getLocationName()));
-
-		return locationList;
+		arrivalChoiceBox.getItems().addAll(locations);
 	}
+
 	public void showAttachments(javafx.event.ActionEvent event) throws IOException {
-		if(cashierScheduleTable.getSelectionModel().getSelectedItem() == null){
+		if (cashierScheduleTable.getSelectionModel().getSelectedItem() == null) {
 			informationLabel.setText("Select trip first!");
 			return;
 		}
@@ -245,15 +201,16 @@ public class CashierScheduleController implements Initializable {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CashierShowRouteAttachments.fxml"));
 		DialogPane root = (DialogPane) userPanel.load();
-		//send trip to other controller
-		CashierShowRouteAttachmentsController controller = (CashierShowRouteAttachmentsController) userPanel.getController();
+		// send trip to other controller
+		CashierShowRouteAttachmentsController controller = (CashierShowRouteAttachmentsController) userPanel
+				.getController();
 		controller.getTrip(tripSend);
 
 		Scene adminScene = new Scene(root);
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
-		
+
 		logger.info("Displaying attachment locations for selected trip.");
 	}
 
@@ -278,7 +235,6 @@ public class CashierScheduleController implements Initializable {
 	}
 
 	private ObservableList<String> getUsers() {
-		UserService userService = new UserService();
 		ObservableList<String> list = FXCollections.observableArrayList();
 
 		userService.getAll().forEach(u -> list.add(u.getUserLoginName()));
@@ -286,132 +242,33 @@ public class CashierScheduleController implements Initializable {
 	}
 
 	public void loadFields(javafx.event.ActionEvent event) throws IOException {
-		if (cashierScheduleTable.getSelectionModel().getSelectedItem() == null) {
-			informationLabel.setText("No route selected.");
-			return;
-		}
-
 		departureChoiceBox.getItems().removeAll(departureChoiceBox.getItems());
 		arrivalChoiceBox.getItems().removeAll(arrivalChoiceBox.getItems());
 		quantityChoiceBox.getItems().removeAll(quantityChoiceBox.getItems());
 		userChoiceBox.getItems().removeAll(userChoiceBox.getItems());
 
-		departureChoiceBox.getItems().addAll(this.getDepartureLocations());
-		arrivalChoiceBox.getItems().addAll(this.getArrivalLocations());
-		quantityChoiceBox.getItems().addAll(this.getQuantities());
+		loadDepartureLocations();
+		loadArrivalLocations();
 
+		quantityChoiceBox.getItems().addAll(this.getQuantities());
 		userChoiceBox.getItems().addAll(this.getUsers());
 		logger.info("Loaded locations and potential customers for selected trip.");
 	}
 
 	public void sellTicket(javafx.event.ActionEvent event) throws IOException {
-		if (departureChoiceBox.getValue() == null) {
-			informationLabel.setText("Please select a departure location.");
+		String result = userService.cashierSellTicketProcessing(
+				cashierScheduleTable.getSelectionModel().getSelectedItem(),
+				departureChoiceBox.getSelectionModel().getSelectedItem(),
+				arrivalChoiceBox.getSelectionModel().getSelectedItem(),
+				quantityChoiceBox.getSelectionModel().getSelectedItem(), customerIsGuest.isSelected(),
+				customerIsRegistered.isSelected(), userChoiceBox.getSelectionModel().getSelectedItem(),
+				userFullNameTextField.getText());
+		
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
 			return;
 		}
 		
-		if (arrivalChoiceBox.getValue() == null) {
-			informationLabel.setText("Please select an arrival location.");
-			return;
-		}
-		
-		if (quantityChoiceBox.getValue() == null){
-			informationLabel.setText("Please select ticket quantity.");
-			return;
-		}
-		
-		if (!customerIsGuest.isSelected() && (!customerIsRegistered.isSelected())) {
-			informationLabel.setText("Please select if the customer is a guest or is registered.");
-			return;
-		}
-
-		UserService userService = new UserService();
-		User user = null;
-
-		if (customerIsRegistered.isSelected()) {
-			if (userChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
-				informationLabel.setText("Please select a customer from the dropdown menu.");
-				return;
-			}
-
-			String userName = userChoiceBox.getSelectionModel().getSelectedItem();
-
-			if (!userService.getByName(userName).isPresent()) {
-				logger.error("User not found in database.");
-				return;
-			}
-
-			user = userService.getByName(userName).get();
-
-		} else if (customerIsGuest.isSelected()) {
-			if (userFullNameTextField.getText().isEmpty()) {
-				informationLabel.setText("Please enter the name of the customer.");
-				return;
-			}
-
-			/*
-			 * If the user is a guest, a new profile will be created. Generated username and
-			 * password, the location is the location from where the ticket is bought
-			 */
-
-			String fullName = userFullNameTextField.getText().trim();
-
-			UserProfileService userProfileService = new UserProfileService();
-			UserProfile userProfile = new UserProfile();
-			userProfileService.save(userProfile);
-			
-			Location userLocation = new LocationService()
-					.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).get();
-
-			user = new User(fullName, DatabaseUtils.generateUserName(fullName), DatabaseUtils.generatePassword(),
-					userProfile, DatabaseUtils.USERTYPE_USER, userLocation);
-			
-			logger.info("Guest user successfully created.");
-		}
-
-		Trip trip = cashierScheduleTable.getSelectionModel().getSelectedItem();
-		int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem());
-
-		LocationService locationService = new LocationService();
-		Location departureLocation = locationService.getByName(departureChoiceBox.getSelectionModel().getSelectedItem())
-				.get();
-		Location arrivalLocation = locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem())
-				.get();
-
-		TripService tripService = new TripService();
-		tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
-		logger.info("Updated tickets availability for trip.");
-
-		TicketService ticketService = new TicketService();
-		Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
-		ticketService.save(ticket);
-		logger.info("Ticket succesfully created.");
-
-		userService.addTicket(user, ticket);
-		logger.info("Inserted into UsersTicket table.");
-
-		// For every 5 purchased tickets, the user gains a rating of 0.2
-		if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
-			new UserProfileService().increaseRating(DatabaseUtils.currentUser.getUserProfile(), 0.2);
-			logger.info("Cashier rating increased by 0.2");
-		}
-
-		User company = userService.getUserByTripId(trip.getTripId()).get();
-
-		/*
-		 * Iterate through the tickets, check if the trip they belong to matches the
-		 * user id of this company's id. Basically, get all tickets sold by this
-		 * company.
-		 */
-		List<Ticket> ticketsSoldByCompany = ticketService.getAll().stream().filter(
-				t -> userService.getUserByTripId(t.getTrip().getTripId()).get().getUserId() == company.getUserId())
-				.collect(Collectors.toList());
-
-		if (ticketsSoldByCompany.size() % 5 == 0) {
-			new UserProfileService().increaseRating(company.getUserProfile(), 0.1);
-			logger.info("Company rating increased by 0.1");
-		}
-
 		informationLabel.setText("You sold a ticket.");
 	}
 
@@ -425,7 +282,6 @@ public class CashierScheduleController implements Initializable {
 		}
 	}
 
-
 	public void goToSoldTickets(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/CashierSoldPanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
@@ -436,7 +292,7 @@ public class CashierScheduleController implements Initializable {
 
 		logger.info("Loaded 'sold tickets' view.");
 	}
-	
+
 	public void goToLogIn(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
@@ -444,11 +300,12 @@ public class CashierScheduleController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(scheduleScene);
 		window.show();
-		
+
 		DatabaseUtils.currentUser = null;
 		logger.info("User logged off.");
 
 	}
+
 	public void goToNotifications(javafx.event.ActionEvent event) throws IOException {
 		Stage stage = new Stage();
 		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CashierNotificationsPanel.fxml"));
@@ -457,7 +314,7 @@ public class CashierScheduleController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
-		
+
 		logger.info("Loaded notifications view.");
 	}
 }

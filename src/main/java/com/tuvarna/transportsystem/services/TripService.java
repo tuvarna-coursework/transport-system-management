@@ -4,12 +4,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.tuvarna.transportsystem.controllers.CompanyLoadStationsController;
 import com.tuvarna.transportsystem.dao.TransportTypeDAO;
 import com.tuvarna.transportsystem.dao.TripDAO;
 import com.tuvarna.transportsystem.dao.TripTypeDAO;
+import com.tuvarna.transportsystem.entities.Location;
+import com.tuvarna.transportsystem.entities.Route;
 import com.tuvarna.transportsystem.entities.TransportType;
 import com.tuvarna.transportsystem.entities.Trip;
 import com.tuvarna.transportsystem.entities.User;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.DialogPane;
+import javafx.stage.Stage;
 
 public class TripService implements CrudService<Trip> {
 	private TripDAO tripDAO;

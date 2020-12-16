@@ -225,7 +225,6 @@ public class AdminController implements Initializable {
 
 	public void deleteButtonOnAction(javafx.event.ActionEvent event) throws IOException {		
 		User userForDeletion = usersFoundTable.getSelectionModel().getSelectedItem();
-		
 		String result = userService.adminDeleteProcessing(usersFoundTable.getSelectionModel().getSelectedItem());
 		
 		informationLabel.setText(result); // success or error could be the outcome, both printed
