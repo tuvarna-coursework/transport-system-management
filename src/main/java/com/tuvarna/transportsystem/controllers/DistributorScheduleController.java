@@ -70,9 +70,11 @@ public class DistributorScheduleController implements Initializable {
 	ObservableList list = FXCollections.observableArrayList();
 
 	private static final Logger logger = LogManager.getLogger(DistributorScheduleController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
@@ -213,23 +215,12 @@ public class DistributorScheduleController implements Initializable {
 	}
 
 	public void showStations(javafx.event.ActionEvent event) throws IOException {
-		if (scheduleTable.getSelectionModel().getSelectedItem() == null) {
-			informationLabel.setText("Select trip first!");
-			return;
-		}
-		Trip tripSend = scheduleTable.getSelectionModel().getSelectedItem();
-		Stage stage = new Stage();
-		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorShowRouteAttachments.fxml"));
-		DialogPane root = (DialogPane) userPanel.load();
-		// send trip to other controller
-		DistributorShowRouteAttachmentsController controller = (DistributorShowRouteAttachmentsController) userPanel
-				.getController();
-		controller.getTrip(tripSend);
+		String result = userService
+				.distributorScheduleLoadAttachments(scheduleTable.getSelectionModel().getSelectedItem());
 
-		Scene adminScene = new Scene(root);
-		stage.setScene(adminScene);
-		stage.setTitle("Transport Company");
-		stage.showAndWait();
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
+		}
 	}
 
 	public ObservableList<String> getCashiers() {
@@ -248,73 +239,16 @@ public class DistributorScheduleController implements Initializable {
 	}
 
 	public void assignCashier() {
-		Trip trip = scheduleTable.getSelectionModel().getSelectedItem();
-		if (trip == null) {
-			informationLabel.setText("Please select trip!");
+		String result = userService.distributorAssignCashierProcessing(
+				scheduleTable.getSelectionModel().getSelectedItem(),
+				locationChoiceBox.getSelectionModel().getSelectedItem(),
+				cashierComboBox.getSelectionModel().getSelectedItem());
+
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
 			return;
 		}
 
-		if (locationChoiceBox.getSelectionModel().getSelectedIndex() < 0) {
-			informationLabel.setText("Please select location!");
-			return;
-		}
-		if (cashierComboBox.getSelectionModel().getSelectedIndex() < 0) {
-			informationLabel.setText("Please select cashier!");
-			return;
-		}
-
-		TripService tripService = new TripService();
-		RouteService routeService = new RouteService();
-
-		String selectedCashier = cashierComboBox.getSelectionModel().getSelectedItem().toString().split("\\(")[0];
-
-		User cashier = new UserService().getByName(selectedCashier).get();
-
-		/*
-		 * A cashier can only be assigned for a location which exists in the trip route
-		 * and is the location the user is registered with
-		 */
-
-		List<Location> attachments = routeService.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
-
-		boolean tripAttachmentLocationsContainsUserLocation = attachments.contains(cashier.getUserLocation());
-		boolean tripEndPointsContainsUserLocation = trip.getRoute().getRouteDepartureLocation().getLocationName()
-				.equals(cashier.getUserLocation().getLocationName())
-				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
-						.equals(cashier.getUserLocation().getLocationName());
-
-		Location locationSelected = new LocationService()
-				.getByName(locationChoiceBox.getSelectionModel().getSelectedItem()).get();
-
-		/*
-		 * Since the locations are not prepopulated with valid ones only, we check if
-		 * the selected location is a valid attachment location or a valid end point
-		 */
-
-		boolean selectedLocationIsValidAttachment = attachments.contains(locationSelected);
-		boolean selectedLocationIsValidEndPoint = trip.getRoute().getRouteDepartureLocation().getLocationName()
-				.equals(locationSelected.getLocationName())
-				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
-						.equals(locationSelected.getLocationName());
-
-		if (tripAttachmentLocationsContainsUserLocation || tripEndPointsContainsUserLocation) {
-			if (!(selectedLocationIsValidAttachment || selectedLocationIsValidEndPoint)) {
-				informationLabel.setText("Selected location is unrelated to this trip.");
-				return;
-			}
-
-			if (trip.getCashiers().contains(cashier)) {
-				informationLabel.setText("Selected user is already assigned for this trip.");
-				return;
-			}
-
-			tripService.addCashierForTrip(trip, cashier);
-			informationLabel.setText("Assigned cashier for the selected location.");
-			logger.info(
-					"Cashier is eligible to be a cashier for this trip. Added in TripsCashier table and assigned for the trip.");
-			return;
-		}
-
-		informationLabel.setText("Selected customer doesn't work in selected location.");
+		informationLabel.setText("Assigned cashier for the selected location.");
 	}
 }

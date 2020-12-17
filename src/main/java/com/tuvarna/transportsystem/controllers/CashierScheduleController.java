@@ -178,6 +178,7 @@ public class CashierScheduleController implements Initializable {
 		}
 
 		departureChoiceBox.getItems().addAll(locations);
+		logger.info("Departure stations loaded.");
 	}
 
 	private void loadArrivalLocations() {
@@ -190,6 +191,7 @@ public class CashierScheduleController implements Initializable {
 		}
 
 		arrivalChoiceBox.getItems().addAll(locations);
+		logger.info("Arrival stations loaded.");
 	}
 
 	public void showAttachments(javafx.event.ActionEvent event) throws IOException {
@@ -270,6 +272,7 @@ public class CashierScheduleController implements Initializable {
 		}
 		
 		informationLabel.setText("You sold a ticket.");
+		logger.info("Successfully sold ticket.");
 	}
 
 	public void radioButtonOnClick(javafx.event.ActionEvent event) throws IOException {

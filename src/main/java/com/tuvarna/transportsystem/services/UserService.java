@@ -1,5 +1,6 @@
 package com.tuvarna.transportsystem.services;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,9 +11,15 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.tuvarna.transportsystem.controllers.AdminController;
 import com.tuvarna.transportsystem.controllers.CompanyLoadStationsController;
+import com.tuvarna.transportsystem.controllers.CompanyShowRouteAttachmentsController;
+import com.tuvarna.transportsystem.controllers.DistributorShowRouteAttachmentsController;
 import com.tuvarna.transportsystem.dao.UserDAO;
 import com.tuvarna.transportsystem.entities.Location;
 import com.tuvarna.transportsystem.entities.Request;
@@ -45,9 +52,11 @@ import javafx.stage.Stage;
 
 public class UserService implements CrudService<User> {
 	private UserDAO userDAO;
+	private static final Logger logger = LogManager.getLogger(UserService.class.getName());
 
 	public UserService() {
 		this.userDAO = new UserDAO();
+		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 	}
 
 	public String adminEditHonorariumProcessing(String validationOutput, String username, String honorarium,
@@ -75,9 +84,11 @@ public class UserService implements CrudService<User> {
 				profile.setUserProfileHonorarium(honorariumValue);
 				this.updateUserProfile(user, profile);
 
+				logger.info("Successfully updated honorarium.");
 				return "Successfully updated honorarium.";
 			}
 
+			logger.info("CONSTRAINT FAILED: New value matches old value for honorarium.");
 			return "New value matches old value for honorarium.";
 		} else if (honorariumNull) {
 			double ratingValue = Double.parseDouble(rating.trim());
@@ -86,9 +97,11 @@ public class UserService implements CrudService<User> {
 				profile.setUserProfileRating(ratingValue);
 				this.updateUserProfile(user, profile);
 
+				logger.info("Successfully updated rating");
 				return "Successfully updated rating";
 			}
 
+			logger.info("CONSTRAINT FAILED: New value matches old value for rating.");
 			return "New value matches old value for rating.";
 		} else if (!(ratingNull) && !(honorariumNull)) {
 			/* Both values should be changed */
@@ -113,14 +126,17 @@ public class UserService implements CrudService<User> {
 			}
 
 			if (updatedHonorarium && updatedRating) {
+				logger.info("Successfully updated both values.");
 				return "Successfully updated both values.";
 			}
 
 			if (updatedHonorarium) {
+				logger.info("Updated honorarium. Rating is the same value as before.");
 				return "Updated honorarium. Rating is the same value as before.";
 			}
 
 			if (updatedRating) {
+				logger.info("Updated rating. Honorarium is the same value as before.");
 				return "Updated rating. Honorarium is the same value as before.";
 			}
 		}
@@ -130,10 +146,12 @@ public class UserService implements CrudService<User> {
 	public String adminEditHonorariumValidation(String username, String honorarium, String rating) {
 
 		if (username.equals(null) || username == null || username.equals("")) {
+			logger.info("CONSTRAINT FAILED: No username entered.");
 			return "No username entered.";
 		}
 
 		if (!this.getByName(username).isPresent()) {
+			logger.info("CONSTRAINT FAILED: User not found in database.");
 			return "User not found.";
 		}
 
@@ -156,6 +174,7 @@ public class UserService implements CrudService<User> {
 			try {
 				double tryParse = Double.parseDouble(honorarium);
 			} catch (Exception e) {
+				logger.info("CONSTRAINT FAILED: Invalid value for honorarium.");
 				return "Invalid value for honorarium.";
 			}
 		}
@@ -164,6 +183,7 @@ public class UserService implements CrudService<User> {
 			try {
 				double tryParse = Double.parseDouble(rating);
 			} catch (Exception e) {
+				logger.info("CONSTRAINT FAILED: Invalid value for rating.");
 				return "Invalid value for rating.";
 			}
 		}
@@ -188,6 +208,7 @@ public class UserService implements CrudService<User> {
 			UserService userService = new UserService();
 
 			if (DatabaseUtils.cascadeUserDeletion(user)) {
+				logger.info("User successfully deleted.");
 				return "User successfully deleted.";
 			} else {
 				return "An error has occured while deleting user.";
@@ -215,15 +236,18 @@ public class UserService implements CrudService<User> {
 
 	public String adminSearchValidation(String keyword, String searchCriteria) {
 		if (keyword == null || keyword.equals(null) || keyword.equals("")) {
+			logger.info("CONSTRAINT FAILED: No keyword entered.");
 			return "Please enter keyword to search.";
 		}
 
 		if (searchCriteria == null || searchCriteria.equals(null) || searchCriteria.equals("")) {
+			logger.info("CONSTRAINT FAILED: No search criteria specified.");
 			return "Please select search criteria.";
 		}
 
 		if (searchCriteria.equals("Search by user name")) {
 			if (!this.getByName(keyword).isPresent()) {
+				logger.info("CONSTRAINT FAILED: User not found in database.");
 				return "User not found in database.";
 			}
 		} else if (searchCriteria.equals("Search by full name")) {
@@ -257,7 +281,7 @@ public class UserService implements CrudService<User> {
 		LocationService locationService = new LocationService();
 
 		if (!locationService.getByName(userLocation).isPresent()) {
-			// logger.error("Location not present in database.");
+			logger.error("Location not present in database.");
 			return "Location not present in database.";
 		}
 
@@ -293,7 +317,7 @@ public class UserService implements CrudService<User> {
 		alert.setContentText(outputString.toString());
 
 		alert.showAndWait();
-		// logger.info("Successfully created user and persisted to database.");
+		logger.info("Successfully created user and persisted to database.");
 
 		return "Success";
 	}
@@ -301,16 +325,19 @@ public class UserService implements CrudService<User> {
 	public String adminAddUserValidation(String fullname, boolean companySelected, boolean distributorSelected,
 			String location) {
 		if (fullname.equals(null) || fullname == null || fullname.equals("")) {
+			logger.info("CONSTRAINT FAILED: No fullname.");
 			return "Please provide a fullname for the user you wish to create.";
 		}
 
 		UserType userType = null;
 
 		if ((!companySelected) && (!distributorSelected)) {
+			logger.info("CONSTRAINT FAILED: No usertype selected.");
 			return "Please specify the user type.";
 		}
 
 		if (location == null) {
+			logger.info("CONSTRAINT FAILED: No location selected.");
 			return "Please select a location.";
 		}
 
@@ -330,10 +357,10 @@ public class UserService implements CrudService<User> {
 			UserService userService = new UserService();
 			User user = new User(fullname, username, password, profile, type, location);
 			userService.save(user);
-			// logger.info("Successfully persisted user to database.");
+			logger.info("Successfully persisted user to database.");
 
 			userService.addRole(user, DatabaseUtils.ROLE_USER);
-			// logger.info("Assigned role user.");
+			logger.info("Assigned role user.");
 
 			// registration success and return logged in view
 			DatabaseUtils.currentUser = user;
@@ -345,27 +372,29 @@ public class UserService implements CrudService<User> {
 
 	public String validateRegistration(String fullname, String username, String password, String location) {
 		if (fullname.trim().length() > 40 || fullname.trim().length() < 5) {
-			// informationLabel.setText("Invalid fullname. Name must be between 5 and 40
-			// characters.");
+			logger.info("CONSTRAINT FAILED: Invalid fullname.");
 			return "Invalid fullname. Name must be between 5 and 40 characters.";
 		}
 
 		if ((!Pattern.matches("^\\w+$", username)) || username.length() < 4 || username.length() > 20) {
+			logger.info("CONSTRAINT FAILED: Invalid username.");
 			return "Invalid username. No spaces, special characters. Length: 4 - 20 characters.";
 		}
 
 		if (password.length() < 5 || password.length() > 20) {
+			logger.info("CONSTRAINT FAILED: Invalid password.");
 			return "Invalid password. Length: 5 - 20 characters.";
 		}
 
 		if (location == null) {
+			logger.info("CONSTRAINT FAILED: No location selected.");
 			return "No location selected.";
 		}
 
 		LocationService locationService = new LocationService();
 
 		if (!locationService.getByName(location).isPresent()) {
-			// logger.error("Location not present in database.");
+			logger.error("Location not present in database.");
 			return "Location not present in database.";
 		}
 
@@ -510,31 +539,38 @@ public class UserService implements CrudService<User> {
 			String guestUserfullName) {
 
 		if (trip == null) {
+			logger.info("CONSTRAINT FAILED: No trip selected.");
 			return "Please select a trip.";
 		}
 
 		if (departureLocation == null || departureLocation.equals(null) || departureLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: Departure location not selected.");
 			return "Please select a departure location.";
 		}
 
 		if (arrivalLocation == null || arrivalLocation.equals(null) || arrivalLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: Arrival location not selected.");
 			return "Please select an arrival location.";
 		}
 
 		if (quantity == null || quantity.equals(null) || quantity.equals("")) {
+			logger.info("CONSTRAINT FAILED: No ticket quantity selected.");
 			return "Please select ticket quantity.";
 		}
 
 		if (!(customerIsGuest) && !(customerIsRegistered)) {
+			logger.info("CONSTRAINT FAILED: Customer type not specified.");
 			return "Please select if the customer is a guest or is registered.";
 		}
 
 		if (customerIsRegistered) {
 			if (usernameSelected == null || usernameSelected.equals(null) || usernameSelected.equals("")) {
+				logger.info("CONSTRAINT FAILED: No customer selected.");
 				return "Please select a customer from the dropdown menu.";
 			}
 
 			if (!this.getByName(usernameSelected).isPresent()) {
+				logger.info("CONSTRAINT FAILED: User not found in database.");
 				return "User not found in database.";
 			}
 		} else if (customerIsGuest) {
@@ -580,21 +616,21 @@ public class UserService implements CrudService<User> {
 
 		TripService tripService = new TripService();
 		tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
-		// logger.info("Updated tickets availability for trip.");
+		logger.info("Updated tickets availability for trip.");
 
 		TicketService ticketService = new TicketService();
 		Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocationInstance,
 				arrivalLocationInstance);
 		ticketService.save(ticket);
-		// logger.info("Ticket succesfully created.");
+		logger.info("Ticket succesfully created.");
 
 		this.addTicket(customer, ticket);
-		// logger.info("Inserted into UsersTicket table.");
+		logger.info("Inserted into UsersTicket table.");
 
 		// For every 5 purchased tickets, the user gains a rating of 0.2
 		if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
 			new UserProfileService().increaseRating(DatabaseUtils.currentUser.getUserProfile(), 0.2);
-			// logger.info("Cashier rating increased by 0.2");
+			logger.info("Cashier rating increased by 0.2");
 		}
 
 		User company = this.getUserByTripId(trip.getTripId()).get();
@@ -610,10 +646,8 @@ public class UserService implements CrudService<User> {
 
 		if (ticketsSoldByCompany.size() % 5 == 0) {
 			new UserProfileService().increaseRating(company.getUserProfile(), 0.1);
-			// logger.info("Company rating increased by 0.1");
+			logger.info("Company rating increased by 0.1");
 		}
-
-		// informationLabel.setText("You sold a ticket.");
 
 		return "Success";
 	}
@@ -646,38 +680,46 @@ public class UserService implements CrudService<User> {
 		 * number between 0-int.maxvalue
 		 */
 		if (!pattern.matcher(ticketsAvailability.trim()).matches()) {
+			logger.info("CONSTRAINT FAILED: Invalid quantity.");
 			return "Invalid quantity.";
 		}
 
 		if (maxTicketsPerUser == null) {
+			logger.info("CONSTRAINT FAILED: Invalid quantity.");
 			return "Invalid quantity.";
 		}
 
 		if (!pattern.matcher(maxTicketsPerUser.toString().trim()).matches()) {
+			logger.info("CONSTRAINT FAILED: Invalid quantity.");
 			return "Invalid quantity.";
 		}
 
 		if (!pattern.matcher(seatsCapacity.trim()).matches()) {
+			logger.info("CONSTRAINT FAILED: Invalid seats capacity.");
 			return "Invalid seats capacity.";
 		}
 
 		if (!pattern.matcher(duration.trim()).matches()) {
+			logger.info("CONSTRAINT FAILED: Invalid duration.");
 			return "Invalid duration!";
 		}
 
 		try {
 			double tryParse = Double.parseDouble(price);
 		} catch (Exception e) {
+			logger.info("CONSTRAINT FAILED: Invalid price.");
 			return "Invalid price.";
 		}
 
 		if (hourOfDeparture == null || hourOfDeparture.equals(null) || hourOfDeparture.equals("")) {
+			logger.info("CONSTRAINT FAILED: Invalid hour of departure.");
 			return "Invalid hour of departure.";
 		}
 
 		String departure = departureDate.getText();
 
 		if (departure.equals(null) || departure.equals("") || departure == null) {
+			logger.info("CONSTRAINT FAILED: Invalid departure date.");
 			return "Invalid departure date.";
 		}
 
@@ -691,6 +733,7 @@ public class UserService implements CrudService<User> {
 		String arrival = arrivalDate.getText();
 
 		if (arrival.equals(null) || arrival.equals("") || arrival == null) {
+			logger.info("CONSTRAINT FAILED: Invalid arrival date.");
 			return "Invalid arrival date.";
 		}
 		// DateFormat formatArrivalDate = new SimpleDateFormat("MM/dd/yyyy");
@@ -701,26 +744,32 @@ public class UserService implements CrudService<User> {
 		/* Date validation */
 		if (dateDeparture.after(dateArrival) || dateDeparture.before(new Date(System.currentTimeMillis()))
 				|| dateArrival.before(new Date(System.currentTimeMillis()))) {
+			logger.info("CONSTRAINT FAILED: Invalid interval.");
 			return "Invalid interval!";
 		}
 
 		if (departureLocation == null || departureLocation.equals(null) || departureLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: Invalid departure location.");
 			return "Invalid departure location!";
 		}
 
 		if (arrivalLocation == null || arrivalLocation.equals(null) || arrivalLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: Invalid arrival location.");
 			return "Invalid arrival location!";
 		}
 
 		if (departureLocation.equals(arrivalLocation)) {
+			logger.info("CONSTRAINT FAILED: Locations match.");
 			return "Departure and arrival locations cannot match.";
 		}
 
 		if (selectedBusType == null) {
+			logger.info("CONSTRAINT FAILED: Bus type not specified.");
 			return "Please select bus type (Regular or Big bus)!";
 		}
 
 		if (selectedTripType == null) {
+			logger.info("CONSTRAINT FAILED: Trip type not specified.");
 			return "Please select trip type (Normal or Express)!";
 		}
 
@@ -754,6 +803,7 @@ public class UserService implements CrudService<User> {
 		int tripMaxTicketsPerUser = Integer.parseInt(maxTicketsPerUser.toString().trim());
 
 		if (routeCreated == null) {
+			logger.info("CONSTRAINT FAILED: No stations added.");
 			return "Please add stations first.";
 		}
 
@@ -776,16 +826,14 @@ public class UserService implements CrudService<User> {
 				hourOfDeparture);
 		TripService tripService = new TripService();
 		tripService.save(newTrip);
-		// logger.info("Constraint validation passed, persisting new trip to
-		// database.");
+		logger.info("Constraint validation passed, persisting new trip to database.");
 
 		/*
 		 * In the UserTrip table a new entry will be added with the logged in user
 		 * (owner in this case) and the newly created trip
 		 */
 		new UserService().addTrip(DatabaseUtils.currentUser, newTrip);
-		// logger.info("Inserting to UsersTrip table (Associating transport company to
-		// this trip.");
+		logger.info("Inserting to UsersTrip table (Associating transport company to this trip.");
 
 		/* Distributor gets a notification */
 		NotificationUtils.generateNewTripNotification(newTrip);
@@ -815,10 +863,12 @@ public class UserService implements CrudService<User> {
 
 	public String companyAddAttachmentLocationsEndPointValidation(String departureLocation, String arrivalLocation) {
 		if (departureLocation == null || departureLocation.equals(null) || departureLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: No departure station selected.");
 			return "Please select departure station!";
 		}
 
 		if (arrivalLocation == null || arrivalLocation.equals(null) || arrivalLocation.equals("")) {
+			logger.info("CONSTRAINT FAILED: No arrival station selected.");
 			return "Please select arrival station!";
 		}
 
@@ -872,13 +922,15 @@ public class UserService implements CrudService<User> {
 		// JavaFX sends all choice boxes values (they can be null) and we have to filter
 		// and check if they are nulls
 		if (locations.stream().filter(l -> l != null).collect(Collectors.toList()).size() == 0) {
+			logger.info("No locations were selected.");
 			return "No locations were selected.";
 		}
 
 		if (hours.stream().filter(l -> l != null).collect(Collectors.toList()).size() == 0) {
+			logger.info("No times were selected.");
 			return "No times were selected.";
 		}
-		
+
 		List<String> nonNullLocations = locations.stream().filter(l -> l != null).collect(Collectors.toList());
 		List<String> nonNullHours = hours.stream().filter(h -> h != null).collect(Collectors.toList());
 
@@ -887,6 +939,7 @@ public class UserService implements CrudService<User> {
 		}
 
 		if (locations.size() == 0) {
+			logger.info("No locations have been added. Cannot proceed.");
 			return "No locations have been added. Cannot proceed.";
 		}
 
@@ -909,15 +962,17 @@ public class UserService implements CrudService<User> {
 			// following stations' times must be bigger than the first
 			if (i != 0) {
 				int currentHour = Integer.parseInt(hours.get(i).split(":")[0]);
-				
+
 				if (currentHour <= previousHour) {
+					logger.info("Following arrival time must be larger than the previous one.");
 					return "Following arrival time must be larger than the previous one.";
 				}
 				previousHour = currentHour;
-				
+
 			}
 
 			if (routeService.getAttachmentLocationsInRouteById(route.getRouteId()).contains(locationStation)) {
+				logger.info("Station already exists as an attachment location.");
 				return "Station already exists as an attachment location.";
 			}
 		}
@@ -925,29 +980,31 @@ public class UserService implements CrudService<User> {
 		return "Success";
 	}
 
-	
 	public String companyAcceptRequestValidation(Request request) {
 		if (request == null) {
+			logger.info("CONSTRAINT FAILURE: no request selected");
 			return "Please select request from table!";
 		}
-		
+
 		if (request.getStatus().equals(DatabaseUtils.REQUEST_STATUSREJECTED)) {
+			logger.info("Cannot accept a previously rejected request.");
 			return "Cannot accept a previously rejected request.";
 		}
-		
+
 		if (request.getStatus().equals(DatabaseUtils.REQUEST_STATUSACCEPTED)) {
+			logger.info("Request already accepted.");
 			return "Request already accepted.";
 		}
 
 		return "Success";
 	}
-	
+
 	public String companyAcceptRequestProcessing(Request request) {
 		String constraintCheck = this.companyAcceptRequestValidation(request);
 		if (!constraintCheck.equals("Success")) {
 			return constraintCheck;
 		}
-		
+
 		int tickets = request.getTrip().getTripTicketAvailability();
 		int requestedTickets = request.getTicketsQuantity();
 		int newTickets = tickets + requestedTickets;
@@ -955,50 +1012,595 @@ public class UserService implements CrudService<User> {
 		Trip trip = request.getTrip();
 		TripService tripService = new TripService();
 		tripService.updateTripTicketAvailability(trip, newTickets);
-		//logger.info("Request accepted: updating tickets availability for the trip.");
+		logger.info("Request accepted: updating tickets availability for the trip.");
 
 		RequestService requestService = new RequestService();
 		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSACCEPTED);
-		//logger.info("Request was accepted.");
+		logger.info("Request was accepted.");
 
-		// refresh table
-		//requestCompanyTable.setItems(getRequests());
-		//informationLabel.setText("Request was accepted!");
-		
 		return "Success";
 	}
-	
+
 	public String companyRejectRequestValidation(Request request) {
 		if (request == null) {
+			logger.info("CONSTRAINT FAILURE: No request selected.");
 			return "Please select request from table!";
 		}
-		
+
 		if (request.getStatus().equals(DatabaseUtils.REQUEST_STATUSACCEPTED)) {
+			logger.info("Cannot accept a previously accepted request.");
 			return "Cannot accept a previously accepted request.";
 		}
-		
+
 		if (request.getStatus().equals(DatabaseUtils.REQUEST_STATUSREJECTED)) {
+			logger.info("Request already rejected.");
 			return "Request already rejected.";
 		}
 
 		return "Success";
 	}
-	
+
 	public String companyRejectRequestProcessing(Request request) {
 		String constraintCheck = this.companyRejectRequestValidation(request);
-		
+
 		if (!constraintCheck.equals("Success")) {
 			return constraintCheck;
 		}
-		
+
 		RequestService requestService = new RequestService();
 		requestService.updateStatus(request, DatabaseUtils.REQUEST_STATUSREJECTED);
-		//logger.info("Request status updated: REJECTED");
-		
+		logger.info("Request status updated: REJECTED");
+
 		return "Success";
 	}
-	
-	
+
+	public String companyScheduleShowAttachmentsValidation(Trip trip) {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Select trip first!";
+		}
+
+		return "Success";
+	}
+
+	public String companyScheduleShowAttachmentsProcessing(Trip trip) throws IOException {
+		String constraintCheck = this.companyScheduleShowAttachmentsValidation(trip);
+
+		if (!constraintCheck.equals("Success")) {
+			return constraintCheck;
+		}
+
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/CompanyShowRouteAttachments.fxml"));
+		DialogPane root = (DialogPane) userPanel.load();
+		// send trip to other controller
+		CompanyShowRouteAttachmentsController controller = (CompanyShowRouteAttachmentsController) userPanel
+				.getController();
+		controller.getTrip(trip);
+
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
+
+		logger.info("Switched to attachment locations view.");
+
+		return "Success";
+	}
+
+	public String companyCancelTripValidation(Trip trip) {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Please select a trip you would like to cancel.";
+		}
+
+		if (trip.getTripDepartureDate().compareTo(new Date(System.currentTimeMillis())) <= 0) {
+			logger.info("Cannot cancel a live trip or a completed trip.");
+			return "Cannot cancel a live trip or a completed trip.";
+		}
+
+		return "Success";
+	}
+
+	public String companyCancelTripProcessing(Trip trip) {
+		String constraintCheck = this.companyCancelTripValidation(trip);
+
+		if (!constraintCheck.equals("Success")) {
+			return constraintCheck;
+		}
+
+		int tripId = trip.getTripId();
+
+		/*
+		 * Couldn't make a working REMOVE cascade no matter what, that's why I need to
+		 * manually cascade everything... 1. Remove every ticket from the UsersTicket
+		 * table 2. Remove every ticket associated with the trip from Ticket table 3.
+		 * Remove the trip from UsersTrip (Company - trip) 4. Remove all requests for
+		 * this trip 5. Delete the trip itself
+		 */
+
+		TripService tripService = new TripService();
+		TicketService ticketService = new TicketService();
+		UserService userService = new UserService();
+		RequestService requestService = new RequestService();
+
+		User company = userService.getUserByTripId(tripId).get();
+
+		if (!company.equals(DatabaseUtils.currentUser)) {
+			logger.info("Logged in user doesn't own trip.");
+			return "Unable to cancel trip due to security reasons.";
+		}
+
+		List<Ticket> tickets = ticketService.getByTrip(tripId);
+		List<User> users = userService.getAll();
+
+		try {
+			users.forEach(u -> {
+				List<Ticket> userTickets = u.getTickets();
+
+				userTickets.forEach(t -> {
+					if (t.getTrip().getTripId() == tripId) {
+						userService.removeTicket(u, t);
+					}
+				});
+			});
+
+			tickets.forEach(t -> {
+				if (t.getTrip().getTripId() == tripId) {
+					ticketService.deleteById(t.getTicketId());
+				}
+			});
+
+			tickets.forEach(t -> ticketService.deleteById(t.getTicketId()));
+			userService.removeTrip(company, trip);
+			requestService.deleteByTripId(tripId);
+
+			logger.info("Trip deletion successfully cascaded");
+
+			/* Inform distributor for the cancellation before it is deleted */
+			NotificationUtils.generateCancelledTripNotification(trip);
+
+			tripService.deleteById(tripId);
+			logger.info("Trip deleted.");
+		} catch (Exception e) {
+			logger.error("Unable to delete trip. Most likely cascading failed at some point.");
+			return "Unable to delete trip. Most likely cascading failed at some point.";
+		}
+
+		return "Success";
+	}
+
+	public String distributorAddCashierValidaton(String fullname, String location, String company) {
+		if (fullname.length() < 4 || fullname.length() > 30) {
+			logger.info("CONSTRAINT FAILURE: Invalid fullname.");
+			return "Invalid fullname. Length: 4 - 20";
+		}
+
+		if (location == null || location.equals("") || location.equals(null)) {
+			logger.info("CONSTRAINT FAILURE: No location selected.");
+			return "Please select a location!";
+		}
+
+		if (company == null || company.equals("") || company.equals(null)) {
+			logger.info("CONSTRAINT FAILURE: No company selected.");
+			return "Please select a company!";
+		}
+
+		return "Success";
+	}
+
+	public String distributorAddCashierProcessing(String fullname, String location, String company) {
+		String constraintCheck = this.distributorAddCashierValidaton(fullname, location, company);
+
+		if (!constraintCheck.equals("Success")) {
+			return constraintCheck;
+		}
+
+		Location userLocation = new LocationService().getByName(location).get();
+		User userCompany = this.getByFullName(company).get(0); // only
+
+		/* Create a unique User Profile associated with this user */
+		UserProfileService userProfileService = new UserProfileService();
+		UserProfile profile = new UserProfile();
+		userProfileService.save(profile);
+
+		String username = DatabaseUtils.generateUserName(fullname);
+		String password = DatabaseUtils.generatePassword();
+
+		User cashier = new User(fullname, username, password, profile, DatabaseUtils.USERTYPE_CASHIER, userLocation);
+
+		this.save(cashier);
+		this.addRole(cashier, DatabaseUtils.ROLE_USER);
+		this.addCashierToTransportCompany(userCompany, cashier);
+		logger.info("User successfully created. Assigned role 'user' and inserted into CompanyCashier table.");
+
+		StringBuilder outputString = new StringBuilder();
+		outputString.append(" Username: ").append(username).append("\n Password: ").append(password);
+
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("User succesfully created.");
+		alert.setHeaderText("Please provide login credentials to the user!");
+		alert.setContentText(outputString.toString());
+
+		alert.showAndWait();
+
+		return "Success";
+	}
+
+	public String distributorMakeRequestValidation(Trip trip, String requiredTickets) {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Please select trip!";
+		}
+
+		if (requiredTickets == null || requiredTickets.equals(null) || requiredTickets.equals("")) {
+			logger.info("CONSTRAINT FAILURE: No tickets entered.");
+			return "Please enter required tickets!";
+		}
+
+		try {
+			int test = Integer.parseInt(requiredTickets);
+		} catch (Exception e) {
+			logger.info("CONSTRAINT FAILURE: Quantity NaN.");
+			return "Quantity must be a number!";
+		}
+
+		int calCapacity = trip.getTripCapacity();
+		int calTickets = trip.getTripTicketAvailability();
+		int filCal = calCapacity - calTickets;
+
+		if (Integer.parseInt(requiredTickets) > filCal) {
+			logger.info("Not ENOUGH seats in the bus! Enter less tickets quantity!");
+			return "Not ENOUGH seats in the bus! Enter less tickets quantity!";
+		}
+
+		return "Success";
+	}
+
+	public String distributorMakeRequestProcessing(Trip trip, String requiredTickets) {
+		String constraintCheck = this.distributorMakeRequestValidation(trip, requiredTickets);
+
+		if (!constraintCheck.equals("Success")) {
+			return constraintCheck;
+		}
+
+		RequestService requestService = new RequestService();
+		Request request = new Request(Integer.parseInt(requiredTickets), trip, DatabaseUtils.REQUEST_STATUSPENDING);
+		requestService.save(request);
+
+		logger.info("Request passed all constraints checks and was successfully created.");
+
+		return "Success";
+	}
+
+	public String distributorScheduleLoadAttachments(Trip trip) throws IOException {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Select trip first!";
+		}
+
+		Stage stage = new Stage();
+		FXMLLoader userPanel = new FXMLLoader(getClass().getResource("/views/DistributorShowRouteAttachments.fxml"));
+		DialogPane root = (DialogPane) userPanel.load();
+		// send trip to other controller
+		DistributorShowRouteAttachmentsController controller = (DistributorShowRouteAttachmentsController) userPanel
+				.getController();
+		controller.getTrip(trip);
+
+		Scene adminScene = new Scene(root);
+		stage.setScene(adminScene);
+		stage.setTitle("Transport Company");
+		stage.showAndWait();
+
+		return "Success";
+	}
+
+	public String distributorAssignCashierValidation(Trip trip, String location, String cashier) {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Please select trip!";
+		}
+
+		if (location == null || location.equals("") || location.equals(null)) {
+			logger.info("CONSTRAINT FAILURE: No location selected.");
+			return "Please select a location!";
+		}
+
+		if (cashier == null || cashier.equals("") || cashier.equals(null)) {
+			logger.info("CONSTRAINT FAILURE: No cashier selected.");
+			return "Please select a cashier!";
+		}
+
+		return "Success";
+	}
+
+	public String distributorAssignCashierProcessing(Trip trip, String location, String cashier) {
+		String constraintCheck = this.distributorAssignCashierValidation(trip, location, cashier);
+
+		if (!constraintCheck.equals("Success")) {
+			return constraintCheck;
+		}
+
+		TripService tripService = new TripService();
+		RouteService routeService = new RouteService();
+
+		String refactoredCashierName = cashier.split("\\(")[0]; // name comes as username(location)
+		User cashierInstance = this.getByName(refactoredCashierName).get();
+
+		/*
+		 * A cashier can only be assigned for a location which exists in the trip route
+		 * and is the location the user is registered with
+		 */
+
+		List<Location> attachments = routeService.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
+
+		boolean tripAttachmentLocationsContainsUserLocation = attachments.contains(cashierInstance.getUserLocation());
+		boolean tripEndPointsContainsUserLocation = trip.getRoute().getRouteDepartureLocation().getLocationName()
+				.equals(cashierInstance.getUserLocation().getLocationName())
+				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
+						.equals(cashierInstance.getUserLocation().getLocationName());
+
+		Location locationSelected = new LocationService().getByName(location).get();
+
+		/*
+		 * Since the locations are not prepopulated with valid ones only, we check if
+		 * the selected location is a valid attachment location or a valid end point
+		 */
+
+		boolean selectedLocationIsValidAttachment = attachments.contains(locationSelected);
+		boolean selectedLocationIsValidEndPoint = trip.getRoute().getRouteDepartureLocation().getLocationName()
+				.equals(locationSelected.getLocationName())
+				|| trip.getRoute().getRouteArrivalLocation().getLocationName()
+						.equals(locationSelected.getLocationName());
+
+		if (tripAttachmentLocationsContainsUserLocation || tripEndPointsContainsUserLocation) {
+			if (!(selectedLocationIsValidAttachment || selectedLocationIsValidEndPoint)) {
+				return "Selected location is unrelated to this trip.";
+			}
+
+			if (trip.getCashiers().contains(cashierInstance)) {
+				return "Selected user is already assigned for this trip.";
+			}
+
+			// cashier location is in an attachment point but we are trying to assign him to
+			// an end point that doesn't match his location
+			if (selectedLocationIsValidEndPoint) {
+				if (!locationSelected.getLocationName().equals(cashierInstance.getUserLocation().getLocationName())) {
+
+					if (!locationSelected.getLocationName()
+							.equals(cashierInstance.getUserLocation().getLocationName())) {
+						return "Cashier cannot operate in selected location.";
+					}
+
+				} else if (!locationSelected.getLocationName()
+						.equals(cashierInstance.getUserLocation().getLocationName())) {
+					if (!locationSelected.getLocationName()
+							.equals(cashierInstance.getUserLocation().getLocationName())) {
+						return "Cashier cannot operate in selected location.";
+					}
+				}
+			}
+
+			tripService.addCashierForTrip(trip, cashierInstance);
+			logger.info(
+					"Cashier is eligible to be a cashier for this trip. Added in TripsCashier table and assigned for the trip.");
+
+			return "Success";
+		}
+
+		return "Failed to assign cashier for selected location.";
+	}
+
+	public String userPanelGetMatchingTripsValidation(String departureLoc, String arrivalLoc, TextField date,
+			String quantity, String time) {
+
+		if (departureLoc == null || departureLoc.equals(null) || departureLoc.equals("")) {
+			logger.info("CONSTRAINT FAILURE: No departure station selected.");
+			return "Please select departure station.";
+		}
+
+		if (arrivalLoc == null || arrivalLoc.equals(null) || arrivalLoc.equals("")) {
+			logger.info("CONSTRAINT FAILURE: No arrival station selected.");
+			return "Please select arrival station.";
+		}
+
+		// text field right now
+		if (date.getText() == null || date.getText().equals(null) || date.getText().equals("")) {
+			logger.info("CONSTRAINT FAILURE: No date selected.");
+			return "Please select a date.";
+		}
+
+		if (quantity == null || quantity.equals(null) || quantity.equals("")) {
+			logger.info("CONSTRAINT FAILURE: No tickets quantity selected.");
+			return "Please select ticket quantity.";
+		}
+
+		if (time == null || time.equals(null) || time.equals("")) {
+			logger.info("CONSTRAINT FAILURE: No time selected.");
+			return "Please add time.";
+		}
+
+		return "Success";
+	}
+
+	public List<Trip> userPanelGetMatchingTripsProcessing(String departureLoc, String arrivalLoc, TextField date,
+			String quantity, String time) throws ParseException {
+
+		String constraintCheck = this.userPanelGetMatchingTripsValidation(departureLoc, arrivalLoc, date, quantity,
+				time);
+
+		if (!constraintCheck.equals("Success")) {
+			return null;
+		}
+
+		TripService tripService = new TripService();
+		List<Trip> fullTrips = tripService.getAll();
+
+		/*
+		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
+		 * splitted and only the date is taken.
+		 */
+		String dateFormatPattern = new SimpleDateFormat().toLocalizedPattern().split(" ")[0];
+		DateFormat formatDepartureDate = new SimpleDateFormat(dateFormatPattern);
+
+		Date dateDeparture = formatDepartureDate.parse(date.getText());
+
+		List<Trip> filteredTrips = new ArrayList<>();
+
+		/* Iterate through the trips and validate all the fields */
+		for (Trip trip : fullTrips) {
+			Date dbDate = trip.getTripDepartureDate();
+
+			/*
+			 * Probably the least intuitive approach to fix the difference in formats
+			 * between the current machine and postgresql date but it works and is universal
+			 */
+			boolean matchesDates = dbDate.getYear() == dateDeparture.getYear()
+					&& dbDate.getMonth() == dateDeparture.getMonth() && dbDate.getDay() == dateDeparture.getDay();
+			boolean checkQuantity = Integer.parseInt(quantity) <= trip.getMaxTicketsPerUser();
+			boolean matchesTime = trip.getTripDepartureHour().contentEquals(time.trim());
+			boolean tripEndPointsSearched = trip.getRoute().getRouteDepartureLocation().getLocationName().equals(
+					departureLoc) && trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalLoc);
+			boolean tripDepartureMiddlePointSearched = false;
+			boolean tripArrivalMiddlePointSearched = false;
+			boolean endPointToMiddlePointSearched = false;
+			boolean middlePointToEndPointSearched = false;
+
+			RouteService routeService = new RouteService();
+			List<Location> attachmentLocations = routeService
+					.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
+
+			/*
+			 * Scenario: departure station matches start location of the route but the
+			 * arrival station searched doesn't match the end of the route. We are searching
+			 * for: an attachment location with the searched arrival location
+			 */
+			if (trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureLoc)
+					&& (!trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalLoc))) {
+
+				for (Location location : attachmentLocations) {
+					if (location.getLocationName().equals(arrivalLoc)) {
+						endPointToMiddlePointSearched = true;
+						break;
+					}
+				}
+			}
+			/*
+			 * Scenario: Arrival station matches the end point of the route but the
+			 * departure station is probably a middle point. Check it.
+			 */
+			if ((!trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureLoc))
+					&& (trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalLoc))) {
+
+				for (Location attachmentLocation : attachmentLocations) {
+					if (attachmentLocation.getLocationName().equals(departureLoc)) {
+						middlePointToEndPointSearched = true;
+
+						int routeId = trip.getRoute().getRouteId();
+						int locationId = attachmentLocation.getLocationId();
+
+						/*
+						 * Initially, matchesTime compares the start point of the route with the
+						 * searched time. If we are buying a ticket from a middle point, it takes time
+						 * until the bus reaches that location and we are searching from another hour.
+						 * In RouteAttachment it is logged when the bus arrives at the middle point.
+						 */
+						matchesTime = time.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
+
+						break;
+					}
+				}
+			}
+
+			/*
+			 * Scenario: We are searching for a trip between 2 middle points. Check if the
+			 * departure location is present in the RouteAttachment table
+			 */
+			for (Location attachmentLocation : attachmentLocations) {
+				if (attachmentLocation.getLocationName().equals(departureLoc)) {
+					tripDepartureMiddlePointSearched = true;
+
+					int routeId = trip.getRoute().getRouteId();
+					int locationId = attachmentLocation.getLocationId();
+
+					matchesTime = time.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
+
+					break;
+				}
+			}
+
+			/* Same for arrival */
+			for (Location attachmentLocation : attachmentLocations) {
+				if (attachmentLocation.getLocationName().equals(arrivalLoc)) {
+					tripArrivalMiddlePointSearched = true;
+					break;
+				}
+			}
+
+			/* If all the criteria matches check if there are enough available tickets */
+			if (matchesDates && checkQuantity && matchesTime) {
+
+				/*
+				 * If either the customer chose the start and end point of the route (Sofia -
+				 * Varna) or they chose two valid middle points from the RouteAttachment table
+				 * (for example Shumen - Veliko Tarnovo) then a purchase can proceed.
+				 * 
+				 * Also, if the customer chose (Sofia - Veliko Tarnovo) (start of route - middle
+				 * point) or they chose (Veliko Tarnovo - Varna) (middle point - end of route)
+				 * this is also a valid search
+				 */
+				if (tripEndPointsSearched || (tripDepartureMiddlePointSearched && tripArrivalMiddlePointSearched)
+						|| (endPointToMiddlePointSearched || middlePointToEndPointSearched)) {
+
+					int ticketsToPurchase = Integer.parseInt(quantity);
+
+					/* If there are enough tickets substitute the bought tickets */
+					if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
+						filteredTrips.add(trip);
+					}
+				}
+			}
+		}
+
+		return filteredTrips;
+	}
+
+	public String userPanelBuyTicket(Trip trip, User customer, String departureLoc, String arrivalLoc,
+			String ticketsToPurchaseInput) {
+		if (trip == null) {
+			logger.info("CONSTRAINT FAILURE: No trip selected.");
+			return "Please select a trip.";
+		}
+
+		TripService tripService = new TripService();
+		LocationService locationService = new LocationService();
+
+		int ticketsToPurchase = Integer.parseInt(ticketsToPurchaseInput);
+
+		tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
+		logger.info("Updated trip ticket availability after purchase.");
+
+		Location departureLocation = locationService.getByName(departureLoc).get();
+		Location arrivalLocation = locationService.getByName(arrivalLoc).get();
+
+		TicketService ticketService = new TicketService();
+		Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
+		ticketService.save(ticket);
+		logger.info("Ticket created and persisted to database.");
+
+		UserService userService = new UserService();
+		userService.addTicket(customer, ticket);
+		logger.info("Inserted into UsersTicket table.");
+
+		// For every 5 purchased tickets, the user gains a rating of 0.2
+		if (customer.getTickets().size() % 5 == 0) {
+			customer.getUserProfile().setUserProfileRating(customer.getUserProfile().getUserProfileRating() + 0.2);
+			logger.info("Customer gained a rating of 0.2");
+		}
+
+		return "Success";
+	}
+
 	public Optional<User> getUserByTripId(int tripId) {
 		return userDAO.getUserByTripId(tripId);
 	}

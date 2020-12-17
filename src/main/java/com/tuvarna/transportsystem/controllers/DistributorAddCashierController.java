@@ -61,9 +61,11 @@ public class DistributorAddCashierController implements Initializable {
 	ObservableList list = FXCollections.observableArrayList();
 
 	private static final Logger logger = LogManager.getLogger(DistributorAddCashierController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
@@ -148,7 +150,7 @@ public class DistributorAddCashierController implements Initializable {
 		stage.setScene(adminScene);
 		stage.setTitle("Transport Company");
 		stage.showAndWait();
-		
+
 		logger.info("Notifications tab opened.");
 	}
 
@@ -182,62 +184,17 @@ public class DistributorAddCashierController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-		
+
 		logger.info("Schedule tab selected.");
 	}
 
 	public void createCashier(javafx.event.ActionEvent event) throws IOException {
-		if (!fullnameTextField.getText().isEmpty()) {
-			String fullname = fullnameTextField.getText().trim();
-			UserService userService = new UserService();
-
-			if (fullname.length() < 4 || fullname.length() > 30) {
-				informationLabel.setText("Invalid fullname. Length: 4 - 20");
-				return;
-			}
-
-			if (locationChoiceBox.getSelectionModel().getSelectedItem().isEmpty()) {
-				informationLabel.setText("Please select a location!");
-				return;
-			}
-
-			if (companyComboBox.getSelectionModel().getSelectedItem().isEmpty()) {
-				informationLabel.setText("Please select a company!");
-				return;
-			}
-
-			Location userLocation = new LocationService()
-					.getByName(locationChoiceBox.getSelectionModel().getSelectedItem()).get();
-			User company = userService.getByFullName(companyComboBox.getSelectionModel().getSelectedItem()).get(0); // only
-
-			/* Create a unique User Profile associated with this user */
-			UserProfileService userProfileService = new UserProfileService();
-			UserProfile profile = new UserProfile();
-			userProfileService.save(profile);
-
-			String username = DatabaseUtils.generateUserName(fullname);
-			String password = DatabaseUtils.generatePassword();
-
-			User cashier = new User(fullname, username, password, profile, DatabaseUtils.USERTYPE_CASHIER,
-					userLocation);
-
-			userService.save(cashier);
-			userService.addRole(cashier, DatabaseUtils.ROLE_USER);
-			userService.addCashierToTransportCompany(company, cashier);
-			logger.info("User successfully created. Assigned role 'user' and inserted into CompanyCashier table.");
-
-			StringBuilder outputString = new StringBuilder();
-			outputString.append(" Username: ").append(username).append("\n Password: ").append(password);
-
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("User succesfully created.");
-			alert.setHeaderText("Please provide login credentials to the user!");
-			alert.setContentText(outputString.toString());
-
-			alert.showAndWait();
-
-		} else {
-			informationLabel.setText("Enter cashier full name!");
+		String result = userService.distributorAddCashierProcessing(fullnameTextField.getText(),
+				locationChoiceBox.getSelectionModel().getSelectedItem(),
+				companyComboBox.getSelectionModel().getSelectedItem());
+		
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
 		}
 	}
 
@@ -248,7 +205,7 @@ public class DistributorAddCashierController implements Initializable {
 		Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		window.setScene(adminScene);
 		window.show();
-		
+
 		logger.info("Page refreshed.");
 	}
 }

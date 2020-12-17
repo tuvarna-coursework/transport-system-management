@@ -94,9 +94,11 @@ public class UserPanelController implements Initializable {
 	private TableColumn<Trip, Double> priceCol;
 
 	private static final Logger logger = LogManager.getLogger(UserPanelController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
@@ -169,168 +171,22 @@ public class UserPanelController implements Initializable {
 	}
 
 	private List<Trip> getMatchingTrips() throws ParseException {
-		if (departureChoiceBox.getValue() == null) {
-			informationLabel.setText("Please select departure station.");
+		String constraintCheck = userService.userPanelGetMatchingTripsValidation(
+				departureChoiceBox.getSelectionModel().getSelectedItem(),
+				arrivalChoiceBox.getSelectionModel().getSelectedItem(), tripDatePicker.getEditor(),
+				quantityChoiceBox.getSelectionModel().getSelectedItem(),
+				timeChoiceBox.getSelectionModel().getSelectedItem());
+
+		if (!constraintCheck.equals("Success")) {
+			informationLabel.setText(constraintCheck);
 			return null;
 		}
 
-		if (arrivalChoiceBox.getValue() == null) {
-			informationLabel.setText("Please select arrival station.");
-			return null;
-		}
-
-		if (tripDatePicker.getValue().equals(null)) {
-			informationLabel.setText("Please select a date.");
-			return null;
-		}
-
-		if (quantityChoiceBox.getValue() == null) {
-			informationLabel.setText("Please select quantity.");
-			return null;
-		}
-
-		if (timeChoiceBox.getValue() == null) {
-			informationLabel.setText("Please add time.");
-			return null;
-		}
-
-		String departureStation = departureChoiceBox.getValue().trim();
-		String arrivalStation = arrivalChoiceBox.getValue().trim();
-
-		TripService tripService = new TripService();
-		List<Trip> fullTrips = tripService.getAll();
-
-		/*
-		 * Uses local machine's format and since it contains HH:MM:SS as well, it is
-		 * splitted and only the date is taken.
-		 */
-		String dateFormatPattern = new SimpleDateFormat().toLocalizedPattern().split(" ")[0];
-		DateFormat formatDepartureDate = new SimpleDateFormat(dateFormatPattern);
-
-		Date dateDeparture = formatDepartureDate.parse(tripDatePicker.getEditor().getText());
-
-		List<Trip> filteredTrips = new ArrayList<>();
-
-		/* Iterate through the trips and validate all the fields */
-		for (Trip trip : fullTrips) {
-			Date dbDate = trip.getTripDepartureDate();
-
-			/*
-			 * Probably the least intuitive approach to fix the difference in formats
-			 * between the current machine and postgresql date but it works and is universal
-			 */
-			boolean matchesDates = dbDate.getYear() == dateDeparture.getYear()
-					&& dbDate.getMonth() == dateDeparture.getMonth() && dbDate.getDay() == dateDeparture.getDay();
-			boolean checkQuantity = Integer.parseInt(quantityChoiceBox.getValue()) <= trip.getMaxTicketsPerUser();
-			boolean matchesTime = trip.getTripDepartureHour()
-					.contentEquals(timeChoiceBox.getSelectionModel().getSelectedItem().trim());
-			boolean tripEndPointsSearched = trip.getRoute().getRouteDepartureLocation().getLocationName()
-					.equals(departureStation)
-					&& trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation);
-			boolean tripDepartureMiddlePointSearched = false;
-			boolean tripArrivalMiddlePointSearched = false;
-			boolean endPointToMiddlePointSearched = false;
-			boolean middlePointToEndPointSearched = false;
-
-			RouteService routeService = new RouteService();
-			List<Location> attachmentLocations = routeService
-					.getAttachmentLocationsInRouteById(trip.getRoute().getRouteId());
-
-			/*
-			 * Scenario: departure station matches start location of the route but the
-			 * arrival station searched doesn't match the end of the route. We are searching
-			 * for: an attachment location with the searched arrival location
-			 */
-			if (trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureStation)
-					&& (!trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation))) {
-
-				for (Location location : attachmentLocations) {
-					if (location.getLocationName().equals(arrivalStation)) {
-						endPointToMiddlePointSearched = true;
-						break;
-					}
-				}
-			}
-			/*
-			 * Scenario: Arrival station matches the end point of the route but the
-			 * departure station is probably a middle point. Check it.
-			 */
-			if ((!trip.getRoute().getRouteDepartureLocation().getLocationName().equals(departureStation))
-					&& (trip.getRoute().getRouteArrivalLocation().getLocationName().equals(arrivalStation))) {
-
-				for (Location attachmentLocation : attachmentLocations) {
-					if (attachmentLocation.getLocationName().equals(departureStation)) {
-						middlePointToEndPointSearched = true;
-
-						int routeId = trip.getRoute().getRouteId();
-						int locationId = attachmentLocation.getLocationId();
-
-						/*
-						 * Initially, matchesTime compares the start point of the route with the
-						 * searched time. If we are buying a ticket from a middle point, it takes time
-						 * until the bus reaches that location and we are searching from another hour.
-						 * In RouteAttachment it is logged when the bus arrives at the middle point.
-						 */
-						matchesTime = timeChoiceBox.getSelectionModel().getSelectedItem()
-								.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
-
-						break;
-					}
-				}
-			}
-
-			/*
-			 * Scenario: We are searching for a trip between 2 middle points. Check if the
-			 * departure location is present in the RouteAttachment table
-			 */
-			for (Location attachmentLocation : attachmentLocations) {
-				if (attachmentLocation.getLocationName().equals(departureStation)) {
-					tripDepartureMiddlePointSearched = true;
-
-					int routeId = trip.getRoute().getRouteId();
-					int locationId = attachmentLocation.getLocationId();
-
-					matchesTime = timeChoiceBox.getSelectionModel().getSelectedItem()
-							.equals(routeService.getArrivalHourAtAttachmentLocation(routeId, locationId));
-
-					break;
-				}
-			}
-
-			/* Same for arrival */
-			for (Location attachmentLocation : attachmentLocations) {
-				if (attachmentLocation.getLocationName().equals(arrivalStation)) {
-					tripArrivalMiddlePointSearched = true;
-					break;
-				}
-			}
-
-			/* If all the criteria matches check if there are enough available tickets */
-			if (matchesDates && checkQuantity && matchesTime) {
-
-				/*
-				 * If either the customer chose the start and end point of the route (Sofia -
-				 * Varna) or they chose two valid middle points from the RouteAttachment table
-				 * (for example Shumen - Veliko Tarnovo) then a purchase can proceed.
-				 * 
-				 * Also, if the customer chose (Sofia - Veliko Tarnovo) (start of route - middle
-				 * point) or they chose (Veliko Tarnovo - Varna) (middle point - end of route)
-				 * this is also a valid search
-				 */
-				if (tripEndPointsSearched || (tripDepartureMiddlePointSearched && tripArrivalMiddlePointSearched)
-						|| (endPointToMiddlePointSearched || middlePointToEndPointSearched)) {
-
-					int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getValue());
-
-					/* If there are enough tickets substitute the bought tickets */
-					if (trip.getTripTicketAvailability() >= ticketsToPurchase) {
-						filteredTrips.add(trip);
-					}
-				}
-			}
-		}
 		logger.info("Returning a list of trips that match the search criteria of the customer.");
-		return filteredTrips;
+		return userService.userPanelGetMatchingTripsProcessing(departureChoiceBox.getSelectionModel().getSelectedItem(),
+				arrivalChoiceBox.getSelectionModel().getSelectedItem(), tripDatePicker.getEditor(),
+				quantityChoiceBox.getSelectionModel().getSelectedItem(),
+				timeChoiceBox.getSelectionModel().getSelectedItem());
 	}
 
 	public void loadquantity() {
@@ -383,7 +239,7 @@ public class UserPanelController implements Initializable {
 		list.addAll(time_01, time_02, time_03, time_04, time_05, time_06, time_07, time_08, time_09, time_10, time_11,
 				time_12, time_13, time_14, time_15, time_16, time_17, time_18, time_19, time_20, time_21, time_22,
 				time_23, time_24, time_25);
-		
+
 		timeChoiceBox.getItems().addAll(list);
 	}
 
@@ -400,6 +256,7 @@ public class UserPanelController implements Initializable {
 		}
 		return locationList;
 	}
+
 	public void goToSchedule(javafx.event.ActionEvent event) throws IOException {
 		Parent schedulePanel = FXMLLoader.load(getClass().getResource("/views/SchedulePanel.fxml"));
 		Scene scheduleScene = new Scene(schedulePanel);
@@ -432,56 +289,17 @@ public class UserPanelController implements Initializable {
 	}
 
 	public void buyTicket() throws ParseException {
-		if (!getMatchingTrips().isEmpty()) {
-			Trip trip = availableTripsTable.getSelectionModel().getSelectedItem();
+		String result = userService.userPanelBuyTicket(availableTripsTable.getSelectionModel().getSelectedItem(),
+				DatabaseUtils.currentUser, departureChoiceBox.getSelectionModel().getSelectedItem(),
+				arrivalChoiceBox.getSelectionModel().getSelectedItem(),
+				quantityChoiceBox.getSelectionModel().getSelectedItem());
 
-			if (trip == null) {
-				informationLabel.setText("Please select a trip.");
-				return;
-			}
-
-			TripService tripService = new TripService();
-			int ticketsToPurchase = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem());
-			LocationService locationService = new LocationService();
-
-			if (!locationService.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).isPresent()) {
-				informationLabel.setText("Unable to purchase ticket.");
-				return;
-			}
-
-			if (!locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem()).isPresent()) {
-				informationLabel.setText("Unable to purchase ticket.");
-				return;
-			}
-
-			tripService.updateTripTicketAvailability(trip, trip.getTripTicketAvailability() - ticketsToPurchase);
-			logger.info("Updated trip ticket availability after purchase.");
-
-			Location departureLocation = locationService
-					.getByName(departureChoiceBox.getSelectionModel().getSelectedItem()).get();
-			Location arrivalLocation = locationService.getByName(arrivalChoiceBox.getSelectionModel().getSelectedItem())
-					.get();
-
-			TicketService ticketService = new TicketService();
-			Ticket ticket = new Ticket(new Date(System.currentTimeMillis()), trip, departureLocation, arrivalLocation);
-			ticketService.save(ticket);
-			logger.info("Ticket created and persisted to database.");
-
-			UserService userService = new UserService();
-			userService.addTicket(DatabaseUtils.currentUser, ticket);
-			logger.info("Inserted into UsersTicket table.");
-
-			// For every 5 purchased tickets, the user gains a rating of 0.2
-			if (DatabaseUtils.currentUser.getTickets().size() % 5 == 0) {
-				DatabaseUtils.currentUser.getUserProfile()
-						.setUserProfileRating(DatabaseUtils.currentUser.getUserProfile().getUserProfileRating() + 0.2);
-				logger.info("Customer gained a rating of 0.2");
-			}
-
-			informationLabel.setText("You bought a ticket.");
-		} else {
-			informationLabel.setText("No available tickets for the specified trip.");
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
+			return;
 		}
+
+		informationLabel.setText("You bought a ticket.");
 	}
 
 	public void searchTickets(javafx.event.ActionEvent event) throws ParseException, IOException {

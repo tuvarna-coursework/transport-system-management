@@ -56,9 +56,11 @@ public class DistributorRequestController implements Initializable {
 	private Label informationLabel;
 
 	private static final Logger logger = LogManager.getLogger(DistributorRequestController.class.getName());
+	private UserService userService;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
@@ -148,37 +150,15 @@ public class DistributorRequestController implements Initializable {
 	}
 
 	public void makeRequest() {
+		String result = userService.distributorMakeRequestProcessing(requestTable.getSelectionModel().getSelectedItem(), requiredTicketsTextField.getText());
 
-		Trip trip = requestTable.getSelectionModel().getSelectedItem();
-		int required;
-		if (trip == null) {
-			informationLabel.setText("Please select trip!");
+		if (!result.equals("Success")) {
+			informationLabel.setText(result);
 			return;
 		}
-		String requiredTickets = requiredTicketsTextField.getText().trim().toString();
-		if (requiredTickets.isEmpty()) {
-			informationLabel.setText("Please enter required tickets!");
-			return;
-		}
-		try {
-			required = Integer.parseInt(requiredTickets);
-		} catch (Exception e) {
-			informationLabel.setText("Enter number!");
-			return;
-		}
-		int calCapacity = trip.getTripCapacity();
-		int calTickets = trip.getTripTicketAvailability();
-		int filCal = calCapacity - calTickets;
-		if (required > filCal) {
-			informationLabel.setText("Not ENOUGH seats in the bus! Enter less tickets quantity!");
-			return;
-		}
-
-		RequestService requestService = new RequestService();
-		Request request = new Request(required, trip, DatabaseUtils.REQUEST_STATUSPENDING);
-		requestService.save(request);
+		
 		informationLabel.setText("You send a request for " + requiredTicketsTextField.getText() + " tickets for trip #"
-				+ trip.getTripId());
+				+ requestTable.getSelectionModel().getSelectedItem().getTripId());
 
 		logger.info("Request passed all constraints checks and was successfully created.");
 	}

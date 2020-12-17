@@ -61,6 +61,8 @@ public class CompanyRequestController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		userService = new UserService();
+		
 		PropertyConfigurator.configure("log4j.properties"); // configure log4j
 		logger.info("Log4J successfully configured.");
 
@@ -197,24 +199,22 @@ public class CompanyRequestController implements Initializable {
 
 		if (!result.equals("Success")) {
 			informationLabel.setText(result);
+			return;
 		}
 
 		// refresh table
 		requestCompanyTable.setItems(getRequests());
 		informationLabel.setText("Request was accepted.");
+		logger.info("Table refreshed. Request accepted.");
 	}
 
 	public void rejectRequest(javafx.event.ActionEvent event) throws IOException {
-		if (requestCompanyTable.getSelectionModel().getSelectedIndex() < 0) {
-			informationLabel.setText("No request selected.");
-			return;
-		}
-		
 		String result = userService
 				.companyRejectRequestProcessing(requestCompanyTable.getSelectionModel().getSelectedItem());
 
 		if (!result.equals("Success")) {
 			informationLabel.setText(result);
+			return;
 		}
 
 		// refresh table

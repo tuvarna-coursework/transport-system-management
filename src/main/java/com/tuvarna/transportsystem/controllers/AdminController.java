@@ -207,6 +207,7 @@ public class AdminController implements Initializable {
 		
 		if (result.equals("User successfully deleted.")) {
 			usersFoundTable.getItems().removeIf(u -> u.getUserId() == userForDeletion.getUserId()); // remove from table (refresh)
+			logger.info("User successfully deleted.");
 		}
 	}
 
